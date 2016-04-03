@@ -14,10 +14,10 @@
 ActiveRecord::Schema.define(version: 20160404012756) do
 
   create_table "tracks", force: :cascade do |t|
+    t.string   "product_id",    null: false
     t.string   "title",         null: false
     t.string   "artist",        null: false
     t.string   "album",         null: false
-    t.string   "product_id",    null: false
     t.string   "preview_url",   null: false
     t.string   "thumbnail_url", null: false
     t.datetime "created_at",    null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20160404012756) do
   add_index "tracks", ["album"], name: "index_tracks_on_album"
   add_index "tracks", ["artist"], name: "index_tracks_on_artist"
   add_index "tracks", ["created_at"], name: "index_tracks_on_created_at"
+  add_index "tracks", ["product_id"], name: "index_tracks_on_product_id", unique: true
   add_index "tracks", ["title"], name: "index_tracks_on_title"
 
 end
