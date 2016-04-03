@@ -2,6 +2,8 @@
 Bundler.require
 
 class Track < ActiveRecord::Base
+  validates :product_id, uniqueness: true
+
   def self.create_from_track_info(track_info)
     hash = {
       title:         track_info.trackName,

@@ -31,6 +31,7 @@ class Playlist < Sinatra::Base
     if product_id.nil? || product_id.empty?
         return status(400)
     end
+    return status(201) if Track.exists?(product_id: product_id)
     lookup = Lookup.new(product_id)
     res = lookup.execute
     return status(201) if res.nil?
