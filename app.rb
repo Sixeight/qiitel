@@ -17,9 +17,9 @@ Dir['lib/**/*.rb'].each do |path|
 end
 
 class Playlist < Sinatra::Base
-  configure :development do
-    register Sinatra::Reloader
-  end
+  # configure :development do
+  #   register Sinatra::Reloader
+  # end
 
   get '/' do
     tracks = Track.order('created_at DESC')
