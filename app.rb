@@ -37,7 +37,7 @@ class Playlist < Sinatra::Base
     return status(201) unless res.resultCount == 1
     track_info = OpenStruct.new(res.results.first)
     return status(201) unless track_info.isStreamable
-    Track.create_from_response(track_info)
+    Track.create_from_track_info(track_info)
     status(201)
   end
 end

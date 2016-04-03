@@ -2,14 +2,14 @@
 Bundler.require
 
 class Track < ActiveRecord::Base
-  def self.create_from_response(response)
+  def self.create_from_track_info(track_info)
     hash = {
-      title: response.trackName,
-      artist: response.artistName,
-      album: response.collectionName,
-      product_id: response.trackId,
-      preview_url: response.previewUrl,
-      thumbnail_url: response.artworkUrl100,
+      title:         track_info.trackName,
+      artist:        track_info.artistName,
+      album:         track_info.collectionName,
+      product_id:    track_info.trackId,
+      preview_url:   track_info.previewUrl,
+      thumbnail_url: track_info.artworkUrl100,
     }
     self.create(hash)
   end
