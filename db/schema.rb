@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20160404012756) do
 
   add_index "tracks", ["album"], name: "index_tracks_on_album"
   add_index "tracks", ["artist"], name: "index_tracks_on_artist"
+  add_index "tracks", ["created_at"], name: "index_tracks_on_created_at"
   add_index "tracks", ["title"], name: "index_tracks_on_title"
 
 end

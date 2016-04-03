@@ -9,6 +9,7 @@ class CreateTrack < ActiveRecord::Migration
       t.string :thumbnail_url, null: false
 
       t.timestamps null: false
+      t.index :created_at
     end
   end
 end
