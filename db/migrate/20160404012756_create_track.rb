@@ -7,6 +7,7 @@ class CreateTrack < ActiveRecord::Migration
       t.string :album,         null: false, index: true
       t.string :preview_url,   null: false
       t.string :thumbnail_url, null: false
+      t.string :store_url,     null: false
 
       t.timestamps null: false
 

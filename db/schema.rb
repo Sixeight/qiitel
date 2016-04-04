@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20160404012756) do
     t.string   "album",         null: false
     t.string   "preview_url",   null: false
     t.string   "thumbnail_url", null: false
+    t.string   "store_url",     null: false
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
