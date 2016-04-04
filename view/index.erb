@@ -1,8 +1,9 @@
 <%- @tracks.each do |track| -%>
-<div>
-  <h2><a href="<%= track.store_url %>"><%= track.title %></a></h2>
+<div class="track">
   <img src="<%= track.thumbnail_url %>" />
-  <audio src="<%= track.preview_url %>" controls></audio>
-  <time><%= track.created_at.strftime('%Y/%m/%d %H:%M:%S') %></time>
+  <h2><a href="<%= track.store_url %>" rel="nofollow"><%= track.title %></a></h2>
+  <%= track.artist %> - <%= track.album %><br />
+  <time><%= track.created_at.strftime('%Y/%m/%d %H:%M:%S') %></time><br />
+  <div class="clear"></div>
 </div>
 <%- end -%>
