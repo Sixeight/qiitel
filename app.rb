@@ -22,8 +22,13 @@ class Playlist < Sinatra::Base
   # end
 
   get '/' do
-    tracks = Track.order('created_at DESC')
+    tracks = Track.all
     JSON.dump tracks.map(&:attributes)
+  end
+
+  get '/tracks' do
+    track_ids = Track.select('product_id')
+    JSON.dump track_ids.map(&:product_id).shuffle.take(10)
   end
 
   post '/listen' do
