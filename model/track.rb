@@ -8,7 +8,7 @@ class Track < ActiveRecord::Base
   validates :track_id, uniqueness: true
 
   default_scope do
-    order 'created_at DESC'
+    order 'updated_at DESC'
   end
 
   def self.create_from_track_info(track_info)

@@ -40,7 +40,11 @@ class Playlist < Sinatra::Base
         return status(400)
     end
     return status(400) if track_id !~ /\A\d+\z/
-    return status(201) if Track.exists?(track_id: track_id)
+    track = Track.find_by(track_id: track_id)
+    unless track.nil?
+      track.touch
+      return status(201)
+    end
     lookup = Lookup.new(track_id)
     res = lookup.execute
     return status(201) if res.nil?
