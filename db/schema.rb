@@ -11,24 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160404012756) do
+ActiveRecord::Schema.define(version: 20160405035727) do
 
   create_table "tracks", force: :cascade do |t|
-    t.string   "product_id",    null: false
-    t.string   "title",         null: false
-    t.string   "artist",        null: false
-    t.string   "album",         null: false
-    t.string   "preview_url",   null: false
-    t.string   "thumbnail_url", null: false
-    t.string   "store_url",     null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "track_id",            null: false
+    t.string   "track_name",          null: false
+    t.string   "artist_name",         null: false
+    t.string   "collection_name",     null: false
+    t.string   "preview_url",         null: false
+    t.string   "thumbnail_url",       null: false
+    t.string   "track_view_url",      null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.string   "artist_id",           null: false
+    t.string   "collection_id",       null: false
+    t.string   "artist_view_url",     null: false
+    t.string   "collection_view_url", null: false
+    t.string   "genre_name",          null: false
+    t.datetime "released_at",         null: false
   end
 
-  add_index "tracks", ["album"], name: "index_tracks_on_album"
-  add_index "tracks", ["artist"], name: "index_tracks_on_artist"
+  add_index "tracks", ["artist_name"], name: "index_tracks_on_artist_name"
+  add_index "tracks", ["collection_name"], name: "index_tracks_on_collection_name"
   add_index "tracks", ["created_at"], name: "index_tracks_on_created_at"
-  add_index "tracks", ["product_id"], name: "index_tracks_on_product_id", unique: true
-  add_index "tracks", ["title"], name: "index_tracks_on_title"
+  add_index "tracks", ["track_id"], name: "index_tracks_on_track_id", unique: true
+  add_index "tracks", ["track_name"], name: "index_tracks_on_track_name"
 
 end

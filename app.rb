@@ -29,19 +29,19 @@ class Playlist < Sinatra::Base
   end
 
   get '/tracks' do
-    track_ids = Track.select('product_id')
+    track_ids = Track.select('track_id')
     content_type 'application/json'
-    JSON.dump track_ids.map(&:product_id).shuffle.take(10)
+    JSON.dump track_ids.map(&:track_id).shuffle.take(10)
   end
 
   post '/listen' do
-    product_id = params[:product_id]
-    if product_id.nil? || product_id.empty?
+    track_id = params[:product_id]
+    if track_id.nil? || track_id.empty?
         return status(400)
     end
-    return status(400) if product_id !~ /\A\d+\z/
-    return status(201) if Track.exists?(product_id: product_id)
-    lookup = Lookup.new(product_id)
+    return status(400) if track_id !~ /\A\d+\z/
+    return status(201) if Track.exists?(track_id: track_id)
+    lookup = Lookup.new(track_id)
     res = lookup.execute
     return status(201) if res.nil?
     return status(201) unless res.resultCount == 1

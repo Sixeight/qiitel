@@ -3,12 +3,12 @@ class Lookup
   ENDPOINT = 'itunes.apple.com'
   COUNTRY  = 'JP'
 
-  def initialize(product_id)
-    @product_id = product_id
+  def initialize(track_id)
+    @track_id = track_id
   end
 
   def execute
-    query = { country: COUNTRY, id: @product_id }.to_a.map {|parts| parts.join('=') }.join('&')
+    query = { country: COUNTRY, id: @track_id }.to_a.map {|parts| parts.join('=') }.join('&')
     response = Net::HTTP.start(ENDPOINT) do |http|
       uri = URI.parse('/lookup')
       uri.query = query

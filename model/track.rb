@@ -1,8 +1,11 @@
 
+require 'bundler'
 Bundler.require
 
+require 'time'
+
 class Track < ActiveRecord::Base
-  validates :product_id, uniqueness: true
+  validates :track_id, uniqueness: true
 
   default_scope do
     order 'created_at DESC'
@@ -10,15 +13,21 @@ class Track < ActiveRecord::Base
 
   def self.create_from_track_info(track_info)
     hash = {
-      title:         track_info.trackName,
-      artist:        track_info.artistName,
-      album:         track_info.collectionName,
-      product_id:    track_info.trackId,
-      preview_url:   track_info.previewUrl,
-      thumbnail_url: track_info.artworkUrl100,
-      store_url:     track_info.trackViewUrl,
+      track_name:          track_info.trackName,
+      artist_name:         track_info.artistName,
+      collection_name:     track_info.collectionName,
+      track_id:            track_info.trackId,
+      artist_id:           track_info.artistId,
+      collection_id:       track_info.collectionId,
+      preview_url:         track_info.previewUrl,
+      thumbnail_url:       track_info.artworkUrl100,
+      track_view_url:      track_info.trackViewUrl,
+      artist_view_url:     track_info.artistViewUrl,
+      collection_view_url: track_info.collectionViewUrl,
+      genre_name:          track_info.primaryGenreName,
+      released_at:         Time.parse(track_info.releaseDate),
     }
-    self.create(hash)
+    create hash
   end
 end
 
