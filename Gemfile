@@ -5,6 +5,7 @@ gem 'rake'
 gem 'sinatra', require: false
 gem 'sinatra-contrib'
 gem 'activerecord', require: 'active_record'
+gem 'erubis'
 
 group :development, :test do
   gem 'sqlite3'
