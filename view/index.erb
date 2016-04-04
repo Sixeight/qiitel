@@ -2,7 +2,7 @@
 <div class="track">
   <a href="<%= track.track_view_url %>" rel="nofollow"><img src="<%= track.thumbnail_url %>" /></a>
   <h2><a href="<%= track.track_view_url %>" rel="nofollow"><%= track.track_name %></a></h2>
-  <a href="<%= track.artist_view_url %>"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>"><%= track.collection_name %></a><br />
+  <a href="<%= track.artist_view_url %>"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>"><%= track.collection_name %></a> [<%= track.genre_name %>]<br />
   <time><%= track.created_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
   <div class="clear"></div>
 </div>
