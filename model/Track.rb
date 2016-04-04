@@ -16,6 +16,7 @@ class Track < ActiveRecord::Base
       product_id:    track_info.trackId,
       preview_url:   track_info.previewUrl,
       thumbnail_url: track_info.artworkUrl100,
+      store_url:     track_info.trackViewUrl,
     }
     self.create(hash)
   end

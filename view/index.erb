@@ -1,6 +1,6 @@
 <%- @tracks.each do |track| -%>
 <div>
-  <h2><%= track.title %></h2>
+  <h2><a href="<%= track.store_url %>"><%= track.title %></a></h2>
   <img src="<%= track.thumbnail_url %>" />
   <audio src="<%= track.preview_url %>" controls></audio>
   <time><%= track.created_at.strftime('%Y/%m/%d %H:%M:%S') %></time>
