@@ -24,7 +24,7 @@ class Playlist < Sinatra::Base
   set :views, settings.root + '/view'
 
   get '/' do
-    @tracks = Track.limit(20)
+    @tracks = Track.limit(50)
     erb :index
   end
 
