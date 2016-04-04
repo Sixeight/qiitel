@@ -31,6 +31,13 @@ class Playlist < Sinatra::Base
     JSON.dump track_ids.map(&:product_id).shuffle.take(10)
   end
 
+  get '/random' do
+    count = Track.count
+    id = rand(count) + 1
+    track = Track.select('product_id').find_by(id: id)
+    JSON.dump [ track.product_id ]
+  end
+
   post '/listen' do
     product_id = params[:product_id]
     if product_id.nil? || product_id.empty?
