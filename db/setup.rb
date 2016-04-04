@@ -8,4 +8,4 @@ settings = YAML.load_file File.expand_path('../config/database.yml', __dir__)
 environment = ENV['RACK_ENV'] || :development
 
 ActiveRecord::Base.configurations = settings
-ActiveRecord::Base.establish_connection(environment.to_sym)
+ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || environment.to_sym)
