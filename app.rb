@@ -21,9 +21,11 @@ class Playlist < Sinatra::Base
   #   register Sinatra::Reloader
   # end
 
+  set :views, settings.root + '/view'
+
   get '/' do
-    tracks = Track.all
-    JSON.dump tracks.map(&:attributes)
+    @tracks = Track.limit(20)
+    erb :index
   end
 
   get '/tracks' do
