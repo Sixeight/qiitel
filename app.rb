@@ -37,9 +37,9 @@ class Playlist < Sinatra::Base
   end
 
   get '/tracks' do
-    track_ids = Track.select('track_id')
+    track_ids = Track.select('track_id').limit(50)
     content_type 'application/json'
-    JSON.dump track_ids.map(&:track_id).shuffle.take(50)
+    JSON.dump track_ids.map(&:track_id).shuffle
   end
 
   post '/listen' do
