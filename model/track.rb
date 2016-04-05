@@ -29,6 +29,15 @@ class Track < ActiveRecord::Base
     }
     create hash
   end
+
+  def hash_for_recents
+    {
+      track_name:      self.track_name,
+      artist_name:     self.artist_name,
+      collection_name: self.collection_name,
+      track_view_url:  self.track_view_url,
+    }
+  end
 end
 
 __END__

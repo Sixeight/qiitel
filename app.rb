@@ -28,6 +28,14 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
+  get '/recents' do
+    limit = params[:limit].to_i
+    limit = [[1, limit].max, 10].min
+    tracks = Track.limit(limit)
+    content_type 'application/json'
+    JSON.dump tracks.map(&:hash_for_recents)
+  end
+
   get '/tracks' do
     track_ids = Track.select('track_id')
     content_type 'application/json'
