@@ -49,23 +49,23 @@ class Playlist < Sinatra::Base
     end
     return status(400) if track_id !~ /\A\d+\z/
     track = Track.find_by(track_id: track_id)
-    unless track.nil?
-      track.touch
-      post_to_slack track
-      return status(201)
-    end
-    lookup = Lookup.new(track_id)
-    res = lookup.execute
-    return status(201) if res.nil?
-    return status(201) unless res.resultCount == 1
-    track_info = OpenStruct.new(res.results.first)
-    return status(201) unless track_info.isStreamable
-    track = Track.create_from_track_info(track_info)
+    track ||= create_track(track_id)
+    return status(201) if track.nil?
     post_to_slack track
     status(201)
   end
 
   private
+  def create_track(track_id)
+    lookup = Lookup.new(track_id)
+    res = lookup.execute
+    return nil if res.nil?
+    return nil if res.resultCount != 1
+    track_info = OpenStruct.new(res.results.first)
+    return nil unless track_info.isStreamable
+    return Track.create_from_track_info(track_info)
+  end
+
   def post_to_slack(track)
     return if ENV['SLACK_WEBHOOK'].nil?
 
