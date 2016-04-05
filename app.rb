@@ -51,6 +51,7 @@ class Playlist < Sinatra::Base
     track = Track.find_by(track_id: track_id)
     unless track.nil?
       track.touch
+      post_to_slack track
       return status(201)
     end
     lookup = Lookup.new(track_id)
@@ -59,7 +60,23 @@ class Playlist < Sinatra::Base
     return status(201) unless res.resultCount == 1
     track_info = OpenStruct.new(res.results.first)
     return status(201) unless track_info.isStreamable
-    Track.create_from_track_info(track_info)
+    track = Track.create_from_track_info(track_info)
+    post_to_slack track
     status(201)
+  end
+
+  private
+  def post_to_slack(track)
+    return if ENV['SLACK_WEBHOOK'].nil?
+
+    require 'net/https'
+
+    payload = {
+      channel: '#music',
+      username: track.track_name,
+      text: "#{track.artist_name} - #{track.collection_name}  #{track.track_view_url}",
+      icon_url: track.thumbnail_url,
+    }
+    Net::HTTP.post_form(URI.parse(ENV['SLACK_WEBHOOK']), payload: JSON.dump(payload))
   end
 end
