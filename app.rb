@@ -22,6 +22,7 @@ class Playlist < Sinatra::Base
   # end
 
   set :views, settings.root + '/view'
+  set :public_folder, settings.root + '/static'
 
   get '/' do
     @tracks = Track.limit(50)

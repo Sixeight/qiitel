@@ -1,9 +1,18 @@
 <%- @tracks.each do |track| -%>
 <div class="track">
-  <a href="<%= track.track_view_url %>" rel="nofollow"><img src="<%= track.thumbnail_url %>" /></a>
-  <h2><a href="<%= track.track_view_url %>" rel="nofollow"><%= track.track_name %></a></h2>
-  <a href="<%= track.artist_view_url %>"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>"><%= track.collection_name %></a> [<%= track.genre_name %>]<br />
-  <time><%= track.created_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
+  <div class="image">
+    <div class="artwork" style="background-image: url(<%= track.thumbnail_url %>)"></div>
+    <a href="<%= track.track_view_url %>" rel="nofollow"><img src="/img/Get_it_on_iTunes_Badge_JP_1214.svg" /></a>
+  </div>
+  <div class="meta">
+    <h2><a href="<%= track.track_view_url %>" rel="nofollow"><%= track.track_name %></a></h2>
+    <a href="<%= track.artist_view_url %>"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>"><%= track.collection_name %></a> [<%= track.genre_name %>]<br />
+    <time><%= track.created_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
+  </div>
+  <div class="preview">
+    <audio src="<%= track.preview_url %>" controls></audio><br />
+    <span>provided courtesy of iTunes</span>
+  </div>
   <div class="clear"></div>
 </div>
 <%- end -%>
