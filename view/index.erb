@@ -7,7 +7,7 @@
   <div class="meta">
     <h2><a href="<%= track.track_view_url %>" rel="nofollow"><%= track.track_name %></a></h2>
     <a href="<%= track.artist_view_url %>"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>"><%= track.collection_name %></a><br />
-    <span class="genre">[<%= track.genre_name %>]</span><br />
+    <span class="genre"><a href="/genre/<%=u track.genre_name %>">[<%= track.genre_name %>]</a></span><br />
     <time datetime="<%= track.created_at.iso8601 %>" title="<%= track.created_at.iso8601 %>"><%= track.created_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
   </div>
   <div class="preview">

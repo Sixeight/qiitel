@@ -5,6 +5,7 @@ Bundler.require
 require 'net/https'
 require 'uri'
 require 'json'
+require 'cgi'
 require 'ostruct'
 require_relative 'db/setup'
 
@@ -24,8 +25,20 @@ class Playlist < Sinatra::Base
   set :views, settings.root + '/view'
   set :public_folder, settings.root + '/static'
 
+  helpers do
+    def u(str)
+      CGI.escape(str)
+    end
+  end
+
   get '/' do
     @tracks = Track.limit(50)
+    erb :index
+  end
+
+  get '/genre/:genre_name' do
+    @genre_name = params[:genre_name]
+    @tracks = Track.where(genre_name: @genre_name).limit(50)
     erb :index
   end
 

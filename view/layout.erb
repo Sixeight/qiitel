@@ -12,6 +12,10 @@
         margin-top: 20px;
         margin-bottom: 20px;
       }
+      a {
+        text-decoration: none;
+        color: black;
+      }
       .track {
         color: #555;
         border: 1px solid #aaa;
@@ -73,8 +77,8 @@
   </head>
   <body>
     <header>
-      <h1>聴いてる</h1>
-      僕か僕の知り合いが最近聴いた50曲です。
+      <h1><a href="/">聴いてる</a><%- unless @genre_name.blank? %> - <%= @genre_name %><%- end %></h1>
+      僕か僕の知り合いが最近聴いた<%= @genre_name %>50曲です。
     </header>
     <div id="container">
       <%= yield %>
