@@ -25,6 +25,8 @@ class Playlist < Sinatra::Base
   set :views, settings.root + '/view'
   set :public_folder, settings.root + '/static'
 
+  set :limit, 100
+
   helpers do
     def u(str)
       CGI.escape(str)
@@ -32,13 +34,13 @@ class Playlist < Sinatra::Base
   end
 
   get '/' do
-    @tracks = Track.limit(50)
+    @tracks = Track.limit(settings.limit)
     erb :index
   end
 
   get '/genre/:genre_name' do
     @genre_name = params[:genre_name]
-    @tracks = Track.where(genre_name: @genre_name).limit(50)
+    @tracks = Track.where(genre_name: @genre_name).limit(settings.limit)
     erb :index
   end
 
@@ -51,7 +53,7 @@ class Playlist < Sinatra::Base
   end
 
   get '/tracks' do
-    track_ids = Track.select('track_id').limit(50)
+    track_ids = Track.select('track_id').limit(settings.limit)
     content_type 'application/json'
     JSON.dump track_ids.map(&:track_id).shuffle
   end
