@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160405035727) do
+ActiveRecord::Schema.define(version: 20160415020247) do
 
   create_table "tracks", force: :cascade do |t|
     t.string   "track_id",            null: false
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20160405035727) do
     t.string   "collection_view_url", null: false
     t.string   "genre_name",          null: false
     t.datetime "released_at",         null: false
+    t.boolean  "is_streamable"
   end
 
   add_index "tracks", ["artist_name"], name: "index_tracks_on_artist_name"
