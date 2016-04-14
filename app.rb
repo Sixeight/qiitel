@@ -25,7 +25,7 @@ class Playlist < Sinatra::Base
   set :views, settings.root + '/view'
   set :public_folder, settings.root + '/static'
 
-  set :limit, 100
+  set :limit, 50
 
   helpers do
     def u(str)
