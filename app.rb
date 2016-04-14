@@ -65,6 +65,8 @@ class Playlist < Sinatra::Base
     end
     return status(400) if track_id !~ /\A\d+\z/
     track = Track.find_by(track_id: track_id)
+    # すでに聴いてる曲だったらupdated_atを更新する
+    track.touch if track
     track ||= create_track(track_id)
     return status(201) if track.nil?
     post_to_slack track
