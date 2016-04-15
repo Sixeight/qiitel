@@ -11,7 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160415230702) do
+ActiveRecord::Schema.define(version: 20160416000245) do
+
+  create_table "activities", force: :cascade do |t|
+    t.integer  "track_id",   null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "last_listeners", force: :cascade do |t|
+    t.integer  "track_id",   null: false
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "tracks", force: :cascade do |t|
     t.string   "track_id",            null: false
@@ -44,12 +58,12 @@ ActiveRecord::Schema.define(version: 20160415230702) do
     t.boolean  "visible",    default: true, null: false
     t.string   "image_url"
     t.string   "url"
-    t.string   "secret",                    null: false
+    t.string   "token",                     null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
 
-  add_index "users", ["secret"], name: "index_users_on_secret", unique: true
+  add_index "users", ["token"], name: "index_users_on_token", unique: true
   add_index "users", ["twitter_id"], name: "index_users_on_twitter_id", unique: true
 
 end

@@ -42,7 +42,7 @@ class Playlist < Sinatra::Base
   end
 
   before do
-    @user = User.find_by(twitter_id: session[:qlsc])
+    @user = User.find_by(token: params[:token] || session[:qlsc])
   end
 
   get '/' do
@@ -89,30 +89,30 @@ class Playlist < Sinatra::Base
     auth_hash = env.dig('omniauth.auth', 'extra', 'raw_info')
     return status(401) unless auth_hash
 
-    twitter_id = auth_hash['id_str'],
+    twitter_id = auth_hash['id_str']
     user = User.find_by(twitter_id: twitter_id)
     if user.present?
-      session[:qlsc] = user.twitter_id
+      session[:qlsc] = user.token
       return redirect to('/')
     end
 
     screen_name = auth_hash['screen_name']
     image_url   = auth_hash['profile_image_url']
     url         = "https://twitter.com/#{screen_name}"
-    secret      = Secret.generate
+    token       = Token.generate
 
     params = {
       twitter_id: twitter_id,
       name:       screen_name,
       image_url:  image_url,
       url:        url,
-      secret:     secret,
+      token:      token,
     }
 
     user = User.create(params)
     return status(401) if user.nil?
 
-    session[:qlsc] = user.twitter_id
+    session[:qlsc] = user.token
     redirect to('/')
   end
 

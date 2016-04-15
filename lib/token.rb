@@ -5,7 +5,7 @@ Bundler.require
 require 'digest'
 require 'securerandom'
 
-module Secret
+module Token
   # ひとまず適当に
   def self.generate
     Digest::SHA1.new.hexdigest(SecureRandom.uuid)

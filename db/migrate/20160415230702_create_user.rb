@@ -8,12 +8,12 @@ class CreateUser < ActiveRecord::Migration
       t.string  :url
 
       # アプリからこれを指定する
-      t.string :secret, null: false
+      t.string :token, null: false
 
       t.timestamps null: false
 
       t.index :twitter_id, unique: true
-      t.index :secret,     unique: true
+      t.index :token,      unique: true
     end
   end
 end
