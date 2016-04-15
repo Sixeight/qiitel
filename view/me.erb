@@ -1,6 +1,6 @@
 
-<div>
-    <code><%= @user.token %></code>
-</div>
+<a href="/">もどる</a>
 
-<a href="/logout">ログアウト</a>
+<script>
+    location.href = "hacobunmusic://register?token=<%= @user.token %>";
+</script>

@@ -51,7 +51,8 @@ class Playlist < Sinatra::Base
   end
 
   get '/me' do
-    return redirect to('/login') if @user.nil?
+    return redirect to('/') if @user.nil?
+    session[:qlsc] = nil
     erb :me, layout: nil
   end
 
