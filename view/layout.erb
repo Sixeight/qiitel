@@ -88,7 +88,7 @@
   <body>
     <header>
       <h1><a href="/">聴いてる</a><%- unless @genre_name.blank? %> - <%= @genre_name %><%- end %></h1>
-      僕か僕の知り合いが最近 <a href="http://www.apple.com/jp/music/" target="_blank">Apple Music</a> で聴いた<%= @genre_name %><%= @tracks.size =%>曲です。
+      僕か僕の知り合いが最近聴いた<%= @genre_name %><%= @tracks.size =%>曲です。
     </header>
     <div id="container">
       <%= yield %>
