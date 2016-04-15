@@ -46,7 +46,7 @@ class Playlist < Sinatra::Base
   end
 
   get '/' do
-    @tracks = Track.limit(settings.limit)
+    @tracks = Track.eager_load(:user).limit(settings.limit)
     erb :index
   end
 
