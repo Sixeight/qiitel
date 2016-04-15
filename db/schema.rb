@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20160416000245) do
     t.datetime "updated_at",                null: false
   end
 
+  add_index "users", ["name"], name: "index_users_on_name", unique: true
   add_index "users", ["token"], name: "index_users_on_token", unique: true
   add_index "users", ["twitter_id"], name: "index_users_on_twitter_id", unique: true
 

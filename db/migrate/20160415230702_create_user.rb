@@ -14,6 +14,7 @@ class CreateUser < ActiveRecord::Migration
 
       t.index :twitter_id, unique: true
       t.index :token,      unique: true
+      t.index :name,       unique: true
     end
   end
 end
