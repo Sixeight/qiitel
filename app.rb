@@ -40,7 +40,7 @@ class Playlist < Sinatra::Base
 
   get '/genre/:genre_name' do
     @genre_name = params[:genre_name]
-    @tracks = Track.where(genre_name: @genre_name).limit(settings.limit)
+    @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
     erb :index
   end
 

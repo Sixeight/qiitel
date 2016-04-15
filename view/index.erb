@@ -23,3 +23,14 @@
   <div class="clear"></div>
 </div>
 <%- end -%>
+
+<%- if @tracks.respond_to?(:next_page) %>
+  <nav>
+    <%- unless @tracks.prev_page.nil? %>
+        <a href="/genre/<%=u @genre_name %>?page=<%= @tracks.prev_page %>">前</a>
+    <%- end %>
+    <%- unless @tracks.next_page.nil? %>
+        <a href="/genre/<%=u @genre_name %>?page=<%= @tracks.next_page %>">次</a>
+    <%- end %>
+  </nav>
+<%- end -%>
