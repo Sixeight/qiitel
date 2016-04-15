@@ -50,10 +50,10 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
-  get '/me' do
+  get '/register' do
     return redirect to('/') if @user.nil?
     session[:qlsc] = nil
-    erb :me, layout: nil
+    erb :register, layout: nil
   end
 
   get '/login' do
@@ -121,7 +121,7 @@ class Playlist < Sinatra::Base
     user = User.find_by(twitter_id: twitter_id)
     if user.present?
       session[:qlsc] = user.token
-      return redirect to('/me')
+      return redirect to('/register')
     end
 
     screen_name = auth_hash['screen_name']
