@@ -31,6 +31,10 @@ class Track < ActiveRecord::Base
     create hash
   end
 
+  def app_type
+    is_streamable ? 'music' : 'itunes'
+  end
+
   def hash_for_recents
     {
       track_name:      self.track_name,
