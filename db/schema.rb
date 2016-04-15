@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160415020247) do
+ActiveRecord::Schema.define(version: 20160415230702) do
 
   create_table "tracks", force: :cascade do |t|
     t.string   "track_id",            null: false
@@ -37,5 +37,19 @@ ActiveRecord::Schema.define(version: 20160415020247) do
   add_index "tracks", ["created_at"], name: "index_tracks_on_created_at"
   add_index "tracks", ["track_id"], name: "index_tracks_on_track_id", unique: true
   add_index "tracks", ["track_name"], name: "index_tracks_on_track_name"
+
+  create_table "users", force: :cascade do |t|
+    t.string   "twitter_id",                null: false
+    t.string   "name",                      null: false
+    t.boolean  "visible",    default: true, null: false
+    t.string   "image_url"
+    t.string   "url"
+    t.string   "secret",                    null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "users", ["secret"], name: "index_users_on_secret", unique: true
+  add_index "users", ["twitter_id"], name: "index_users_on_twitter_id", unique: true
 
 end
