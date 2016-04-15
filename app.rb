@@ -91,7 +91,8 @@ class Playlist < Sinatra::Base
     payload = {
       channel: '#music',
       username: track.track_name,
-      text: "#{track.artist_name} - #{track.collection_name}  #{track.track_view_url}&at=#{ENV['AT']}",
+      # FIXME: パラメータ適当につないでるのよくない
+      text: "#{track.artist_name} - #{track.collection_name}  #{track.track_view_url}&app=#{track.app_type}&at=#{ENV['AT']}",
       icon_url: track.thumbnail_url,
     }
     Net::HTTP.post_form(URI.parse(ENV['SLACK_WEBHOOK']), payload: JSON.dump(payload))
