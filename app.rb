@@ -81,13 +81,7 @@ class Playlist < Sinatra::Base
     track.touch if track
     track ||= create_track(track_id)
 
-    last_listener = if track.last_listener.nil?
-                      track.build_last_listener
-                    else
-                      track.last_listener
-                    end
-    last_listener.user = @user
-    last_listener.save
+    update_last_listener track, @user
 
     return status(201) if track.nil?
     post_to_slack track
@@ -134,6 +128,16 @@ class Playlist < Sinatra::Base
     return nil if res.resultCount != 1
     track_info = OpenStruct.new(res.results.first)
     return Track.create_from_track_info(track_info)
+  end
+
+  def update_last_listener(track, user)
+    last_listener = if track.last_listener.nil?
+                      track.build_last_listener
+                    else
+                      track.last_listener
+                    end
+    last_listener.user = user
+    last_listener.save
   end
 
   def post_to_slack(track)
