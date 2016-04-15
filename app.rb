@@ -141,7 +141,7 @@ class Playlist < Sinatra::Base
     return status(401) if user.nil?
 
     session[:qlsc] = user.token
-    redirect to('/me')
+    redirect to('/register')
   end
 
   private
