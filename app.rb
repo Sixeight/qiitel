@@ -56,6 +56,15 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
+  get '/users/:user_name/tracks' do
+    @user_name = params[:user_name]
+    user = User.find_by(name: @user_name)
+    return status(404) if user.nil?
+    activities = Activity.eager_load(:track).where(user_id: user.id).limit(settings.limit)
+    @tracks = activities.map(&:track).compact
+    erb :index
+  end
+
   get '/recents' do
     limit = params[:limit].to_i
     limit = [[1, limit].max, 10].min
