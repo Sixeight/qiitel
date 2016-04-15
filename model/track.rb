@@ -26,6 +26,7 @@ class Track < ActiveRecord::Base
       collection_view_url: track_info.collectionViewUrl,
       genre_name:          track_info.primaryGenreName,
       released_at:         Time.parse(track_info.releaseDate),
+      is_streamable:       track_info.isStreamable,
     }
     create hash
   end
@@ -36,6 +37,7 @@ class Track < ActiveRecord::Base
       artist_name:     self.artist_name,
       collection_name: self.collection_name,
       track_view_url:  self.track_view_url,
+      is_streamable:   self.is_streamable,
     }
   end
 end

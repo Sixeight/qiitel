@@ -80,7 +80,6 @@ class Playlist < Sinatra::Base
     return nil if res.nil?
     return nil if res.resultCount != 1
     track_info = OpenStruct.new(res.results.first)
-    return nil unless track_info.isStreamable
     return Track.create_from_track_info(track_info)
   end
 
