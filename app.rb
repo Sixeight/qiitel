@@ -82,6 +82,7 @@ class Playlist < Sinatra::Base
     track ||= create_track(track_id)
 
     update_last_listener track, @user
+    create_activity(track, @user) if @user.present?
 
     return status(201) if track.nil?
     post_to_slack track
@@ -138,6 +139,13 @@ class Playlist < Sinatra::Base
                     end
     last_listener.user = user
     last_listener.save
+  end
+
+  def create_activity(track, user)
+    activity = Activity.new
+    activity.track = track
+    activity.user  = user
+    activity.save
   end
 
   def post_to_slack(track)
