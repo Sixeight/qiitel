@@ -7,6 +7,8 @@ require 'time'
 class Track < ActiveRecord::Base
   validates :track_id, uniqueness: true
 
+  has_one :last_listener
+
   default_scope do
     order 'updated_at DESC'
   end

@@ -80,6 +80,15 @@ class Playlist < Sinatra::Base
     # すでに聴いてる曲だったらupdated_atを更新する
     track.touch if track
     track ||= create_track(track_id)
+
+    last_listener = if track.last_listener.nil?
+                      track.build_last_listener
+                    else
+                      track.last_listener
+                    end
+    last_listener.user = @user
+    last_listener.save
+
     return status(201) if track.nil?
     post_to_slack track
     status(201)
