@@ -1,4 +1,12 @@
 
+require 'bundler'
+Bundler.require
+
+require 'uri'
+require 'net/https'
+require 'ostruct'
+require 'json'
+
 class Lookup
   ENDPOINT = 'itunes.apple.com'
   COUNTRY  = 'JP'
