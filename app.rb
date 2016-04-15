@@ -50,6 +50,20 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
+  get '/me' do
+    return redirect to('/login') if @user.nil?
+    erb :me, layout: nil
+  end
+
+  get '/login' do
+    redirect to('/auth/twitter')
+  end
+
+  get '/logout' do
+    session[:qlsc] = nil
+    redirect to('/')
+  end
+
   get '/genre/:genre_name' do
     @genre_name = params[:genre_name]
     @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
@@ -106,7 +120,7 @@ class Playlist < Sinatra::Base
     user = User.find_by(twitter_id: twitter_id)
     if user.present?
       session[:qlsc] = user.token
-      return redirect to('/')
+      return redirect to('/me')
     end
 
     screen_name = auth_hash['screen_name']
@@ -126,7 +140,7 @@ class Playlist < Sinatra::Base
     return status(401) if user.nil?
 
     session[:qlsc] = user.token
-    redirect to('/')
+    redirect to('/me')
   end
 
   private
