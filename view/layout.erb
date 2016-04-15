@@ -43,13 +43,6 @@
       .track a:visited {
         color: #888;
       }
-      .track time {
-        color: #aaa;
-        font-size: small;
-      }
-      .track .genre {
-        font-size: small;
-      }
       .image {
         max-width: 100px;
         float: left;
@@ -62,6 +55,36 @@
       }
       .image img {
         max-width: 100px;
+      }
+      .meta {
+        margin-left: 110px;
+      }
+      .meta time {
+        color: #aaa;
+        font-size: small;
+      }
+      .meta .genre {
+        font-size: small;
+      }
+      .meta .profile {
+        font-size: small;
+      }
+      .meta .profile img {
+        witdh: 20px;
+        height: 20px;
+        border-radius: 20px;
+        border: 0.5px solid #aaa;
+        padding: 1px;
+        vertical-align: middle;
+      }
+      .meta .profile a {
+        text-decoration: none;
+      }
+      .meta .profile img + .name {
+        display: none;
+      }
+      .meta .profile img:hover + .name {
+        display: inline;
       }
       .preview {
         margin-top: 10px;
