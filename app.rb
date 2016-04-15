@@ -22,6 +22,14 @@ class Playlist < Sinatra::Base
   #   register Sinatra::Reloader
   # end
 
+  configure do
+    enable :sessions
+
+    use OmniAuth::Builder do
+      provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
+    end
+  end
+
   set :views, settings.root + '/view'
   set :public_folder, settings.root + '/static'
 
@@ -31,6 +39,10 @@ class Playlist < Sinatra::Base
     def u(str)
       CGI.escape(str)
     end
+  end
+
+  before do
+    @user = User.find_by(twitter_id: session[:qlsc])
   end
 
   get '/' do
@@ -73,7 +85,39 @@ class Playlist < Sinatra::Base
     status(201)
   end
 
+  get '/auth/twitter/callback' do
+    auth_hash = env.dig('omniauth.auth', 'extra', 'raw_info')
+    return status(401) unless auth_hash
+
+    twitter_id = auth_hash['id_str'],
+    user = User.find_by(twitter_id: twitter_id)
+    if user.present?
+      session[:qlsc] = user.twitter_id
+      return redirect to('/')
+    end
+
+    screen_name = auth_hash['screen_name']
+    image_url   = auth_hash['profile_image_url']
+    url         = "https://twitter.com/#{screen_name}"
+    secret      = Secret.generate
+
+    params = {
+      twitter_id: twitter_id,
+      name:       screen_name,
+      image_url:  image_url,
+      url:        url,
+      secret:     secret,
+    }
+
+    user = User.create(params)
+    return status(401) if user.nil?
+
+    session[:qlsc] = user.twitter_id
+    redirect to('/')
+  end
+
   private
+
   def create_track(track_id)
     lookup = Lookup.new(track_id)
     res = lookup.execute
@@ -95,6 +139,7 @@ class Playlist < Sinatra::Base
       text: "#{track.artist_name} - #{track.collection_name}  #{track.track_view_url}&app=#{track.app_type}&at=#{ENV['AT']}",
       icon_url: track.thumbnail_url,
     }
+
     Net::HTTP.post_form(URI.parse(ENV['SLACK_WEBHOOK']), payload: JSON.dump(payload))
   end
 end
