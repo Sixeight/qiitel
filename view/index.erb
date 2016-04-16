@@ -13,7 +13,7 @@
   <div class="meta">
     <h2><a href="<%= track.track_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.track_name %></a></h2>
     <a href="<%= track.artist_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.collection_name %></a><br />
-    <span class="genre"><a href="/genre/<%=u track.genre_name %>">[<%= track.genre_name %>]</a></span><br />
+    <span class="genre"><a href="/genres/<%=u track.genre_name %>">[<%= track.genre_name %>]</a></span><br />
     <time datetime="<%= track.created_at.iso8601 %>" title="<%= track.created_at.iso8601 %>"><%= track.created_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
     <%- if track.user %>
       <span class="profile">
@@ -39,10 +39,10 @@
 <%- if @tracks.respond_to?(:next_page) %>
   <nav>
     <%- unless @tracks.prev_page.nil? %>
-        <a href="/genre/<%=u @genre_name %>?page=<%= @tracks.prev_page %>">前</a>
+        <a href="/genres/<%=u @genre_name %>?page=<%= @tracks.prev_page %>">前</a>
     <%- end %>
     <%- unless @tracks.next_page.nil? %>
-        <a href="/genre/<%=u @genre_name %>?page=<%= @tracks.next_page %>">次</a>
+        <a href="/genres/<%=u @genre_name %>?page=<%= @tracks.next_page %>">次</a>
     <%- end %>
   </nav>
 <%- end -%>

@@ -65,7 +65,7 @@ class Playlist < Sinatra::Base
     redirect to('/')
   end
 
-  get '/genre/:genre_name' do
+  get '/genres/:genre_name' do
     @genre_name = params[:genre_name]
     @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
     erb :index
