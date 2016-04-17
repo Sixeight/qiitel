@@ -8,6 +8,7 @@ gem 'activerecord', require: 'active_record'
 gem 'erubis'
 gem 'kaminari', require: 'kaminari/sinatra'
 gem 'omniauth-twitter'
+gem 'twitter'
 
 group :development, :test do
   gem 'sqlite3'
