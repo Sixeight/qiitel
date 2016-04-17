@@ -100,9 +100,18 @@ class Playlist < Sinatra::Base
     return status(201) if track.nil?
 
     update_last_listener track, @user
-    create_activity(track, @user) if @user.present?
 
-    post_to_slack track
+    if @user.present?
+      # ログインしているときで、前回聴いた曲と同じ曲を聴いている場合は
+      # アクティビティの生成と Slack への通知をやめる
+      last_activity = @user.activities.first
+      if last_activity.nil? || last_activity.track != track
+        create_activity(track, @user)
+        post_to_slack track
+      end
+    else
+      post_to_slack track
+    end
 
     status(201)
   end
