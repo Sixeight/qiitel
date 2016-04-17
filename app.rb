@@ -35,6 +35,20 @@ class Playlist < Sinatra::Base
 
   set :limit, 50
 
+ if ENV['TWEET_CONSUMER_KEY'].present?    &&
+    ENV['TWEET_CONSUMER_SECRET'].present? &&
+    ENV['TWEET_ACCESS_TOKEN'].present?    &&
+    ENV['TWEET_ACCESS_SECRET'].present?
+
+    client = Twitter::REST::Client.new do |config|
+        config.consumer_key        = ENV['TWEET_CONSUMER_KEY']
+        config.consumer_secret     = ENV['TWEET_CONSUMER_SECRET']
+        config.access_token        = ENV['TWEET_ACCESS_TOKEN']
+        config.access_token_secret = ENV['TWEET_ACCESS_SECRET']
+    end
+    set :twitter, client
+ end
+
   helpers do
     def u(str)
       CGI.escape(str)
@@ -108,6 +122,7 @@ class Playlist < Sinatra::Base
       if last_activity.nil? || last_activity.track != track
         create_activity(track, @user)
         post_to_slack track
+        tweet track
       end
     else
       post_to_slack track
@@ -188,5 +203,16 @@ class Playlist < Sinatra::Base
     }
 
     Net::HTTP.post_form(URI.parse(ENV['SLACK_WEBHOOK']), payload: JSON.dump(payload))
+  end
+
+  def tweet(track)
+    return if settings.twitter.nil?
+
+    require 'open-uri'
+    require 'base64'
+
+    base64_artwork = Base64.encode64(open(track.thumbnail_url).read)
+    settings.twitter.update_profile_image(base64_artwork)
+    settings.twitter.update("#{track.track_name} / #{track.artist_name} - #{track.collection_name}  #{track.track_view_url}&app=#{track.app_type}&at=#{ENV['AT']}")
   end
 end
