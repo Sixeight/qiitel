@@ -97,11 +97,13 @@ class Playlist < Sinatra::Base
     track.touch if track
     track ||= create_track(track_id)
 
+    return status(201) if track.nil?
+
     update_last_listener track, @user
     create_activity(track, @user) if @user.present?
 
-    return status(201) if track.nil?
     post_to_slack track
+
     status(201)
   end
 
