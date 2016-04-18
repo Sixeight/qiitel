@@ -94,10 +94,10 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
-  get '/tracks' do
+  get '/recents.json' do
     track_ids = Track.select('track_id').limit(settings.limit)
     content_type 'application/json'
-    JSON.dump track_ids.map(&:track_id).shuffle
+    JSON.dump track_ids.map(&:track_id)
   end
 
   post '/listen' do
