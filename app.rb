@@ -97,7 +97,7 @@ class Playlist < Sinatra::Base
   get '/recent_streamables.json' do
     track_ids = Track.where(is_streamable: true).limit(settings.limit).pluck(:track_id)
     content_type 'application/json'
-    JSON.dump track_ids.map(&:track_id)
+    JSON.dump track_ids
   end
 
   post '/listen' do
