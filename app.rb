@@ -94,8 +94,8 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
-  get '/recents.json' do
-    track_ids = Track.select('track_id').limit(settings.limit)
+  get '/recent_streamables.json' do
+    track_ids = Track.where(is_streamable: true).limit(settings.limit).pluck(:track_id)
     content_type 'application/json'
     JSON.dump track_ids.map(&:track_id)
   end
