@@ -195,9 +195,10 @@ class Playlist < Sinatra::Base
     require 'net/https'
 
     payload = {
+      channel: '#music',
       username: track.track_name,
       # FIXME: パラメータ適当につないでるのよくない
-      text: "<#{track.artist_view_url}|#{track.artist_name}> - <#{track.collection_view_url}|#{track.collection_name}> via <#{track.track_view_url}&app=#{track.app_type}&at=#{ENV['AT']}|#{track.app_type}>",
+      text: "<#{track.track_view_url}|#{track.artist_name}> - <#{track.collection_view_url}|#{track.collection_name}> via <#{track.track_view_url}&app=#{track.app_type}&at=#{ENV['AT']}|#{app.app_type}>",
       icon_url: track.thumbnail_url,
     }
 
