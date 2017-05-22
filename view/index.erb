@@ -14,7 +14,7 @@
     <h2><a href="<%= track.track_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.track_name %></a></h2>
     <a href="<%= track.artist_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.collection_name %></a><br />
     <span class="genre"><a href="/genres/<%=u track.genre_name %>">[<%= track.genre_name %>]</a></span><br />
-    <time datetime="<%= track.created_at.iso8601 %>" title="<%= track.created_at.iso8601 %>"><%= track.created_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
+    <time datetime="<%= track.updated_at.iso8601 %>" title="<%= track.updated_at.iso8601 %>"><%= track.updated_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
     <%- if track.user %>
       <span class="profile">
         <%- if track.user.image_url.present? %>
