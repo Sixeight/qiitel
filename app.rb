@@ -214,7 +214,7 @@ class Playlist < Sinatra::Base
   end
 
   def tweet(track)
-    return if settings.twitter.nil?
+    return unless settings.respond_to?(:twitter)
 
     # アートワークの更新止める
     # require 'open-uri'
