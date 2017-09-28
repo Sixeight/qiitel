@@ -124,8 +124,10 @@ class Playlist < Sinatra::Base
       last_activity = @user.activities.first
       if last_activity.nil? || last_activity.track != track
         create_activity(track, @user)
-        post_to_slack track
-        tweet track
+        if latest_track != track
+          post_to_slack track
+          tweet track
+        end
       end
     else
       # ゲストの場合は1つ前の曲と違う曲を聴いたときに
