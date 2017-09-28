@@ -126,6 +126,7 @@ class Playlist < Sinatra::Base
       end
     else
       post_to_slack track
+      tweet track
     end
 
     status(201)
