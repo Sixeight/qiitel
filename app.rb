@@ -215,6 +215,6 @@ class Playlist < Sinatra::Base
 
     # base64_artwork = Base64.encode64(open(track.thumbnail_url).read)
     # settings.twitter.update_profile_image(base64_artwork)
-    settings.twitter.update("#{track.track_name} / #{track.artist_name} - #{track.collection_name}  #{track.track_view_url}&app=#{track.app_type}")
+    settings.twitter.update("#{track.track_name} / #{track.artist_name} - #{track.collection_name} #AppleMusic #{track.track_view_url}&app=#{track.app_type}")
   end
 end
