@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
-ruby '2.3.0'
+ruby '2.4.2'
 
 gem 'rake'
 gem 'sinatra', require: false
 gem 'sinatra-contrib'
 gem 'activerecord', require: 'active_record'
 gem 'erubis'
-gem 'kaminari', require: 'kaminari/sinatra'
+gem 'kaminari'
 gem 'omniauth-twitter'
 gem 'twitter'
 
