@@ -106,6 +106,9 @@ class Playlist < Sinatra::Base
         return status(400)
     end
     return status(400) if track_id !~ /\A\d+\z/
+
+    latest_track = Track.first
+
     track = Track.find_by(track_id: track_id)
     # すでに聴いてる曲だったらupdated_atを更新する
     track.touch if track
@@ -116,8 +119,8 @@ class Playlist < Sinatra::Base
     update_last_listener track, @user
 
     if @user.present?
-      # ログインしているときで、前回聴いた曲と同じ曲を聴いている場合は
-      # アクティビティの生成と Slack への通知をやめる
+      # ログインしているときで、前回違う曲を聴いた場合は
+      # アクティビティを更新して、Slack/Twitterに投稿する
       last_activity = @user.activities.first
       if last_activity.nil? || last_activity.track != track
         create_activity(track, @user)
@@ -125,8 +128,12 @@ class Playlist < Sinatra::Base
         tweet track
       end
     else
-      post_to_slack track
-      tweet track
+      # ゲストの場合は1つ前の曲と違う曲を聴いたときに
+      # Slack/Twitterに投稿する
+      if latest_track != track
+        post_to_slack track
+        tweet track
+      end
     end
 
     status(201)
