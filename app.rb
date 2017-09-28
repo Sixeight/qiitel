@@ -111,7 +111,7 @@ class Playlist < Sinatra::Base
     track.touch if track
     track ||= create_track(track_id)
 
-    return status(201) if track.nil?
+    return status(400) if track.nil?
 
     update_last_listener track, @user
 
