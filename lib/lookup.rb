@@ -16,7 +16,9 @@ class Lookup
   end
 
   def execute
-    query = { country: COUNTRY, id: @track_id }.to_a.map {|parts| parts.join('=') }.join('&')
+    query = { country: COUNTRY, id: @track_id }.to_a.map {|parts|
+      parts.map {|part| URI.encode_www_form_component(part) }.join('=')
+    }.join('&')
     response = Net::HTTP.start(ENDPOINT) do |http|
       uri = URI.parse('/lookup')
       uri.query = query
