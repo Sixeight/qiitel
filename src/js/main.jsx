@@ -43,10 +43,10 @@ const User = ({ user }) => {
     return <span className="profile">
         {
             user.image_url ?
-                <a href={`/users/${user.name}/tracks`}>
+                <Link to={`/users/${user.name}`}>
                     <img src={`${user.image_url}`} alt={`@${user.name}`} />
                     <span className="name">@{user.name}</span>
-                </a> :
+                </Link> :
                 <span className="name">@{user.name}</span>
         }
     </span>;
@@ -54,7 +54,7 @@ const User = ({ user }) => {
 
 const Tracks = ({ tracks }) => {
     return tracks.map(track => {
-        return <Track track={track} key={track.track_id} />
+        return <Track track={track} key={track.track_id + track.updated_at} />
     });
 };
 
@@ -102,13 +102,13 @@ class TracksPage extends React.PureComponent {
     }
 
     render() {
-        const who = this.props.user || '僕か僕の知り合い';
+        const who = this.props.user ? `@${this.props.user}` : '僕か僕の知り合い';
         const type = this.props.genre || '最近聴いた';
 
-        return <div>
-            <p>{who}が{type}{this.state.tracks.length}曲です。</p>
+        return [
+            <p key="description">{who}が{type}{this.state.tracks.length}曲です。</p>,
             <Tracks key="tracks" tracks={this.state.tracks} />
-        </div>;
+        ];
     }
 }
 
@@ -130,11 +130,22 @@ const GenreTracksPage = ({ match }) => {
     </div>;
 };
 
+const UserTracksPage = ({ match }) => {
+    const user = match.params.user;
+
+    return <div>
+        <Header />
+        <TracksPage user={user} api={`/api/users/${user}`} />
+        <Footer />
+    </div>;
+};
+
 const App = () => {
     return <Router>
         <Switch>
             <Route exact path="/" component={RecentTracksPage} />
             <Route path="/genres/:genre" component={GenreTracksPage} />
+            <Route path="/users/:user" component={UserTracksPage} />
         </Switch>
     </Router>;
 };

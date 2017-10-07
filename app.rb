@@ -75,6 +75,10 @@ class Playlist < Sinatra::Base
     erb :index, layout: nil
   end
 
+  get '/users/:user_name' do
+    erb :index, layout: nil
+  end
+
   get '/api/tracks' do
     @tracks = Track.eager_load(:user).limit(settings.limit)
     json({ tracks: @tracks.map(&:to_hash) })
@@ -83,6 +87,18 @@ class Playlist < Sinatra::Base
   get '/api/genres/:genre_name' do
     @genre_name = params[:genre_name]
     @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
+    json({ tracks: @tracks.map(&:to_hash) })
+  end
+
+  get '/api/users/:user_name' do
+    @user_name = params[:user_name]
+    user = User.find_by(name: @user_name)
+    if user.nil?
+      status(404)
+      return json({ tracks: [] })
+    end
+    activities = Activity.eager_load(:track).where(user_id: user.id).limit(settings.limit)
+    @tracks = activities.map(&:track).compact
     json({ tracks: @tracks.map(&:to_hash) })
   end
 
@@ -99,15 +115,6 @@ class Playlist < Sinatra::Base
   get '/logout' do
     session[:qlsc] = nil
     redirect to('/')
-  end
-
-  get '/users/:user_name/tracks' do
-    @user_name = params[:user_name]
-    user = User.find_by(name: @user_name)
-    return status(404) if user.nil?
-    activities = Activity.eager_load(:track).where(user_id: user.id).limit(settings.limit)
-    @tracks = activities.map(&:track).compact
-    erb :list
   end
 
   get '/recent_streamables.json' do
