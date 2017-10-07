@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'whatwg-fetch';
+import {
+    BrowserRouter as Router,
+    Route,
+    Link
+} from 'react-router-dom'
+
 
 const Track = ({ track }) => {
     const updatedAt = new Date(track.updated_at * 1000);
@@ -51,7 +57,20 @@ const Tracks = ({ tracks }) => {
     });
 };
 
-class App extends React.PureComponent {
+const Header = ({ trackCount }) => {
+    return <header>
+        <h1>聴いてる</h1>
+        僕か僕の知り合いが最近聴いた{trackCount}曲です。
+    </header>;
+};
+
+const Footer = () => {
+    return <footer>
+        <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a>
+    </footer>;
+};
+
+class TracksPage extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -75,7 +94,7 @@ class App extends React.PureComponent {
     }
 
     fetchTracks() {
-        fetch('/api/tracks')
+        fetch(this.props.api)
             .then(res => res.json())
             .then(json => {
                 this.setState({ tracks: json.tracks });
@@ -84,17 +103,22 @@ class App extends React.PureComponent {
 
     render() {
         return [
-            <header key="header">
-                <h1>聴いてる</h1>
-                僕か僕の知り合いが最近聴いた{this.state.tracks.length}曲です。
-            </header>,
-            <Tracks tracks={this.state.tracks} key="tracks" />,
-            <footer key="footer">
-                <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a>
-            </footer>
+            <Header key="header" trackCount={this.state.tracks.length} />,
+            <Tracks key="tracks" tracks={this.state.tracks} />,
+            <Footer key="footer" />
         ];
     }
 }
+
+const RecentTracksPage = () => {
+    return <TracksPage api="/api/tracks" />;
+};
+
+const App = () => {
+    return <Router>
+        <Route exact path="/" component={RecentTracksPage} />
+    </Router>;
+};
 
 ReactDOM.render(
     <App />,
