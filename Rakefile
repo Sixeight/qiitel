@@ -14,7 +14,7 @@ ActiveRecord::Tasks::DatabaseTasks.tap do |config|
   config.database_configuration = ActiveRecord::Base.configurations
 end
 
-module Camlizable
+module Camelizable
   refine String do
     def camelize
       parts = self.split('_')
@@ -22,7 +22,7 @@ module Camlizable
     end
   end
 end
-using Camlizable
+using Camelizable
 
 namespace :db do
   task :environment do
