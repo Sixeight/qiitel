@@ -59,6 +59,14 @@ class App extends React.PureComponent {
         };
     }
     componentDidMount() {
+        this.fetchTracks();
+        setInterval(
+            () => this.fetchTracks(),
+            10000,
+        );
+    }
+
+    fetchTracks() {
         fetch('/api/tracks')
             .then(res => res.json())
             .then(json => {
