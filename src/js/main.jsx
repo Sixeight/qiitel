@@ -54,16 +54,24 @@ const Tracks = ({ tracks }) => {
 class App extends React.PureComponent {
     constructor(props) {
         super(props);
+
         this.state = {
             tracks: [],
         };
+        this.timer = null;
     }
     componentDidMount() {
         this.fetchTracks();
-        setInterval(
+        this.timer = setInterval(
             () => this.fetchTracks(),
             10000,
         );
+    }
+
+    componentWillUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
     }
 
     fetchTracks() {
