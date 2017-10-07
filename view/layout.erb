@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>聴いてる</title>
-    <link rel="stylesheet" href="/css/main.css" />
+    <link href="/css/main.css" rel="stylesheet" />
   </head>
   <body>
-    <header>
+    <heade>
       <h1><a href="/">聴いてる</a><%- unless @genre_name.blank? %> - <%= @genre_name %><%- end %></h1>
       <%= @user_name || '僕か僕の知り合い' %>が最近聴いた<%= @genre_name %><%= @tracks.size =%>曲です。
     </header>

@@ -72,9 +72,13 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
+  get '/react' do
+    erb :react, layout: nil
+  end
+
   get '/api/tracks' do
     @tracks = Track.eager_load(:user).limit(settings.limit)
-    json({ traks: @tracks.map(&:to_hash) })
+    json({ tracks: @tracks.map(&:to_hash) })
   end
 
   get '/register' do
