@@ -1,5 +1,13 @@
+body {
+  background-color: #fefefe;
+}
+
 header {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: big;
 }
 
 footer {
@@ -14,11 +22,14 @@ a {
 
 .track {
   color: #555;
-  border: 1px solid #aaa;
-  padding: 5px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 8px;
   min-height: 100px;
   margin-bottom: 10px;
   overflow-x: hidden;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
+  border-radius: 5px;
 }
 
 .clear {
@@ -29,6 +40,7 @@ a {
   margin: 0;
   margin-bottom: 5px;
   font-size: large;
+  border-bottom: #eee 1px solid;
 }
 
 .track a {
@@ -55,6 +67,7 @@ a {
   width: 100px;
   height: 100px;
   margin-bottom: 10px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
 }
 
 .image img {
