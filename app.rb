@@ -58,6 +58,11 @@ class Playlist < Sinatra::Base
     end
   end
 
+  private def json(raw)
+    content_type 'application/json; charset=utf8'
+    JSON.dump raw
+  end
+
   before do
     @user = User.find_by(token: params[:token] || session[:qlsc])
   end
@@ -68,9 +73,8 @@ class Playlist < Sinatra::Base
   end
 
   get '/api/tracks' do
-    content_type 'application/json'
     @tracks = Track.eager_load(:user).limit(settings.limit)
-    JSON.dump({ traks: @tracks.map(&:to_hash) })
+    json({ traks: @tracks.map(&:to_hash) })
   end
 
   get '/register' do
@@ -105,8 +109,7 @@ class Playlist < Sinatra::Base
 
   get '/recent_streamables.json' do
     track_ids = Track.where(is_streamable: true).limit(settings.limit).pluck(:track_id)
-    content_type 'application/json'
-    JSON.dump track_ids
+    json track_ids
   end
 
   post '/listen' do
