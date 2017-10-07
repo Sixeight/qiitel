@@ -18,9 +18,9 @@ Dir['lib/**/*.rb'].each do |path|
 end
 
 class Playlist < Sinatra::Base
-  # configure :development do
-  #   register Sinatra::Reloader
-  # end
+  configure :development do
+    register Sinatra::Reloader
+  end
 
   configure do
     enable :sessions
