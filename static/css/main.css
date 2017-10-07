@@ -76,6 +76,7 @@ a {
 
 .meta .profile {
   font-size: small;
+  margin-left: 5px;
 }
 
 .meta .profile img {
@@ -93,6 +94,7 @@ a {
 
 .meta .profile img + .name {
   display: none;
+  margin-left: 5px;
 }
 
 .meta .profile img:hover + .name {

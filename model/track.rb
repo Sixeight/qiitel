@@ -49,7 +49,7 @@ class Track < ActiveRecord::Base
   end
 
   def to_hash
-    {
+    hash = {
       track_id:            self.track_id,
       track_name:          self.track_name,
       artist_name:         self.artist_name,
@@ -64,6 +64,10 @@ class Track < ActiveRecord::Base
       app_type:            self.app_type,
       is_streamable:       self.is_streamable,
     }
+    if self.user.present?
+      hash[:user] = self.user.to_hash
+    end
+    hash
   end
 end
 

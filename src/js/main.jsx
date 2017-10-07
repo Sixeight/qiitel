@@ -22,6 +22,7 @@ const Track = ({ track }) => {
             <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
             <span className="genre"><a href={`/genres/${track.genre_name}`}>[{track.genre_name}]</a></span><br />
             <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
+            {track.user && <User user={track.user} />}
         </div>
         <div className="preview">
             <audio src={track.preview_url} controls></audio><br />
@@ -29,6 +30,19 @@ const Track = ({ track }) => {
         </div>
         <div className="clear"></div>
     </div>;
+};
+
+const User = ({ user }) => {
+    return <span className="profile">
+        {
+            user.image_url ?
+                <a href={`/users/${user.name}/tracks`}>
+                    <img src={`${user.image_url}`} alt={`@${user.name}`} />
+                    <span className="name">@{user.name}</span>
+                </a> :
+                <span className="name">@{user.name}</span>
+        }
+    </span>;
 };
 
 const Tracks = ({ tracks }) => {

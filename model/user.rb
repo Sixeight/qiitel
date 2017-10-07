@@ -11,4 +11,11 @@ class User < ActiveRecord::Base
   validates :image_url, format: { with: %r!\Ahttps?://.+\.(png|jpg|jpeg|gif|svg)\z! }
 
   has_many :activities
+
+  def to_hash
+    {
+      name:      self.name,
+      image_url: self.image_url,
+    }
+  end
 end
