@@ -55,6 +55,7 @@ class Track < ActiveRecord::Base
       artist_name:         self.artist_name,
       collection_name:     self.collection_name,
       genre_name:          self.genre_name,
+      released_at:         self.released_at.to_i,
       updated_at:          self.updated_at.to_i,
       thumbnail_url:       self.thumbnail_url,
       track_view_url:      self.track_view_url,

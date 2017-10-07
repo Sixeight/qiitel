@@ -74,6 +74,10 @@ a {
   font-size: small;
 }
 
+.meta .release {
+  font-size: small;
+}
+
 .meta .profile {
   font-size: small;
   margin-left: 5px;

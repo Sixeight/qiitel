@@ -10,6 +10,7 @@ import {
 
 
 const Track = ({ track }) => {
+    const releasedAt = new Date(track.released_at * 1000);
     const updatedAt = new Date(track.updated_at * 1000);
 
     return <div className="track">
@@ -27,7 +28,7 @@ const Track = ({ track }) => {
         <div className="meta">
             <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
             <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-            <span className="genre"><Link to={`/genres/${track.genre_name}`}>[{track.genre_name}]</Link></span><br />
+            <span className="genre"><Link to={`/genres/${track.genre_name}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
             <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
             {track.user && <User user={track.user} />}
         </div>
