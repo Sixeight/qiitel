@@ -36,7 +36,7 @@ class Playlist < Sinatra::Base
   set :views, settings.root + '/view'
   set :public_folder, settings.root + '/static'
 
-  set :limit, 50
+  set :limit, 25
 
  if ENV['TWEET_CONSUMER_KEY'].present?    &&
     ENV['TWEET_CONSUMER_SECRET'].present? &&
