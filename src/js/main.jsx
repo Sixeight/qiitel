@@ -103,10 +103,10 @@ class TracksPage extends React.PureComponent {
 
     render() {
         const who = this.props.user ? `@${this.props.user}` : '僕か僕の知り合い';
-        const type = this.props.genre || '最近聴いた';
+        const genre = this.props.genre || '';
 
         return [
-            <p key="description">{who}が{type}{this.state.tracks.length}曲です。</p>,
+            <p key="description">{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>,
             <Tracks key="tracks" tracks={this.state.tracks} />
         ];
     }
