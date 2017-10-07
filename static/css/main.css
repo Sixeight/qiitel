@@ -1,14 +1,17 @@
 header {
   margin-bottom: 30px;
 }
+
 footer {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
 a {
   text-decoration: none;
   color: black;
 }
+
 .track {
   color: #555;
   border: 1px solid #aaa;
@@ -17,85 +20,105 @@ a {
   margin-bottom: 10px;
   overflow-x: hidden;
 }
+
 .clear {
   clear: both;
 }
+
 .track h2 {
   margin: 0;
   margin-bottom: 5px;
   font-size: large;
 }
+
 .track a {
   text-decoration: none;
   color: #333;
 }
+
 .track a:hover {
   text-decoration: underline;
   color: #aaa;
 }
+
 .track a:visited {
   color: #888;
 }
+
 .image {
   max-width: 100px;
   float: left;
   margin-right: 10px;
 }
+
 .image .artwork {
   width: 100px;
   height: 100px;
   margin-bottom: 10px;
 }
+
 .image img {
   max-width: 100px;
 }
+
 .meta {
   margin-left: 110px;
 }
+
 .meta time {
   color: #aaa;
   font-size: small;
 }
+
 .meta .genre {
   font-size: small;
 }
+
 .meta .profile {
   font-size: small;
 }
+
 .meta .profile img {
-  witdh: 20px;
+  width: 20px;
   height: 20px;
   border-radius: 20px;
   border: 0.5px solid #aaa;
   padding: 1px;
   vertical-align: middle;
 }
+
 .meta .profile a {
   text-decoration: none;
 }
+
 .meta .profile img + .name {
   display: none;
 }
+
 .meta .profile img:hover + .name {
   display: inline;
 }
+
 .preview {
   margin-top: 10px;
   margin-left: 110px;
 }
+
 @media screen and (max-width: 375px) {
   .preview {
-      clear: both;
-      padding-top: 20px;
-      margin-left: 0px;
+    clear: both;
+    padding-top: 20px;
+    margin-left: 0px;
   }
   .preview audio {
-      width: 100%;
+    width: 100%;
   }
 }
+
 .preview audio {
   margin-bottom: -5px;
 }
+
 .preview span {
   font-size: small;
   margin-top: -5px;
