@@ -71,8 +71,18 @@ class Playlist < Sinatra::Base
     erb :index, layout: nil
   end
 
+  get '/genres/:genre_name' do
+    erb :index, layout: nil
+  end
+
   get '/api/tracks' do
     @tracks = Track.eager_load(:user).limit(settings.limit)
+    json({ tracks: @tracks.map(&:to_hash) })
+  end
+
+  get '/api/genres/:genre_name' do
+    @genre_name = params[:genre_name]
+    @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
     json({ tracks: @tracks.map(&:to_hash) })
   end
 
@@ -89,12 +99,6 @@ class Playlist < Sinatra::Base
   get '/logout' do
     session[:qlsc] = nil
     redirect to('/')
-  end
-
-  get '/genres/:genre_name' do
-    @genre_name = params[:genre_name]
-    @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
-    erb :list
   end
 
   get '/users/:user_name/tracks' do

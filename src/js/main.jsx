@@ -4,6 +4,7 @@ import 'whatwg-fetch';
 import {
     BrowserRouter as Router,
     Route,
+    Switch,
     Link
 } from 'react-router-dom'
 
@@ -26,7 +27,7 @@ const Track = ({ track }) => {
         <div className="meta">
             <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
             <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-            <span className="genre"><a href={`/genres/${track.genre_name}`}>[{track.genre_name}]</a></span><br />
+            <span className="genre"><Link to={`/genres/${track.genre_name}`}>[{track.genre_name}]</Link></span><br />
             <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
             {track.user && <User user={track.user} />}
         </div>
@@ -57,10 +58,9 @@ const Tracks = ({ tracks }) => {
     });
 };
 
-const Header = ({ trackCount }) => {
+const Header = ({ genre }) => {
     return <header>
-        <h1>聴いてる</h1>
-        僕か僕の知り合いが最近聴いた{trackCount}曲です。
+        <h1><Link to="/">聴いてる{genre && ` - ${genre}`}</Link></h1>
     </header>;
 };
 
@@ -102,21 +102,40 @@ class TracksPage extends React.PureComponent {
     }
 
     render() {
-        return [
-            <Header key="header" trackCount={this.state.tracks.length} />,
-            <Tracks key="tracks" tracks={this.state.tracks} />,
-            <Footer key="footer" />
-        ];
+        const who = this.props.user || '僕か僕の知り合い';
+        const type = this.props.genre || '最近聴いた';
+
+        return <div>
+            <p>{who}が{type}{this.state.tracks.length}曲です。</p>
+            <Tracks key="tracks" tracks={this.state.tracks} />
+        </div>;
     }
 }
 
 const RecentTracksPage = () => {
-    return <TracksPage api="/api/tracks" />;
+    return <div>
+        <Header />
+        <TracksPage api="/api/tracks" />
+        <Footer />
+    </div>;
+};
+
+const GenreTracksPage = ({ match }) => {
+    const genre = match.params.genre;
+
+    return <div>
+        <Header genre={genre} />
+        <TracksPage genre={genre} api={`/api/genres/${genre}`} />
+        <Footer />
+    </div>;
 };
 
 const App = () => {
     return <Router>
-        <Route exact path="/" component={RecentTracksPage} />
+        <Switch>
+            <Route exact path="/" component={RecentTracksPage} />
+            <Route path="/genres/:genre" component={GenreTracksPage} />
+        </Switch>
     </Router>;
 };
 
