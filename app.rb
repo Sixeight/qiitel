@@ -68,12 +68,7 @@ class Playlist < Sinatra::Base
   end
 
   get '/' do
-    @tracks = Track.eager_load(:user).limit(settings.limit)
-    erb :index
-  end
-
-  get '/react' do
-    erb :react, layout: nil
+    erb :index, layout: nil
   end
 
   get '/api/tracks' do
