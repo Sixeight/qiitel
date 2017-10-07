@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171007202211) do
+ActiveRecord::Schema.define(version: 20171007212101) do
 
   create_table "activities", force: :cascade do |t|
     t.integer "track_id", null: false
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "updated_at"], name: "index_activities_on_user_id_and_updated_at"
   end
 
   create_table "last_listeners", force: :cascade do |t|
@@ -24,6 +25,7 @@ ActiveRecord::Schema.define(version: 20171007202211) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["track_id"], name: "index_last_listeners_on_track_id", unique: true
   end
 
   create_table "tracks", force: :cascade do |t|
@@ -43,12 +45,10 @@ ActiveRecord::Schema.define(version: 20171007202211) do
     t.string "genre_name", null: false
     t.datetime "released_at", null: false
     t.boolean "is_streamable"
-    t.index ["artist_name"], name: "index_tracks_on_artist_name"
-    t.index ["collection_name"], name: "index_tracks_on_collection_name"
-    t.index ["created_at"], name: "index_tracks_on_created_at"
-    t.index ["genre_name"], name: "index_tracks_on_genre_name"
+    t.index ["artist_id", "updated_at"], name: "index_tracks_on_artist_id_and_updated_at"
+    t.index ["genre_name", "updated_at"], name: "index_tracks_on_genre_name_and_updated_at"
     t.index ["track_id"], name: "index_tracks_on_track_id", unique: true
-    t.index ["track_name"], name: "index_tracks_on_track_name"
+    t.index ["updated_at"], name: "index_tracks_on_updated_at"
   end
 
   create_table "users", force: :cascade do |t|
