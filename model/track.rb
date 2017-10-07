@@ -47,6 +47,22 @@ class Track < ActiveRecord::Base
       is_streamable:   self.is_streamable,
     }
   end
+
+  def to_hash
+    {
+      track_name:          self.track_name,
+      artist_name:         self.artist_name,
+      collection_name:     self.collection_name,
+      genre_name:          self.genre_name,
+      updated_at:          self.updated_at.to_i,
+      thumbnail_url:       self.thumbnail_url,
+      track_view_url:      self.track_view_url,
+      collection_view_url: self.collection_view_url,
+      preview_url:         self.preview_url,
+      app_type:            self.app_type,
+      is_streamable:       self.is_streamable,
+    }
+  end
 end
 
 __END__

@@ -64,6 +64,12 @@ class Playlist < Sinatra::Base
     erb :index
   end
 
+  get '/api/tracks' do
+    content_type 'application/json'
+    @tracks = Track.eager_load(:user).limit(settings.limit)
+    JSON.dump({ traks: @tracks.map(&:to_hash) })
+  end
+
   get '/register' do
     return redirect to('/') if @user.nil?
     session[:qlsc] = nil
