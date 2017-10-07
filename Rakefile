@@ -35,14 +35,14 @@ namespace :db do
       version = ENV['VERSION'] || Time.now.strftime('%Y%m%d%H%M%S')
 
       file_name = '%s_%s.rb' % [version, name]
-      dir_name  = ActiveRecord::Migrator.migrations_path
+      dir_name  = ActiveRecord::Migrator.migrations_paths.first
       path      = File.expand_path(file_name, dir_name)
 
       abort 'already exists' if found if File.exist? path
 
       FileUtils.mkdir_p dir_name
       File.write path, <<-MIGRATION.strip_heredoc
-        class #{name.camelize} < ActiveRecord::Migration
+        class #{name.camelize} < ActiveRecord::Migration[4.2]
           def change
           end
         end
