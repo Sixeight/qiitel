@@ -1,0 +1,49 @@
+<%- @tracks.each do |track| -%>
+  <div class="track">
+    <div class="image">
+      <div class="artwork" style="background-image: url(<%= track.thumbnail_url %>)"></div>
+      <a href="<%= track.track_view_url %>&app=<%= track.app_type %>" rel="nofollow" target="_blank">
+        <%- if track.is_streamable %>
+          <img src="/img/JP_Listen_on_Apple_Music_Badge.svg" />
+        <%- else %>
+          <img src="/img/Get_it_on_iTunes_Badge_JP_1214.svg" />
+        <%- end %>
+      </a>
+    </div>
+    <div class="meta">
+      <h2><a href="<%= track.track_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.track_name %></a></h2>
+      <a href="<%= track.artist_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.artist_name %></a> - <a href="<%= track.collection_view_url %>&app=itunes" rel="nofollow" target="_blank"><%= track.collection_name %></a><br />
+      <span class="genre"><a href="/genres/<%=u track.genre_name %>">[<%= track.genre_name %>]</a></span><br />
+      <time datetime="<%= track.updated_at.iso8601 %>" title="<%= track.updated_at.iso8601 %>"><%= track.updated_at.localtime('+09:00').strftime('%Y/%m/%d %H:%M:%S') %></time>
+      <%- if track.user %>
+        <span class="profile">
+          <%- if track.user.image_url.present? %>
+            <a href="/users/<%= track.user.name %>/tracks">
+              <img src="<%= track.user.image_url %>" alt="@<%= track.user.name %>" />
+              <span class="name">@<%= track.user.name %></span>
+            </a>
+          <%- else %>
+            @<%= track.user.name %>
+        <%- end %>
+        </span>
+      <%- end %>
+    </div>
+    <div class="preview">
+      <audio src="<%= track.preview_url %>" controls></audio><br />
+      <span>provided courtesy of iTunes</span>
+    </div>
+    <div class="clear"></div>
+  </div>
+<%- end -%>
+
+<%- if @tracks.respond_to?(:next_page) %>
+  <nav>
+    <%- unless @tracks.prev_page.nil? %>
+      <a href="/genres/<%=u @genre_name %>?page=<%= @tracks.prev_page %>">前</a>
+    <%- end %>
+    <%- unless @tracks.next_page.nil? %>
+      <a href="/genres/<%=u @genre_name %>?page=<%= @tracks.next_page %>">次</a>
+    <%- end %>
+  </nav>
+<%- end -%>
+

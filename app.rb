@@ -94,7 +94,7 @@ class Playlist < Sinatra::Base
   get '/genres/:genre_name' do
     @genre_name = params[:genre_name]
     @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
-    erb :index
+    erb :list
   end
 
   get '/users/:user_name/tracks' do
@@ -103,7 +103,7 @@ class Playlist < Sinatra::Base
     return status(404) if user.nil?
     activities = Activity.eager_load(:track).where(user_id: user.id).limit(settings.limit)
     @tracks = activities.map(&:track).compact
-    erb :index
+    erb :list
   end
 
   get '/recent_streamables.json' do
