@@ -54,7 +54,7 @@ const User = ({ user }) => {
 
 const Tracks = ({ tracks }) => {
     return tracks.map(track => {
-        return <Track track={track} key={track.track_id + track.updated_at} />
+        return <Track track={track} key={track.track_id} />
     });
 };
 
