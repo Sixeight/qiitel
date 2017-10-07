@@ -70,7 +70,7 @@ class App extends React.PureComponent {
         return [
             <header key="header">
                 <h1>聴いてる</h1>
-                僕か僕の知{`<a>このにちは</a>`}り合いが最近聴いた{this.state.tracks.length}曲です。
+                僕か僕の知り合いが最近聴いた{this.state.tracks.length}曲です。
             </header>,
             <Tracks tracks={this.state.tracks} key="tracks" />,
             <footer key="footer">
