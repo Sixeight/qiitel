@@ -61,7 +61,7 @@ const Tracks = ({ tracks }) => {
 
 const Header = ({ genre }) => {
     return <header>
-        <h1><Link to="/">聴いてる{genre && ` - ${genre}`}</Link></h1>
+        <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}</h1>
     </header>;
 };
 
