@@ -269,6 +269,6 @@ class Playlist < Sinatra::Base
 
   def update_profile(track)
     return unless settings.respond_to?(:my_twitter)
-    settings.my_twitter.update_profile(name: track.name, url: track.track_view_url)
+    settings.my_twitter.update_profile(name: track.track_name, url: track.track_view_url)
   end
 end
