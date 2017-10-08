@@ -5,7 +5,7 @@ module.exports = {
     entry: './src/js/main.jsx',
     output: {
         path: path.resolve(__dirname, 'static/js'),
-        filename: 'main.js'
+        filename: '[name].js'
     },
     module: {
         rules: [
@@ -20,13 +20,5 @@ module.exports = {
                 }
             }
         ]
-    },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production')
-            }
-        }),
-        new webpack.optimize.UglifyJsPlugin()
-    ]
-}
+    }
+};
