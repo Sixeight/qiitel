@@ -1,6 +1,7 @@
 {
     "name": "qiitel",
     "version": "0.0.1",
+    "license": "MIT",
     "scripts": {
         "build": "yarn run webpack --config webpack.development.js",
         "watch": "yarn run webpack --watch --config webpack.development.js",
