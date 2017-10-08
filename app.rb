@@ -50,7 +50,21 @@ class Playlist < Sinatra::Base
         config.access_token_secret = ENV['TWEET_ACCESS_SECRET']
     end
     set :twitter, client
- end
+  end
+
+ if ENV['PROFILE_CONSUMER_KEY'].present?    &&
+    ENV['PROFILE_CONSUMER_SECRET'].present? &&
+    ENV['PROFILE_ACCESS_TOKEN'].present?    &&
+    ENV['PROFILE_ACCESS_SECRET'].present?
+
+    my_client = Twitter::REST::Client.new do |config|
+        config.consumer_key        = ENV['PROFILE_CONSUMER_KEY']
+        config.consumer_secret     = ENV['PROFILE_CONSUMER_SECRET']
+        config.access_token        = ENV['PROFILE_ACCESS_TOKEN']
+        config.access_token_secret = ENV['PROFILE_ACCESS_SECRET']
+    end
+    set :my_twitter, my_client
+  end
 
   helpers do
     def u(str)
@@ -151,6 +165,10 @@ class Playlist < Sinatra::Base
           tweet track
         end
       end
+
+      if @user.twitter_id == ENV['MY_TWITTER_ID']
+        update_profile(track)
+      end
     else
       # ゲストの場合は1つ前の曲と違う曲を聴いたときに
       # Slack/Twitterに投稿する
@@ -247,5 +265,10 @@ class Playlist < Sinatra::Base
     # base64_artwork = Base64.encode64(open(track.thumbnail_url).read)
     # settings.twitter.update_profile_image(base64_artwork)
     settings.twitter.update("#{track.track_name} / #{track.artist_name} - #{track.collection_name} #AppleMusic #{track.track_view_url}&app=#{track.app_type}")
+  end
+
+  def update_profile(track)
+    return unless settings.respond_to?(:my_twitter)
+    settings.my_twitter.update_profile(name: track.name, url: track.track_view_url)
   end
 end
