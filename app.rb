@@ -271,7 +271,7 @@ class Playlist < Sinatra::Base
     return unless settings.respond_to?(:my_twitter)
 
     # ユーザー名は20文字まで
-    name = "「#{track.track_name[0, 13]}」を聴いてる"
+    name = track.track_name[0, 20]
 
     # URLは100文字まで
     # - 以下のようにトラックの名前が入ってしまうので取り除く
