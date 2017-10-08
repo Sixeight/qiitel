@@ -269,6 +269,19 @@ class Playlist < Sinatra::Base
 
   def update_profile(track)
     return unless settings.respond_to?(:my_twitter)
-    settings.my_twitter.update_profile(name: track.track_name)
+
+    # ユーザー名は20文字まで
+    name = track.track_name[0, 20]
+
+    # URLは100文字まで
+    # - 以下のようにトラックの名前が入ってしまうので取り除く
+    # - https://itunes.apple.com/jp/album/dribble/id1102272883?i=1102272899&uo=4&app=itunes
+    track_view_url = URI.parse(track.track_view_url)
+    paths = track_view_url.path.split('/')
+    track_view_url.path = (paths[0..-3] + [paths[-1]]).join('/')
+    url = track_view_url.to_s[0, 100]
+
+    # see also: https://developer.twitter.com/en/docs/accounts-and-users/manage-account-settings/api-reference/post-account-update_profile
+    settings.my_twitter.update_profile(name: name, url: url)
   end
 end
