@@ -3,9 +3,9 @@
     "version": "0.0.1",
     "license": "MIT",
     "scripts": {
-        "build": "yarn run webpack --config webpack.development.js",
-        "watch": "yarn run webpack --watch --config webpack.development.js",
-        "production-build": "yarn run webpack --config webpack.production.js"
+        "build": "yarn run webpack --progress --config webpack.development.js",
+        "watch": "yarn run webpack --watch --progress --config webpack.development.js",
+        "production-build": "yarn run webpack --progress --config webpack.production.js"
     },
     "dependencies": {
         "react": "^16.0.0",
