@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
     entry: './src/js/main.jsx',
     output: {
-        path: path.join(__dirname, 'static/js'),
+        path: path.resolve(__dirname, 'static/js'),
         filename: 'main.js'
     },
     module: {
