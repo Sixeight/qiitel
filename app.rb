@@ -271,7 +271,7 @@ class Playlist < Sinatra::Base
     return unless settings.respond_to?(:my_twitter)
 
     # ユーザー名は20文字まで
-    name = track.track_name.trauncate(20, separator: /(\s|\b)/)
+    name = track.track_name.truncate(20, separator: /(\s|\b)/)
 
     # URLは100文字まで
     # - 以下のようにトラックの名前が入ってしまうので取り除く
