@@ -1,17 +1,16 @@
-const webpack = require('webpack');
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-    entry: './src/js/main.jsx',
+    entry: "./src/js/main.jsx",
     output: {
-        path: path.resolve(__dirname, 'static/js'),
-        filename: '[name].js'
+        path: path.resolve(__dirname, "static/js"),
+        filename: "[name].js"
     },
     module: {
         rules: [
             {
                 enforce: "pre",
-                test: /\.js$/,
+                test: /\.jsx$/,
                 exclude: /node_modules/,
                 loader: "eslint-loader",
             },
@@ -19,9 +18,9 @@ module.exports = {
                 test: /\.jsx$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: "babel-loader",
                     options: {
-                        presets: ['es2015', 'react']
+                        presets: ["es2015", "react"]
                     }
                 }
             }

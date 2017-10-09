@@ -1,13 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import 'whatwg-fetch';
+import React from "react";
+import ReactDOM from "react-dom";
+import "whatwg-fetch";
 import {
     BrowserRouter as Router,
     Route,
     Switch,
     Link
-} from 'react-router-dom'
-
+} from "react-router-dom";
 
 const Track = ({ track }) => {
     const releasedAt = new Date(track.released_at * 1000);
@@ -55,7 +54,7 @@ const User = ({ user }) => {
 
 const Tracks = ({ tracks }) => {
     return tracks.map(track => {
-        return <Track track={track} key={track.track_id} />
+        return <Track track={track} key={track.track_id} />;
     });
 };
 
@@ -103,8 +102,8 @@ class TracksPage extends React.PureComponent {
     }
 
     render() {
-        const who = this.props.user ? `@${this.props.user}` : '僕か僕の知り合い';
-        const genre = this.props.genre || '';
+        const who = this.props.user ? `@${this.props.user}` : "僕か僕の知り合い";
+        const genre = this.props.genre || "";
 
         return [
             <p key="description">{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>,
@@ -153,5 +152,5 @@ const App = () => {
 
 ReactDOM.render(
     <App />,
-    document.getElementById('container')
+    document.getElementById("container")
 );
