@@ -145,7 +145,7 @@ class TracksPage extends React.PureComponent {
         ];
         if (this.hasNext) {
             components.push(
-                <Waypoint key="waypoint" topOffset="-170px" onEnter={this._fetchMoreTracks} />
+                <Waypoint key="waypoint" bottomOffset="-800px" onEnter={this._fetchMoreTracks} />
             );
         }
         return components;
