@@ -1,4 +1,4 @@
-class AddIsStreamableToTrack < ActiveRecord::Migration
+class AddIsStreamableToTrack < ActiveRecord::Migration[4.2]
   require_relative '../../model/track'
 
   def change

@@ -1,4 +1,4 @@
-class AddSomeColumnToTracks < ActiveRecord::Migration
+class AddSomeColumnToTracks < ActiveRecord::Migration[4.2]
   require 'ostruct'
   require_relative '../../lib/lookup'
   require_relative '../../model/track'

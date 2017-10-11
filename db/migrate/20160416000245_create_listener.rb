@@ -1,4 +1,4 @@
-class CreateListener < ActiveRecord::Migration
+class CreateListener < ActiveRecord::Migration[4.2]
   def change
     create_table :last_listeners do |t|
       t.belongs_to :track, null: false

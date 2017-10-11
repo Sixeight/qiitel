@@ -1,4 +1,4 @@
-class CreateTrack < ActiveRecord::Migration
+class CreateTrack < ActiveRecord::Migration[4.2]
   def change
     create_table :tracks do |t|
       t.string :product_id,    null: false
