@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Waypoint from "react-waypoint";
 import "whatwg-fetch";
 import {
     BrowserRouter as Router,
@@ -76,9 +77,13 @@ class TracksPage extends React.PureComponent {
 
         this.state = {
             tracks: [],
+            nextPage: null
         };
+
         this.timer = null;
+        this._fetchMoreTracks = this.fetchMoreTracks.bind(this);
     }
+
     componentDidMount() {
         this.fetchTracks();
         this.timer = setInterval(
@@ -93,22 +98,54 @@ class TracksPage extends React.PureComponent {
         }
     }
 
-    fetchTracks() {
-        fetch(this.props.api)
+    get hasNext() {
+        return this.state !== null;
+    }
+
+    fetchTracks(page) {
+        const paging = page !== undefined;
+        const endpoint = this.props.api + (paging ? `?page=${page}` : "");
+        fetch(endpoint)
             .then(res => res.json())
             .then(json => {
-                this.setState({ tracks: json.tracks });
+                const firstTrack = this.state.tracks[0];
+                const isFirstFetch = firstTrack === undefined;
+                const tracks = paging ?
+                    this.state.tracks.concat(json.tracks) :
+                    isFirstFetch ? json.tracks :
+                        json.tracks.filter(track => {
+                            return track.updated_at >= firstTrack.updated_at &&
+                                track.track_id !== firstTrack.track_id;
+                        }).concat(this.state.tracks);
+                this.setState({
+                    tracks: tracks,
+                    nextPage: json.next_page || null
+                });
             });
+    }
+
+    fetchMoreTracks() {
+        const nextPage = this.state.nextPage;
+        if (nextPage !== null) {
+            this.setState({ nextPage: null });
+            this.fetchTracks(nextPage);
+        }
     }
 
     render() {
         const who = this.props.user ? `@${this.props.user}` : "僕か僕の知り合い";
         const genre = this.props.genre || "";
 
-        return [
+        const components = [
             <p key="description">{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>,
             <Tracks key="tracks" tracks={this.state.tracks} />
         ];
+        if (this.hasNext) {
+            components.push(
+                <Waypoint key="waypoint" topOffset="-170px" onEnter={this._fetchMoreTracks} />
+            );
+        }
+        return components;
     }
 }
 
