@@ -94,14 +94,14 @@ class Playlist < Sinatra::Base
   end
 
   get '/api/tracks' do
-    @tracks = Track.eager_load(:user).limit(settings.limit)
-    json({ tracks: @tracks.map(&:to_hash) })
+    @tracks = Track.eager_load(:user).page(params[:page]).per(settings.limit)
+    json({ tracks: @tracks.map(&:to_hash), next_page: @tracks.next_page })
   end
 
   get '/api/genres/:genre_name' do
     @genre_name = params[:genre_name]
     @tracks = Track.where(genre_name: @genre_name).page(params[:page]).per(settings.limit)
-    json({ tracks: @tracks.map(&:to_hash) })
+    json({ tracks: @tracks.map(&:to_hash), next_page: @tracks.next_page })
   end
 
   get '/api/users/:user_name' do
