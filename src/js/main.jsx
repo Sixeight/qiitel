@@ -117,9 +117,12 @@ class TracksPage extends React.PureComponent {
                             return track.updated_at >= firstTrack.updated_at &&
                                 track.track_id !== firstTrack.track_id;
                         }).concat(this.state.tracks);
+                const jsonNextPage = json.next_page || null;
+                const nextPage = paging ? jsonNextPage :
+                    isFirstFetch ? jsonNextPage : this.state.nextPage;
                 this.setState({
                     tracks: tracks,
-                    nextPage: json.next_page || null
+                    nextPage: nextPage
                 });
             });
     }
