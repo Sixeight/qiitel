@@ -8,8 +8,9 @@ class Activity < ActiveRecord::Base
   end
 
   def to_hash
-    track = self.track
-    track.user = self.user
+    track            = self.track.dup
+    track.user       = self.user.dup
+    track.updated_at = self.updated_at
     track.to_hash
   end
 end
