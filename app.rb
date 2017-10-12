@@ -23,6 +23,8 @@ class Playlist < Sinatra::Base
     also_reload 'model/**/*.rb'
     also_reload 'view/**/*.rb'
     also_reload 'lib/**/*.rb'
+
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
   end
 
   configure do
