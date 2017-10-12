@@ -10,36 +10,57 @@ import {
     Link
 } from "react-router-dom";
 
-const Track = ({ track }) => {
-    const releasedAt = new Date(track.released_at * 1000);
-    const updatedAt = new Date(track.updated_at * 1000);
+class Track extends React.PureComponent {
+    constructor(props) {
+        super(props);
 
-    return <div className="track">
-        <div className="image">
-            <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }}>
-            </div>
-            <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
-                {
-                    track.is_streamable ?
-                        <img src="/img/JP_Listen_on_Apple_Music_Badge.svg" /> :
-                        <img src="/img/Get_it_on_iTunes_Badge_JP_1214.svg" />
+        this.state = {
+            shown: false
+        };
+
+        this._shown = this.shown.bind(this);
+    }
+
+    shown() {
+        this.setState({ shown: true });
+    }
+
+    render() {
+        const track = this.props.track;
+        const releasedAt = new Date(track.released_at * 1000);
+        const updatedAt = new Date(track.updated_at * 1000);
+
+        return <Waypoint onEnter={this._shown}>
+            <div className="track">
+                <div className="image">
+                    <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
+                    </div>
+                    <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                        {
+                            track.is_streamable ?
+                                <img src="/img/JP_Listen_on_Apple_Music_Badge.svg" /> :
+                                <img src="/img/Get_it_on_iTunes_Badge_JP_1214.svg" />
+                        }
+                    </a>
+                </div>
+                <div className="meta">
+                    <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                    <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                    <span className="genre"><Link to={`/genres/${track.genre_name}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
+                    <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
+                    {track.user && <User user={track.user} />}
+                </div>
+                {this.state.shown &&
+                    <div className="preview">
+                        <audio src={track.preview_url} controls></audio><br />
+                        <span>provided courtesy of iTunes</span>
+                    </div>
                 }
-            </a>
-        </div>
-        <div className="meta">
-            <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-            <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-            <span className="genre"><Link to={`/genres/${track.genre_name}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
-            <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
-            {track.user && <User user={track.user} />}
-        </div>
-        <div className="preview">
-            <audio src={track.preview_url} controls></audio><br />
-            <span>provided courtesy of iTunes</span>
-        </div>
-        <div className="clear"></div>
-    </div>;
-};
+                <div className="clear"></div>
+            </div>
+        </Waypoint>;
+    }
+}
 
 const User = ({ user }) => {
     return <span className="profile">
