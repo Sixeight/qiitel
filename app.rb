@@ -105,20 +105,19 @@ class Playlist < Sinatra::Base
   end
 
   get '/api/users/:user_name' do
-    @user_name = params[:user_name]
-    user = User.find_by(name: @user_name)
+    user_name = params[:user_name]
+    user = User.find_by(name: user_name)
     if user.nil?
       status(404)
       return json({ tracks: [] })
     end
-    activities = Activity.eager_load(:track).where(user_id: user.id).limit(settings.limit)
-    @tracks = activities.map {|activity|
-      track            = activity.track
-      track.user       = activity.user
-      track.updated_at = activity.updated_at
-      track
-    }.compact.uniq
-    json({ tracks: @tracks.map(&:to_hash) })
+    activities = Activity.
+      eager_load(:track).
+      eager_load(:user).
+      where(user_id: user.id).
+      limit(settings.limit)
+      .uniq
+    json({ tracks: activities.map(&:to_hash) })
   end
 
   get '/register' do
