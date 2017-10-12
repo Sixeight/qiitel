@@ -107,24 +107,28 @@ class TracksPage extends React.PureComponent {
         const endpoint = this.props.api + (paging ? `?page=${page}` : "");
         fetch(endpoint)
             .then(res => res.json())
-            .then(json => {
-                const firstTrack = this.state.tracks[0];
-                const isFirstFetch = firstTrack === undefined;
-                const tracks = paging ?
-                    this.state.tracks.concat(json.tracks) :
-                    isFirstFetch ? json.tracks :
-                        json.tracks.filter(track => {
-                            return track.updated_at >= firstTrack.updated_at &&
-                                track.track_id !== firstTrack.track_id;
-                        }).concat(this.state.tracks);
-                const jsonNextPage = json.next_page || null;
-                const nextPage = paging ? jsonNextPage :
-                    isFirstFetch ? jsonNextPage : this.state.nextPage;
-                this.setState({
-                    tracks: tracks,
-                    nextPage: nextPage
-                });
-            });
+            .then(json => this.updateTracks(json, paging));
+    }
+
+    updateTracks(json, paging) {
+        const firstTrack = this.state.tracks[0];
+        const isFirstFetch = firstTrack === undefined;
+        const tracks = paging ?
+            this.state.tracks.concat(json.tracks) :
+            isFirstFetch ? json.tracks :
+                json.tracks.filter(track => {
+                    return track.updated_at >= firstTrack.updated_at &&
+                        track.track_id !== firstTrack.track_id;
+                }).concat(this.state.tracks);
+
+        const jsonNextPage = json.next_page || null;
+        const nextPage = paging ? jsonNextPage :
+            isFirstFetch ? jsonNextPage : this.state.nextPage;
+
+        this.setState({
+            tracks: tracks,
+            nextPage: nextPage
+        });
     }
 
     fetchMoreTracks() {
