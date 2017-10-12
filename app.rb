@@ -112,7 +112,12 @@ class Playlist < Sinatra::Base
       return json({ tracks: [] })
     end
     activities = Activity.eager_load(:track).where(user_id: user.id).limit(settings.limit)
-    @tracks = activities.map(&:track).compact.uniq
+    @tracks = activities.map {|activity|
+      track            = activity.track
+      track.user       = activity.user
+      track.updated_at = activity.updated_at
+      track
+    }.compact.uniq
     json({ tracks: @tracks.map(&:to_hash) })
   end
 
