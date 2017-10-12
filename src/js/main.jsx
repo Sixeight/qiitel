@@ -52,7 +52,7 @@ class Track extends React.PureComponent {
                 </div>
                 {this.state.shown &&
                     <div className="preview">
-                        <audio src={track.preview_url} controls></audio><br />
+                        <audio src={track.preview_url} preload="none" controls></audio><br />
                         <span>provided courtesy of iTunes</span>
                     </div>
                 }
