@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Waypoint from "react-waypoint";
+import { Helmet } from "react-helmet";
 import "whatwg-fetch";
 import {
     BrowserRouter as Router,
@@ -61,6 +62,9 @@ const Tracks = ({ tracks }) => {
 
 const Header = ({ genre }) => {
     return <header>
+        <Helmet>
+            <title>{`聴いてる${genre ? ` - ${genre}` : ""}`}</title>
+        </Helmet>
         <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}</h1>
     </header>;
 };
