@@ -60,12 +60,12 @@ const Tracks = ({ tracks }) => {
     });
 };
 
-const Header = ({ genre }) => {
+const Header = ({ genre, user }) => {
     return <header>
         <Helmet>
-            <title>{`聴いてる${genre ? ` - ${genre}` : ""}`}</title>
+            <title>{`聴いてる${genre ? ` - ${genre}` : ""}${user ? ` - @${user}` : ""}`}</title>
         </Helmet>
-        <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}</h1>
+        <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}{user && ` - @${user}`}</h1>
     </header>;
 };
 
@@ -182,7 +182,7 @@ const UserTracksPage = ({ match }) => {
     const user = match.params.user;
 
     return <div>
-        <Header />
+        <Header user={user} />
         <TracksPage user={user} api={`/api/users/${user}`} />
         <Footer />
     </div>;
