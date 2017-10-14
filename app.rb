@@ -148,9 +148,11 @@ class Playlist < Sinatra::Base
       eager_load(:track).
       eager_load(:user).
       where(user_id: user.id).
-      limit(settings.limit).
-      uniq {|a| a.track_id }
-    json({ tracks: activities.map(&:to_hash) })
+      page(params[:page]).
+      per(settings.limit)
+    next_page = activities.next_page
+    activities = activities.uniq {|a| a.track_id }
+    json({ tracks: activities.map(&:to_hash), next_page: next_page })
   end
 
   get '/register' do
