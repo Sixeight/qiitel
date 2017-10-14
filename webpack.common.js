@@ -10,12 +10,12 @@ module.exports = {
         rules: [
             {
                 enforce: "pre",
-                test: /\.jsx$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: "eslint-loader",
             },
             {
-                test: /\.jsx$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
@@ -23,6 +23,16 @@ module.exports = {
                         presets: ["es2015", "react"]
                     }
                 }
+            },
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: "style-loader"
+                }, {
+                    loader: "css-loader"
+                }, {
+                    loader: "sass-loader"
+                }]
             }
         ]
     }

@@ -9,6 +9,7 @@ import {
     Switch,
     Link
 } from "react-router-dom";
+import "../scss/main.scss";
 
 class Track extends React.PureComponent {
     constructor(props) {
