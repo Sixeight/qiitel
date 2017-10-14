@@ -1,4 +1,3 @@
-
 Bundler.require
 
 if ENV["RACK_ENV"] == "production"
@@ -16,4 +15,3 @@ end
 
 require_relative "app"
 run Playlist
-

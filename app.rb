@@ -7,6 +7,8 @@ require 'uri'
 require 'json'
 require 'cgi'
 require 'ostruct'
+
+# DBの接続設定
 require_relative 'db/setup'
 
 Dir['model/**/*.rb'].each do |path|
@@ -28,6 +30,13 @@ class Playlist < Sinatra::Base
 
     # 本番ではキャッシュヘッダをつけるためにRackから返している
     set :public_folder, settings.root + '/static'
+
+    # Docker上ではデーモン起動するのでファイルに書く
+    # see also: http://recipes.sinatrarb.com/p/middleware/rack_commonlogger
+    enable :logging
+    file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
+    file.sync = true
+    use Rack::CommonLogger, file
   end
 
   configure :production do
