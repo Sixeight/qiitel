@@ -38,6 +38,9 @@ docker-compose up
 
 ## 開発
 
+Dockerで起動していると勝手にwatchしている状態になっているので、ファイルを変更してブラウザをリロードするだけでよい。<br />
+(自動的にリロードされたりはしない！)
+
 - JS
   - [src/js/main.jsx](https://github.com/Sixeight/qiitel/tree/master/src/js)
   - Ractを使っています。HTML構造を変えたくなったらこっち。
