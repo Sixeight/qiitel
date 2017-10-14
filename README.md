@@ -17,7 +17,7 @@ Dockerを使うのでインストールします。
 ./script/setup
 ```
 
-次にDockerイメージを作ります
+次にDockerイメージを作ります。
 
 ```
 docker-compose build
@@ -42,8 +42,8 @@ Dockerで起動していると勝手にwatchしている状態になっている
 (自動的にリロードされたりはしない！)
 
 - JS
-  - [src/js/main.jsx](https://github.com/Sixeight/qiitel/tree/master/src/js)
+  - [src/js/main.jsx](https://github.com/Sixeight/qiitel/blob/master/src/js/main.jsx)
   - Ractを使っています。HTML構造を変えたくなったらこっち。
 - SCSS
-  - [src/scss/main.scss](https://github.com/Sixeight/qiitel/tree/master/src/scss)
+  - [src/scss/main.scss](https://github.com/Sixeight/qiitel/blob/master/src/scss/main.scss)
   - autoprefixerみたいなのとか何も考えてないので必要になったら考える。
