@@ -171,11 +171,11 @@ class TracksPage extends React.PureComponent {
         const genre = this.props.genre || "";
 
         const components = [
-            <div id="summary">
-                <p key="description">{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+            <div id="summary" key="description">
+                <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
             </div>,
-            <div id="tracks">
-                <Tracks key="tracks" tracks={this.state.tracks} />
+            <div id="tracks" key="tracks" >
+                <Tracks tracks={this.state.tracks} />
             </div>
         ];
         if (this.hasNext) {
