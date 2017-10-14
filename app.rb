@@ -72,6 +72,10 @@ class Playlist < Sinatra::Base
     def u(str)
       CGI.escape(str)
     end
+
+    def production?
+      settings.production?
+    end
   end
 
   private def json(raw)
