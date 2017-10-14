@@ -133,7 +133,8 @@ class TracksPage extends React.PureComponent {
         const endpoint = this.props.api + (paging ? `?page=${page}` : "");
         fetch(endpoint)
             .then(res => res.json())
-            .then(json => this.updateTracks(json, paging));
+            .then(json => this.updateTracks(json, paging))
+            .catch(() => { }); // 握りつぶす
     }
 
     updateTracks(json, paging) {
