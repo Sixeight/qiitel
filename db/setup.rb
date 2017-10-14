@@ -4,7 +4,7 @@ Bundler.require
 require 'yaml'
 
 settings = YAML.load_file File.expand_path('../config/database.yml', __dir__)
-environment = ENV['RACK_ENV'] || :development
+environment = ENV['RACK_ENV'] || 'development'
 
 # Hack for Daemonize
 # デーモン化するときに / に移動するので相対パスで指定していると誤ったファイルをみてしまう

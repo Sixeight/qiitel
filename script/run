@@ -5,5 +5,7 @@ set -x
 bundle install
 yarn install
 
+bundle exec -- rake db:migrate
+
 bundle exec -- rackup -D -o0.0.0.0 -p9292 config.ru
 yarn run webpack --watch --progress --config webpack.development.js
