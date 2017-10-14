@@ -34,9 +34,7 @@ class Playlist < Sinatra::Base
     # Docker上ではデーモン起動するのでファイルに書く
     # see also: http://recipes.sinatrarb.com/p/middleware/rack_commonlogger
     enable :logging
-    dir = "#{settings.root}/log"
-    Dir.mkdir(dir)
-    file = File.new("#{dir}/#{settings.environment}.log", 'a+')
+    file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
     file.sync = true
     use Rack::CommonLogger, file
   end
