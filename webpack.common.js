@@ -3,8 +3,8 @@ const path = require("path");
 module.exports = {
     entry: "./src/js/main.jsx",
     output: {
-        path: path.resolve(__dirname, "static/js"),
-        filename: "[name].js"
+        path: path.resolve(__dirname, "static"),
+        filename: "js/[name].js"
     },
     module: {
         rules: [
@@ -23,16 +23,6 @@ module.exports = {
                         presets: ["es2015", "react"]
                     }
                 }
-            },
-            {
-                test: /\.scss$/,
-                use: [{
-                    loader: "style-loader"
-                }, {
-                    loader: "css-loader"
-                }, {
-                    loader: "sass-loader"
-                }]
             }
         ]
     }
