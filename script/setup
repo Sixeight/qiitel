@@ -1,0 +1,4 @@
+#! /bin/bash
+
+cp -f db/dev/development.sqlite3 db/development.sqlite3
+
