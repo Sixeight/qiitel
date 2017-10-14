@@ -39,8 +39,8 @@ class Track extends React.PureComponent {
                     <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
                         {
                             track.is_streamable ?
-                                <img src="/img/JP_Listen_on_Apple_Music_Badge.svg" /> :
-                                <img src="/img/Get_it_on_iTunes_Badge_JP_1214.svg" />
+                                <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
+                                <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
                         }
                     </a>
                 </div>

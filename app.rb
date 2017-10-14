@@ -25,6 +25,12 @@ class Playlist < Sinatra::Base
     also_reload 'lib/**/*.rb'
 
     ActiveRecord::Base.logger = Logger.new(STDOUT)
+
+    # 本番ではキャッシュヘッダをつけるためにRackから返している
+    set :public_folder, settings.root + '/static'
+  end
+
+  configure :production do
   end
 
   configure do
@@ -37,39 +43,39 @@ class Playlist < Sinatra::Base
     use OmniAuth::Builder do
       provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
     end
-  end
 
-  set :views, settings.root + '/view'
-  set :public_folder, settings.root + '/static'
+    set :views, settings.root + '/view'
 
-  set :limit, 25
+    # 一回で読み込む曲数
+    set :limit, 25
 
- if ENV['TWEET_CONSUMER_KEY'].present?    &&
-    ENV['TWEET_CONSUMER_SECRET'].present? &&
-    ENV['TWEET_ACCESS_TOKEN'].present?    &&
-    ENV['TWEET_ACCESS_SECRET'].present?
+    if ENV['TWEET_CONSUMER_KEY'].present?    &&
+        ENV['TWEET_CONSUMER_SECRET'].present? &&
+        ENV['TWEET_ACCESS_TOKEN'].present?    &&
+        ENV['TWEET_ACCESS_SECRET'].present?
 
-    client = Twitter::REST::Client.new do |config|
-        config.consumer_key        = ENV['TWEET_CONSUMER_KEY']
-        config.consumer_secret     = ENV['TWEET_CONSUMER_SECRET']
-        config.access_token        = ENV['TWEET_ACCESS_TOKEN']
-        config.access_token_secret = ENV['TWEET_ACCESS_SECRET']
-    end
-    set :twitter, client
-  end
+        client = Twitter::REST::Client.new do |config|
+            config.consumer_key        = ENV['TWEET_CONSUMER_KEY']
+            config.consumer_secret     = ENV['TWEET_CONSUMER_SECRET']
+            config.access_token        = ENV['TWEET_ACCESS_TOKEN']
+            config.access_token_secret = ENV['TWEET_ACCESS_SECRET']
+        end
+        set :twitter, client
+      end
 
- if ENV['PROFILE_CONSUMER_KEY'].present?    &&
-    ENV['PROFILE_CONSUMER_SECRET'].present? &&
-    ENV['PROFILE_ACCESS_TOKEN'].present?    &&
-    ENV['PROFILE_ACCESS_SECRET'].present?
+    if ENV['PROFILE_CONSUMER_KEY'].present?    &&
+        ENV['PROFILE_CONSUMER_SECRET'].present? &&
+        ENV['PROFILE_ACCESS_TOKEN'].present?    &&
+        ENV['PROFILE_ACCESS_SECRET'].present?
 
-    my_client = Twitter::REST::Client.new do |config|
-        config.consumer_key        = ENV['PROFILE_CONSUMER_KEY']
-        config.consumer_secret     = ENV['PROFILE_CONSUMER_SECRET']
-        config.access_token        = ENV['PROFILE_ACCESS_TOKEN']
-        config.access_token_secret = ENV['PROFILE_ACCESS_SECRET']
-    end
-    set :my_twitter, my_client
+        my_client = Twitter::REST::Client.new do |config|
+            config.consumer_key        = ENV['PROFILE_CONSUMER_KEY']
+            config.consumer_secret     = ENV['PROFILE_CONSUMER_SECRET']
+            config.access_token        = ENV['PROFILE_ACCESS_TOKEN']
+            config.access_token_secret = ENV['PROFILE_ACCESS_SECRET']
+        end
+        set :my_twitter, my_client
+      end
   end
 
   helpers do
