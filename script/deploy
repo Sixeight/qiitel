@@ -1,6 +1,6 @@
 #! /bin/bash
 
 yarn run production-build
-git add static/js/main.js static/css/main.css
+git add static/js static/css
 git commit --allow-empty -m 'deploy'
 git push heroku master

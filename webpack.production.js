@@ -1,16 +1,29 @@
+const path = require("path");
 const webpack = require("webpack");
 const merge = require("webpack-merge");
-const path = require("path");
-const common = require("./webpack.common.js");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const ManifestPlugin = require("webpack-manifest-plugin");
+const common = require("./webpack.common.js");
 
 const extractSass = new ExtractTextPlugin({
-    filename: "css/[name].css"
+    filename: "css/[chunkhash].css"
 });
 
 module.exports = merge(common, {
+    entry: {
+        main: "./src/js/main.jsx",
+        vendor: [
+            "react",
+            "react-dom",
+            "react-waypoint",
+            "react-helmet",
+            "whatwg-fetch"
+        ]
+    },
     output: {
         path: path.resolve(__dirname, "static"),
+        filename: "js/[chunkhash].js"
     },
     module: {
         rules: [
@@ -31,10 +44,22 @@ module.exports = merge(common, {
         ]
     },
     plugins: [
+        new ManifestPlugin({
+            fileName: "../config/manifest.json",
+            publicPath: "/",
+        }),
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify("production")
             }
+        }),
+        new CleanWebpackPlugin(["static/js", "static/css"]),
+        new webpack.HashedModuleIdsPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: "vendor"
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: "runtime"
         }),
         new webpack.optimize.UglifyJsPlugin(),
         extractSass

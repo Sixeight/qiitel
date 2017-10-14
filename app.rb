@@ -30,6 +30,10 @@ class Playlist < Sinatra::Base
   configure do
     enable :sessions
 
+    set :manifest, JSON.load(
+      File.read(File.expand_path('./config/manifest.json', __dir__))
+    )
+
     use OmniAuth::Builder do
       provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
     end
@@ -75,6 +79,10 @@ class Playlist < Sinatra::Base
 
     def production?
       settings.production?
+    end
+
+    def static_file(key)
+      settings.manifest[key] || ""
     end
   end
 

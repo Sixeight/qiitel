@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>聴いてる</title>
     <%- if production? %>
-    <link href="/css/main.css" rel="stylesheet" />
+    <link href="<%= static_file("main.css") %>" rel="stylesheet" />
     <%- end %>
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-2936060-3"></script>
@@ -21,9 +21,11 @@
     </div>
     <script key="script" type='text/javascript'>var _merchantSettings=_merchantSettings || [];_merchantSettings.push(['AT', '1010ldrf']);(function(){var autolink=document.createElement('script');autolink.type='text/javascript';autolink.async=true; autolink.src= ('https:' == document.location.protocol) ? 'https://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js' : 'http://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(autolink, s);})();</script>
     <%- if production? %>
-    <script type="text/javascript" src="/js/main.js"></script>
+    <script src="<%= static_file("runtime.js") %>"></script>
+    <script src="<%= static_file("vendor.js") %>"></script>
+    <script src="<%= static_file("main.js") %>"></script>
     <%- else %>
-    <script type="text/javascript" src="/dev/js/main.js"></script>
+    <script src="/dev/js/main.js"></script>
     <%- end %>
   </body>
 </html>
