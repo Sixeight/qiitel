@@ -57,14 +57,17 @@ a {
     &:last-child {
       position: absolute;
       right: 0;
+      button {
+        text-align: right;
+      }
     }
   }
   button {
     border: none;
     padding: 8px 12px;
+    text-align: left;
     background-color: #fefefe;
     cursor: pointer;
-    min-width: 145px;
     &:hover {
       text-decoration: underline;
     }
@@ -75,9 +78,6 @@ a {
   #menu {
     li {
       padding: 0;
-    }
-    button {
-      min-width: 0;
     }
   }
 }
