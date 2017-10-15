@@ -71,6 +71,17 @@ a {
   }
 }
 
+@media screen and (max-width: 480px) {
+  #menu {
+    li {
+      padding: 0;
+    }
+    button {
+      min-width: 0;
+    }
+  }
+}
+
 #tracks {
   min-height: 640px;
 }
@@ -219,7 +230,7 @@ a {
   margin-left: 110px;
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 480px) {
   .preview {
     clear: both;
     padding-top: 20px;
