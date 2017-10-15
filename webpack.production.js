@@ -38,6 +38,8 @@ module.exports = merge(common, {
                         }
                     }, {
                         loader: "postcss-loader"
+                    }, {
+                        loader: "sass-loader"
                     }],
                     publicPath: "static/css"
                 })
