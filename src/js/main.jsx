@@ -175,7 +175,7 @@ const Header = ({ genre, user }) => {
 
 const Footer = () => {
     return <footer>
-        <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a>
+        &copy; 2016-2017 <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a>
     </footer>;
 };
 
@@ -307,7 +307,11 @@ class TracksPage extends React.PureComponent {
         ];
         if (this.hasNext) {
             components.push(
-                <Waypoint key="waypoint" bottomOffset="-800px" onEnter={this._fetchMoreTracks} />
+                <Waypoint key="waypoint" bottomOffset="-800px" onEnter={this._fetchMoreTracks}>
+                    <div className="read-more">
+                        <a onClick={this._fetchMoreTracks}>もっとみる</a>
+                    </div>
+                </Waypoint>
             );
         }
         return components;

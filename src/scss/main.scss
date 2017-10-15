@@ -23,11 +23,20 @@ header {
 footer {
   margin-top: 20px;
   margin-bottom: 20px;
+  font-size: small;
+  text-align: right;
+  color: #888;
+  a {
+    color: #888;
+  }
 }
 
 a {
   text-decoration: none;
   color: black;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 #menu {
@@ -60,6 +69,10 @@ a {
       text-decoration: underline;
     }
   }
+}
+
+#tracks {
+  min-height: 640px;
 }
 
 .track {
@@ -224,4 +237,16 @@ a {
 .preview span {
   font-size: small;
   margin-top: -5px;
+}
+
+.read-more {
+  font-size: small;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+  a {
+    color: #888;
+  }
 }
