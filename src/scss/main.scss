@@ -4,9 +4,28 @@ body {
 }
 
 #container {
-  max-width: 640px;
+  max-width: 840px;
   margin: 0 auto;
   padding: 8px;
+}
+
+#contents {
+  display: flex;
+  justify-content: space-between;
+}
+
+#main {
+  width: 640px;
+}
+
+#side {
+  width: 200px;
+}
+
+@media screen and (max-width: 480px) {
+  #side {
+    display: none;
+  }
 }
 
 header {
@@ -260,5 +279,30 @@ a {
   }
   a {
     color: #888;
+  }
+}
+
+#genres {
+  padding-top: 154px;
+  padding-left: 16px;
+  font-size: small;
+  position: sticky;
+  top: -118px;
+
+  ul {
+    padding: 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  li {
+    list-style: none;
+    line-height: 1.7em;
+    a {
+      color: #555;
+      &.current {
+        text-decoration: underline;
+      }
+    }
   }
 }

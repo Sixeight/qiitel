@@ -154,6 +154,11 @@ class Playlist < Sinatra::Base
     json({ tracks: activities.map(&:to_hash), next_page: next_page })
   end
 
+  get '/api/genres' do
+    tracks = Track.select('genre_name').distinct
+    json({ genre_names: tracks.map(&:genre_name) })
+  end
+
   get '/register' do
     return redirect to('/') if @user.nil?
     session[:qlsc] = nil

@@ -7,7 +7,8 @@ import {
     BrowserRouter as Router,
     Route,
     Switch,
-    Link
+    Link,
+    NavLink
 } from "react-router-dom";
 import "../scss/main.scss";
 
@@ -318,31 +319,74 @@ class TracksPage extends React.PureComponent {
     }
 }
 
+class Genres extends React.PureComponent {
+    constructor() {
+        super();
+        this.state = {
+            genreNames: []
+        };
+    }
+
+    componentDidMount() {
+        fetch("/api/genres")
+            .then(res => res.json())
+            .then(json => this.setState({
+                genreNames: json.genre_names
+            }));
+    }
+
+    render() {
+        return <aside id="genres">
+            <ul>
+                <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
+                {this.state.genreNames.map(genreName => {
+                    return <li key={genreName}><NavLink to={`/genres/${genreName}`} activeClassName="current">{genreName}</NavLink></li>;
+                })}
+            </ul>
+        </aside>;
+    }
+}
+
 const RecentTracksPage = () => {
-    return <div>
-        <Header />
-        <TracksPage api="/api/tracks" />
-        <Footer />
+    return <div id="contents">
+        <div id="main">
+            <Header />
+            <TracksPage api="/api/tracks" />
+            <Footer />
+        </div>
+        <div id="side">
+            <Genres />
+        </div>
     </div>;
 };
 
 const GenreTracksPage = ({ match }) => {
     const genre = match.params.genre;
 
-    return <div>
-        <Header genre={genre} />
-        <TracksPage genre={genre} api={`/api/genres/${genre}`} />
-        <Footer />
+    return <div id="contents">
+        <div id="main">
+            <Header genre={genre} />
+            <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
+            <Footer />
+        </div>
+        <div id="side">
+            <Genres key={genre} />
+        </div>
     </div>;
 };
 
 const UserTracksPage = ({ match }) => {
     const user = match.params.user;
 
-    return <div>
-        <Header user={user} />
-        <TracksPage user={user} api={`/api/users/${user}`} />
-        <Footer />
+    return <div id="contents">
+        <div id="main">
+            <Header user={user} />
+            <TracksPage key={user} user={user} api={`/api/users/${user}`} />
+            <Footer />
+        </div>
+        <div id="side">
+            <Genres />
+        </div>
     </div>;
 };
 
