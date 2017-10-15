@@ -11,6 +11,21 @@ import {
 } from "react-router-dom";
 import "../scss/main.scss";
 
+class Storage {
+    set(key, item) {
+        try {
+            localStorage.setItem(key, item);
+        } catch (e) {
+            // Not supported
+        }
+    }
+
+    get(key, defaultValue = null) {
+        return localStorage.getItem(key) || defaultValue;
+    }
+}
+const safeStorage = new Storage();
+
 class Track extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -168,21 +183,32 @@ class TracksPage extends React.PureComponent {
     constructor(props) {
         super(props);
 
+        const lastMode = safeStorage.get("lastMode", "track");
+        const lastAlbumExpanded = safeStorage.get("lastAlbumExpanded", "false");
+
         this.state = {
             tracks: [],
             nextPage: null,
-            mode: "track",
-            albumExpanded: false
+            mode: lastMode,
+            albumExpanded: (lastAlbumExpanded === "true")
         };
 
         this.timer = null;
         this._fetchMoreTracks = this.fetchMoreTracks.bind(this);
-        this._albumExpand = () => this.setState({ albumExpanded: true });
-        this._albumCollapse = () => this.setState({ albumExpanded: false });
 
-        const changeMode = (mode) => this.setState({ mode: mode });
+        const changeMode = (mode) => {
+            this.setState({ mode: mode });
+            safeStorage.set("lastMode", mode);
+        };
         this._trackMode = () => changeMode("track");
         this._albumMode = () => changeMode("album");
+
+        const changeExpanded = (expanded) => {
+            this.setState({ albumExpanded: expanded });
+            safeStorage.set("lastAlbumExpanded", expanded);
+        };
+        this._albumExpand = () => changeExpanded(true);
+        this._albumCollapse = () => changeExpanded(false);
     }
 
     componentDidMount() {
