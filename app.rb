@@ -145,8 +145,7 @@ class Playlist < Sinatra::Base
       return json({ tracks: [] })
     end
     activities = Activity.
-      eager_load(:track).
-      eager_load(:user).
+      eager_load(:track, :user).
       where(user_id: user.id).
       page(params[:page]).
       per(settings.limit)
