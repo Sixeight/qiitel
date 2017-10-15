@@ -228,7 +228,7 @@ class TracksPage extends React.PureComponent {
     }
 
     get hasNext() {
-        return this.state !== null;
+        return this.state.nextPage !== null;
     }
 
     fetchTracks(page) {
