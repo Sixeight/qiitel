@@ -283,7 +283,7 @@ a {
 }
 
 #genres {
-  padding-top: 153px;
+  padding-top: 152px;
   padding-left: 16px;
   font-size: small;
   position: sticky;
@@ -296,13 +296,24 @@ a {
   }
 
   li {
+    display: inline;
     list-style: none;
     line-height: 1.7em;
+    padding: 0 2px;
+
     a {
       color: #555;
       &.current {
         text-decoration: underline;
       }
+    }
+
+    &:after {
+      content: "/";
+      padding-left: 4px;
+    }
+    &:last-child:after {
+      content: none;
     }
   }
 }
