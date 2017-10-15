@@ -155,7 +155,7 @@ class Playlist < Sinatra::Base
   end
 
   get '/api/genres' do
-    tracks = Track.select('genre_name').distinct
+    tracks = Track.select('genre_name').distinct.unscope(:order)
     json({ genre_names: tracks.map(&:genre_name) })
   end
 
