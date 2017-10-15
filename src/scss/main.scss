@@ -1,13 +1,24 @@
 body {
   background-color: #fefefe;
+  margin: 0;
+}
+
+#container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px;
+  background-color: #fefefe;
 }
 
 header {
-  margin-bottom: 20px;
-}
+  margin: 0px;
+  padding-top: 20px;
+  font-size: small;
 
-h1 {
-  font-size: big;
+  h1 {
+    margin: 0px;
+    border-bottom: 1px solid #eee;
+  }
 }
 
 footer {
@@ -20,28 +31,42 @@ a {
   color: black;
 }
 
-.menu {
+#menu {
+  position: sticky;
+  top: -1px;
+  background-color: #fefefe;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 100;
+
   ul {
     padding: 0;
+    margin: 0;
+    position: relative;
   }
   li {
     display: inline-block;
-    padding: 0 4px;
+    padding: 8px 4px;
+    &:last-child {
+      position: absolute;
+      right: 0;
+    }
   }
   button {
     border: none;
-    border-bottom: 1px solid #aaa;
     padding: 8px 12px;
-    background-color: #fff;
+    background-color: #fefefe;
     cursor: pointer;
     min-width: 145px;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
 .track {
   color: #555;
   border: 1px solid #ddd;
-  background-color: #fff;
+  background-color: #fefefe;
   padding: 8px;
   min-height: 100px;
   margin-bottom: 10px;

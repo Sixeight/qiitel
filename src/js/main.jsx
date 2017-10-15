@@ -209,6 +209,8 @@ class TracksPage extends React.PureComponent {
         };
         this._albumExpand = () => changeExpanded(true);
         this._albumCollapse = () => changeExpanded(false);
+
+        this._scrollToTop = () => window.scrollTo(0, 0);
     }
 
     componentDidMount() {
@@ -274,23 +276,28 @@ class TracksPage extends React.PureComponent {
         const components = [
             <div id="description" key="description">
                 <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
-                <nav className="menu">
-                    <ul>
+            </div>,
+            <nav id="menu" key="menu">
+                <ul>
+                    <li>
+                        <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
+                            {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
+                        </button>
+                    </li>
+                    {this.state.mode === "album" &&
                         <li>
-                            <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
-                                {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
+                            <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
+                                {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
                             </button>
                         </li>
-                        {this.state.mode === "album" &&
-                            <li>
-                                <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
-                                    {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
-                                </button>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-            </div>,
+                    }
+                    <li>
+                        <button onClick={this._scrollToTop}>
+                            先頭にもどる
+                        </button>
+                    </li>
+                </ul>
+            </nav>,
             <div id="tracks" key="tracks" >
                 {this.state.mode === "album" ?
                     <GroupedTracks tracks={this.state.tracks} albumExpanded={this.state.albumExpanded} /> :
