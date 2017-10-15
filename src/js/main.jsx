@@ -76,6 +76,73 @@ const User = ({ user }) => {
     </span>;
 };
 
+class Album extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = { expanded: props.expanded };
+        this._expand = () => this.setState({ expanded: true });
+        this._collapse = () => this.setState({ expanded: false });
+    }
+
+    componentWillReceiveProps(newProps) {
+        if (this.props.expanded === newProps.expanded) {
+            return;
+        }
+        if (newProps.expanded !== this.state.expanded) {
+            this.setState({ expanded: newProps.expanded });
+        }
+    }
+
+    render() {
+        const [first, ...rest] = this.props.tracks;
+
+        return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
+            <div className="album-meta">
+                <h2>「{first.collection_name}」</h2>
+            </div>
+            <div className="album-tracks" key="tracks">
+                <Track track={first} key={first.track_id} />
+                {rest.map((track, i) => {
+                    return this.state.expanded ?
+                        <Track track={track} key={track.track_id} /> :
+                        <div className="track dummy" style={{ zIndex: -(i + 1) }} key={track.track_id} />;
+                })}
+            </div>
+            {this.state.expanded ||
+                <div className="rest" key="rest">
+                    <a onClick={this.state.expanded ? this._collapse : this._expand}>他{rest.length}曲をみる</a>
+                </div>
+            }
+        </div>;
+    }
+}
+
+const GroupedTracks = ({ tracks, albumExpanded }) => {
+    return tracks.reduce((albums, track) => {
+        if (albums.length === 0) {
+            albums.push([]);
+        }
+        const tracks = albums[albums.length - 1];
+        const first = tracks[tracks.length - 1];
+        if (first === undefined || track.collection_name === first.collection_name) {
+            tracks.push(track);
+        } else {
+            albums.push([track]);
+        }
+        return albums;
+    }, []).map(album => {
+        if (album.length > 1) {
+            const firstTrack = album[album.length - 1];
+            return <Album
+                tracks={album} expanded={albumExpanded}
+                key={`${firstTrack.collection_id}-${firstTrack.track_id}`} />;
+        } else {
+            const track = album[0];
+            return <Track track={track} key={track.track_id} />;
+        }
+    });
+};
+
 const Tracks = ({ tracks }) => {
     return tracks.map(track => {
         return <Track track={track} key={track.track_id} />;
@@ -103,11 +170,19 @@ class TracksPage extends React.PureComponent {
 
         this.state = {
             tracks: [],
-            nextPage: null
+            nextPage: null,
+            mode: "track",
+            albumExpanded: false
         };
 
         this.timer = null;
         this._fetchMoreTracks = this.fetchMoreTracks.bind(this);
+        this._albumExpand = () => this.setState({ albumExpanded: true });
+        this._albumCollapse = () => this.setState({ albumExpanded: false });
+
+        const changeMode = (mode) => this.setState({ mode: mode });
+        this._trackMode = () => changeMode("track");
+        this._albumMode = () => changeMode("album");
     }
 
     componentDidMount() {
@@ -171,11 +246,30 @@ class TracksPage extends React.PureComponent {
         const genre = this.props.genre || "";
 
         const components = [
-            <div id="summary" key="description">
+            <div id="description" key="description">
                 <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+                <nav className="menu">
+                    <ul>
+                        <li>
+                            <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
+                                {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
+                            </button>
+                        </li>
+                        {this.state.mode === "album" &&
+                            <li>
+                                <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
+                                    {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>,
             <div id="tracks" key="tracks" >
-                <Tracks tracks={this.state.tracks} />
+                {this.state.mode === "album" ?
+                    <GroupedTracks tracks={this.state.tracks} albumExpanded={this.state.albumExpanded} /> :
+                    <Tracks tracks={this.state.tracks} />
+                }
             </div>
         ];
         if (this.hasNext) {

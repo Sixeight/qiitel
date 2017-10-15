@@ -20,6 +20,24 @@ a {
   color: black;
 }
 
+.menu {
+  ul {
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    padding: 0 4px;
+  }
+  button {
+    border: none;
+    border-bottom: 1px solid #aaa;
+    padding: 8px 12px;
+    background-color: #fff;
+    cursor: pointer;
+    min-width: 145px;
+  }
+}
+
 .track {
   color: #555;
   border: 1px solid #ddd;
@@ -30,6 +48,48 @@ a {
   overflow-x: hidden;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
   border-radius: 5px;
+
+  &.dummy {
+    min-height: 2px;
+    height: 2px;
+    border-top: 0px;
+    margin-top: -22px;
+    position: relative;
+  }
+}
+
+.album {
+  margin: 40px 0;
+  a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .album-meta {
+    font-size: small;
+    margin-bottom: 4px;
+    h2 {
+      text-align: center;
+      margin: 0;
+      padding-bottom: 8px;
+      color: #555;
+      border-bottom: 1px solid #eee;
+    }
+  }
+  .album-tracks {
+    padding: 8px;
+  }
+  &.expanded .album-tracks {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  .rest {
+    text-align: center;
+    font-size: small;
+    margin-top: -5px;
+    a {
+      color: #888;
+    }
+  }
 }
 
 .clear {
