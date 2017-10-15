@@ -33,10 +33,11 @@ module.exports = merge(common, {
                     use: [{
                         loader: "css-loader",
                         options: {
-                            minimize: true
+                            minimize: true,
+                            importLoaders: 1
                         }
                     }, {
-                        loader: "sass-loader"
+                        loader: "postcss-loader"
                     }],
                     publicPath: "static/css"
                 })
