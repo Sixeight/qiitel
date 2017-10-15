@@ -63,7 +63,7 @@ class Track extends React.PureComponent {
                 <div className="meta">
                     <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                     <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-                    <span className="genre"><Link to={`/genres/${track.genre_name}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
+                    <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
                     <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
                     {track.user && <User user={track.user} />}
                 </div>
@@ -340,7 +340,7 @@ class Genres extends React.PureComponent {
             <ul>
                 <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
                 {this.state.genreNames.map(genreName => {
-                    return <li key={genreName}><NavLink to={`/genres/${genreName}`} activeClassName="current">{genreName}</NavLink></li>;
+                    return <li key={genreName}><NavLink to={`/genres/${encodeURIComponent(genreName)}`} activeClassName="current">{genreName}</NavLink></li>;
                 })}
             </ul>
         </aside>;
