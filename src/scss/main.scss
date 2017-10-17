@@ -1,31 +1,55 @@
-body {
-  background-color: #fefefe;
-  margin: 0;
+ /* ---------------------------------------
+  * constant
+  * ------------------------------------ */
+
+$fzS : 1.2rem;
+$fzM : 1.6rem;
+$fzL : 2.4rem;
+
+/* ---------------------------------------
+ * import setting
+ * ------------------------------------ */
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+@import 'mixins';
+@import 'fonts';
+
+ /* ---------------------------------------
+  * global setting
+  * ------------------------------------ */
+
+ * {
+  box-sizing: border-box;
 }
+
+html {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #f7f7f7;
+}
+
+a {
+  color: currentColor;
+  text-decoration: none;
+  transition: color .125s;
+  &:hover {
+    color: #FA3C6A;
+  }
+}
+
+
+
+ /* ---------------------------------------
+  * layout styling
+  * ------------------------------------ */
+
+
 
 #container {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 8px;
-}
-
-#contents {
-  display: flex;
-  justify-content: space-between;
-}
-
-#main {
-  width: 640px;
-}
-
-#side {
-  width: 240px;
-}
-
-@media screen and (max-width: 480px) {
-  #side {
-    display: none;
-  }
 }
 
 header {
@@ -34,27 +58,45 @@ header {
   font-size: small;
 
   h1 {
-    margin: 0px;
+    @extend %init;
     border-bottom: 1px solid #eee;
+    font-size: 3.2rem;
+    a {font-size: inherit}
   }
 }
 
 footer {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-size: small;
-  text-align: right;
+  position: fixed;
+  bottom: 0;
+  padding: 1em 0;
+  width: 100%;
+  background-color: rgba(#202020,.95);
   color: #888;
+  font-size: $fzS;
+  text-align: center;
   a {
     color: #888;
+    font-size: inherit;
   }
 }
 
-a {
-  text-decoration: none;
-  color: black;
-  &:hover {
-    text-decoration: underline;
+
+article {
+  @extend %init;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 auto 4em;
+}
+
+#main {
+  flex-grow: 1;
+}
+
+#side {
+  flex-basis: 240px;
+  @include max-screen(480px) {
+    display: none;
   }
 }
 

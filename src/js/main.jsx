@@ -349,14 +349,16 @@ class Genres extends React.PureComponent {
 
 const RecentTracksPage = () => {
     return <div id="contents">
-        <div id="main">
-            <Header />
-            <TracksPage api="/api/tracks" />
-            <Footer />
-        </div>
-        <div id="side">
-            <Genres />
-        </div>
+        <Header />
+        <article>
+            <div id="main">
+                <TracksPage api="/api/tracks" />
+            </div>
+            <div id="side">
+                <Genres />
+            </div>
+        </article>
+        <Footer />
     </div>;
 };
 
@@ -364,14 +366,16 @@ const GenreTracksPage = ({ match }) => {
     const genre = match.params.genre;
 
     return <div id="contents">
-        <div id="main">
-            <Header genre={genre} />
-            <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
-            <Footer />
-        </div>
-        <div id="side">
-            <Genres key={genre} />
-        </div>
+        <article>
+            <div id="main">
+                <Header genre={genre} />
+                <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
+            </div>
+            <div id="side">
+                <Genres key={genre} />
+            </div>
+        </article>
+        <Footer />
     </div>;
 };
 
@@ -379,14 +383,16 @@ const UserTracksPage = ({ match }) => {
     const user = match.params.user;
 
     return <div id="contents">
-        <div id="main">
-            <Header user={user} />
-            <TracksPage key={user} user={user} api={`/api/users/${user}`} />
-            <Footer />
-        </div>
-        <div id="side">
-            <Genres />
-        </div>
+        <article>
+            <div id="main">
+                <Header user={user} />
+                <TracksPage key={user} user={user} api={`/api/users/${user}`} />
+            </div>
+            <div id="side">
+                <Genres />
+            </div>
+        </article>
+        <Footer />
     </div>;
 };
 
