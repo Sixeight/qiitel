@@ -375,7 +375,7 @@ const Player = connect(
             </div>
             <div className="clear"></div>
             <div className="preview">
-                <audio src={track.preview_url} controls onCanPlay={event => event.target.play()}></audio><br />
+                <audio src={track.preview_url} controls ref={(audio) => audio && audio.load()} onCanPlay={event => event.target.play()}></audio><br />
                 <span>provided courtesy of iTunes</span>
             </div>
         </div >;
