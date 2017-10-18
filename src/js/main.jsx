@@ -60,20 +60,25 @@ class Track extends React.PureComponent {
                         }
                     </a>
                 </div>
-                <div className="meta">
+                <div className="data">
                     <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-                    <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-                    <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
-                    <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
-                    {track.user && <User user={track.user} />}
-                </div>
-                {this.state.shown &&
-                    <div className="preview">
-                        <audio src={track.preview_url} preload="none" controls></audio><br />
-                        <span>provided courtesy of iTunes</span>
+                    <div className="meta">
+                        <div className="music">
+                            <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                            <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span>
+                            {this.state.shown &&
+                                <div className="preview">
+                                    <audio src={track.preview_url} preload="none" controls></audio><br />
+                                    <span>provided courtesy of iTunes</span>
+                                </div>
+                            }
+                        </div>
+                        <div className="listener">
+                            <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
+                            {track.user && <User user={track.user} />}
+                        </div>
                     </div>
-                }
-                <div className="clear"></div>
+                </div>
             </div>
         </Waypoint>;
     }
@@ -83,9 +88,8 @@ const User = ({ user }) => {
     return <span className="profile">
         {
             user.image_url ?
-                <Link to={`/users/${user.name}`}>
+                <Link to={`/users/${user.name}`} title={`@${user.name}`}>
                     <img src={`${user.image_url}`} alt={`@${user.name}`} />
-                    <span className="name">@{user.name}</span>
                 </Link> :
                 <span className="name">@{user.name}</span>
         }
@@ -295,14 +299,14 @@ class TracksPage extends React.PureComponent {
                 <ul id="menu-primary">
                     <li>
                         <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
-                            <i className="fa fa-sort" aria-hidden="true"></i>
-                            {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
+                            <i className="fa fa-headphones" aria-hidden="true"></i>
+                            {this.state.mode === "track" ? "アルバム表示 OFF" : "アルバム表示 ON"}
                         </button>
                     </li>
                     <li>
                         <button onClick={this._scrollToTop}>
-                            <i className="fa fa-chevron-circle-up" aria-hidden="true"></i>
-                            先頭にもどる
+                            <i className="fa fa-chevron-up" aria-hidden="true"></i>
+                            TOP
                         </button>
                     </li>
                 </ul>
@@ -310,7 +314,7 @@ class TracksPage extends React.PureComponent {
                 <ul id="menu-secondary">
                     <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
                         <i className="fa fa-folder" aria-hidden="true"></i>
-                        {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
+                        {this.state.albumExpanded ? "OPEN" : "CLOSE"}
                     </button>
                 </ul>
                 }
@@ -353,7 +357,7 @@ class Genres extends React.PureComponent {
 
     render() {
         return <aside id="genres">
-            <h2>ジャンル</h2>
+            <h2>ジャンル一覧</h2>
             <ul>
                 <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
                 {this.state.genreNames.map(genreName => {
