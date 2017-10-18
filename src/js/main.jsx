@@ -70,12 +70,6 @@ class TrackComponent extends React.PureComponent {
                     <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
                     {track.user && <User user={track.user} />}
                 </div>
-                {this.state.shown &&
-                    <div className="preview">
-                        <audio src={track.preview_url} preload="none" controls></audio><br />
-                        <span>provided courtesy of iTunes</span>
-                    </div>
-                }
                 <div className="play-button">
                     <button onClick={this._play}>プレビュー</button>
                 </div>
