@@ -107,6 +107,7 @@ a {
 }
 
 .track {
+  position: relative;
   color: #555;
   border: 1px solid #ddd;
   background-color: #fefefe;
@@ -116,6 +117,22 @@ a {
   overflow-x: hidden;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
   border-radius: 5px;
+
+  .play-button {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+
+    button {
+      border: none;
+      background: #fefefe;
+
+      &:after {
+        content: "▶";
+        margin-left: 4px;
+      }
+    }
+  }
 
   &.dummy {
     min-height: 2px;

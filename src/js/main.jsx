@@ -73,6 +73,9 @@ class Track extends React.PureComponent {
                         <span>provided courtesy of iTunes</span>
                     </div>
                 }
+                <div className="play-button">
+                    <button>プレビュー</button>
+                </div>
                 <div className="clear"></div>
             </div>
         </Waypoint>;
