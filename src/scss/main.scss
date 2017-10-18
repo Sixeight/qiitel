@@ -7,6 +7,7 @@ body {
   max-width: 880px;
   margin: 0 auto;
   padding: 8px;
+  position: relative;
 }
 
 #contents {
@@ -331,6 +332,74 @@ a {
     }
     &:last-child:after {
       content: none;
+    }
+  }
+}
+
+#player {
+  position: fixed;
+  bottom: 0;
+  width: 672px;
+  z-index: 100;
+  font-size: x-small;
+  box-sizing: border-box;
+  min-height: 56px;
+  margin-left: -16px;
+  background-color: rgba(255, 255, 255, 0.95);
+
+  h2 {
+    font-size: small;
+  }
+
+  .artwork {
+    width: 56px;
+    height: 56px;
+    margin: 0;
+  }
+
+  .meta {
+    float: left;
+    margin-left: 0;
+    margin-right: 16px;
+
+    .genre, .release {
+      font-size: x-small;
+      margin-top: 4px;
+    }
+  }
+
+  .preview {
+    margin: 0;
+    padding-top: 2px;
+    audio {
+      width: 100%;
+    }
+    span {
+      font-size: x-small;
+    }
+  }
+
+  .banner {
+    float: right;
+    margin-top: 8px;
+    margin-right: 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #player {
+    width: 100%;
+    margin-left: -8px;
+    margin-bottom: 0px;
+    .meta {
+      width: 240px;
+      margin-right: 0;
+    }
+    .banner {
+      margin: 0;
+      img {
+        height: 25px;
+      }
     }
   }
 }
