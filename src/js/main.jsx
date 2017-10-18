@@ -96,12 +96,16 @@ const User = ({ user }) => {
     </span>;
 };
 
-class Album extends React.PureComponent {
+class AlbumComponent extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = { expanded: props.expanded };
         this._expand = () => this.setState({ expanded: true });
         this._collapse = () => this.setState({ expanded: false });
+        this._playAll = () => {
+            this.props.playAll(this.props.tracks);
+            this.props.playNext();
+        };
     }
 
     componentWillReceiveProps(newProps) {
@@ -118,7 +122,10 @@ class Album extends React.PureComponent {
 
         return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
             <div className="album-meta">
-                <h2>「{first.collection_name}」</h2>
+                <h2>
+                    「{first.collection_name}」
+                    <button className="play-button" onClick={this._playAll}>▶</button>
+                </h2>
             </div>
             <div className="album-tracks" key="tracks">
                 <Track track={first} key={first.track_id} />
@@ -136,6 +143,10 @@ class Album extends React.PureComponent {
         </div>;
     }
 }
+const Album = connect(
+    undefined,
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(AlbumComponent);
 
 const GroupedTracks = ({ tracks, albumExpanded }) => {
     return tracks.reduce((albums, track) => {
@@ -352,8 +363,9 @@ class Genres extends React.PureComponent {
 }
 
 const Player = connect(
-    (state) => { return { track: state.currentTrack }; }
-)(({ track }) => {
+    (state) => { return { track: state.currentTrack }; },
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(({ track, playNext }) => {
     if (track) {
         return <div id="player" className="track">
             <div className="image" >
@@ -375,7 +387,14 @@ const Player = connect(
             </div>
             <div className="clear"></div>
             <div className="preview">
-                <audio src={track.preview_url} controls ref={(audio) => audio && audio.load()} onCanPlay={event => event.target.play()}></audio><br />
+                <audio
+                    src={track.preview_url}
+                    controls
+                    ref={(audio) => audio && audio.load()}
+                    onCanPlay={event => event.target.play()}
+                    onPause={() => playNext()}
+                ></audio>
+                <br />
                 <span>provided courtesy of iTunes</span>
             </div>
         </div >;
@@ -441,6 +460,8 @@ const App = () => {
 };
 
 const PLAY = "play";
+const PLAY_ALL = "play_all";
+const PLAY_NEXT = "play_next";
 
 const actions = {
     play: (track) => {
@@ -448,19 +469,48 @@ const actions = {
             type: PLAY,
             track: track
         };
+    },
+    playAll: (tracks) => {
+        return {
+            type: PLAY_ALL,
+            tracks: tracks
+        };
+    },
+    playNext: () => {
+        return {
+            type: PLAY_NEXT
+        };
     }
 };
 
 const defaultState = {
-    currentTrack: null
+    currentTrack: null,
+    playList: []
 };
 
 const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case PLAY:
+        case PLAY: {
             return { ...state, currentTrack: action.track };
-        default:
+        }
+        case PLAY_ALL: {
+            return { ...state, playList: action.tracks };
+        }
+        case PLAY_NEXT: {
+            const nextTrack = state.playList[0];
+            if (nextTrack) {
+                return {
+                    ...state,
+                    currentTrack: nextTrack,
+                    playList: state.playList.slice(1, state.playList.length)
+                };
+            } else {
+                return state;
+            }
+        }
+        default: {
             return state;
+        }
     }
 };
 
