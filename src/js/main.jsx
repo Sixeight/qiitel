@@ -277,27 +277,43 @@ class TracksPage extends React.PureComponent {
         const components = [
             <div id="description" key="description">
                 <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+                <ul id="view">
+                    <li>
+                        <button>
+                            <i className="fa fa-list-ul" aria-hidden="true"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button>
+                            <i className="fa fa-th-large" aria-hidden="true"></i>
+                        </button>
+                    </li>
+                </ul>
             </div>,
+            // ↑ 押下で.trackの表示切り替えが出来たらいいな 😕
             <nav id="menu" key="menu">
-                <ul>
+                <ul id="menu-primary">
                     <li>
                         <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
+                            <i className="fa fa-sort" aria-hidden="true"></i>
                             {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
                         </button>
                     </li>
-                    {this.state.mode === "album" &&
-                        <li>
-                            <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
-                                {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
-                            </button>
-                        </li>
-                    }
                     <li>
                         <button onClick={this._scrollToTop}>
+                            <i className="fa fa-chevron-circle-up" aria-hidden="true"></i>
                             先頭にもどる
                         </button>
                     </li>
                 </ul>
+                {this.state.mode === "album" &&
+                <ul id="menu-secondary">
+                    <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
+                        <i className="fa fa-folder" aria-hidden="true"></i>
+                        {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
+                    </button>
+                </ul>
+                }
             </nav>,
             <div id="tracks" key="tracks" >
                 {this.state.mode === "album" ?
@@ -337,6 +353,7 @@ class Genres extends React.PureComponent {
 
     render() {
         return <aside id="genres">
+            <h2>ジャンル</h2>
             <ul>
                 <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
                 {this.state.genreNames.map(genreName => {
@@ -366,9 +383,9 @@ const GenreTracksPage = ({ match }) => {
     const genre = match.params.genre;
 
     return <div id="contents">
+        <Header genre={genre} />
         <article>
             <div id="main">
-                <Header genre={genre} />
                 <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
             </div>
             <div id="side">
@@ -383,9 +400,9 @@ const UserTracksPage = ({ match }) => {
     const user = match.params.user;
 
     return <div id="contents">
+        <Header user={user} />
         <article>
             <div id="main">
-                <Header user={user} />
                 <TracksPage key={user} user={user} api={`/api/users/${user}`} />
             </div>
             <div id="side">
