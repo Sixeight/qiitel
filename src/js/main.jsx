@@ -102,10 +102,7 @@ class AlbumComponent extends React.PureComponent {
         this.state = { expanded: props.expanded };
         this._expand = () => this.setState({ expanded: true });
         this._collapse = () => this.setState({ expanded: false });
-        this._playAll = () => {
-            this.props.playAll(this.props.tracks);
-            this.props.playNext();
-        };
+        this._playAll = () => this.props.playAll(this.props.tracks);
     }
 
     componentWillReceiveProps(newProps) {
@@ -226,10 +223,8 @@ class TracksPageComponent extends React.PureComponent {
         this._albumExpand = () => changeExpanded(true);
         this._albumCollapse = () => changeExpanded(false);
         this._scrollToTop = () => window.scrollTo(0, 0);
-        this._playAll = () => {
-            this.props.playAll(this.state.tracks);
-            this.props.playNext();
-        };
+        this._playAll = () => this.props.playAll(this.state.tracks);
+        this._clear = () => this.props.clear();
     }
 
     componentDidMount() {
@@ -295,10 +290,17 @@ class TracksPageComponent extends React.PureComponent {
         const components = [
             <div id="description" key="description">
                 <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
-                <button className="play-button" onClick={this._playAll}>まとめて聴く</button>
             </div>,
             <nav id="menu" key="menu">
                 <ul>
+                    <li className="minimum">
+                        <button className="play-button" onClick={this._playAll}>▶</button>
+                    </li>
+                    <li className="minimum">
+                        <button className="stop-button" disabled={!this.props.playing} onClick={this.props.playing ? this._clear : () => { }}>
+                            ■
+                        </button>
+                    </li>
                     <li>
                         <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
                             {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
@@ -338,7 +340,7 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    undefined,
+    (state) => { return { playing: state.currentTrack || state.playList.length > 0 }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
@@ -470,6 +472,7 @@ const App = () => {
 const PLAY = "play";
 const PLAY_ALL = "play_all";
 const PLAY_NEXT = "play_next";
+const CLEAR = "clear";
 
 const actions = {
     play: (track) => {
@@ -488,6 +491,11 @@ const actions = {
         return {
             type: PLAY_NEXT
         };
+    },
+    clear: () => {
+        return {
+            type: CLEAR
+        };
     }
 };
 
@@ -496,13 +504,17 @@ const defaultState = {
     playList: []
 };
 
-const reducer = (state = defaultState, action) => {
+const reducer = (state = { ...defaultState }, action) => {
     switch (action.type) {
         case PLAY: {
             return { ...state, currentTrack: action.track, playList: [] };
         }
         case PLAY_ALL: {
-            return { ...state, playList: action.tracks };
+            return {
+                ...state,
+                currentTrack: action.tracks[0],
+                playList: action.tracks.slice(1, action.tracks.length)
+            };
         }
         case PLAY_NEXT: {
             const nextTrack = state.playList[0];
@@ -515,6 +527,9 @@ const reducer = (state = defaultState, action) => {
             } else {
                 return state;
             }
+        }
+        case CLEAR: {
+            return { ...defaultState };
         }
         default: {
             return state;

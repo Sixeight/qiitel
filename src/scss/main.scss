@@ -75,6 +75,18 @@ a {
   li {
     display: inline-block;
     padding: 8px 4px;
+    &.minimum {
+      padding: 0 4px;
+      button {
+        padding: 0 4px;
+        &:hover {
+          text-decoration: none;
+        }
+        &:disabled {
+          visibility: hidden;
+        }
+      }
+    }
     &:last-child {
       position: absolute;
       right: 0;
@@ -104,18 +116,6 @@ a {
 }
 
 #description {
-  p {
-    margin-bottom: 4px;
-  }
-  .play-button {
-    border: none;
-    background-color: #fefefe;
-
-    &:after {
-      content: "▶";
-      margin-left: 8px;
-    }
-  }
 }
 
 #tracks {
