@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { createStore, bindActionCreators } from "redux";
+import { Provider, connect } from "react-redux";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -27,7 +29,7 @@ class Storage {
 }
 const safeStorage = new Storage();
 
-class Track extends React.PureComponent {
+class TrackComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -36,6 +38,7 @@ class Track extends React.PureComponent {
         };
 
         this._shown = this.shown.bind(this);
+        this._play = () => this.props.play(this.props.track);
     }
 
     shown() {
@@ -67,17 +70,18 @@ class Track extends React.PureComponent {
                     <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
                     {track.user && <User user={track.user} />}
                 </div>
-                {this.state.shown &&
-                    <div className="preview">
-                        <audio src={track.preview_url} preload="none" controls></audio><br />
-                        <span>provided courtesy of iTunes</span>
-                    </div>
-                }
+                <div className="play-button">
+                    <button onClick={this._play}>プレビュー</button>
+                </div>
                 <div className="clear"></div>
             </div>
         </Waypoint>;
     }
 }
+const Track = connect(
+    undefined,
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(TrackComponent);
 
 const User = ({ user }) => {
     return <span className="profile">
@@ -347,6 +351,39 @@ class Genres extends React.PureComponent {
     }
 }
 
+const Player = connect(
+    (state) => { return { track: state.currentTrack }; }
+)(({ track }) => {
+    if (track) {
+        return <div id="player" className="track">
+            <div className="image" >
+                <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
+            </div >
+            <div className="meta">
+                <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{new Date(track.released_at * 1000).getFullYear()}</span><br />
+            </div>
+            <div className="banner">
+                <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                    {
+                        track.is_streamable ?
+                            <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
+                            <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
+                    }
+                </a>
+            </div>
+            <div className="clear"></div>
+            <div className="preview">
+                <audio src={track.preview_url} controls onCanPlay={event => event.target.play()}></audio><br />
+                <span>provided courtesy of iTunes</span>
+            </div>
+        </div >;
+    } else {
+        return <noscript />;
+    }
+});
+
 const RecentTracksPage = () => {
     return <div id="contents">
         <div id="main">
@@ -392,15 +429,46 @@ const UserTracksPage = ({ match }) => {
 
 const App = () => {
     return <Router>
-        <Switch>
-            <Route exact path="/" component={RecentTracksPage} />
-            <Route path="/genres/:genre" component={GenreTracksPage} />
-            <Route path="/users/:user" component={UserTracksPage} />
-        </Switch>
+        <div>
+            <Switch>
+                <Route exact path="/" component={RecentTracksPage} />
+                <Route path="/genres/:genre" component={GenreTracksPage} />
+                <Route path="/users/:user" component={UserTracksPage} />
+            </Switch>
+            <Player />
+        </div>
     </Router>;
 };
 
+const PLAY = "play";
+
+const actions = {
+    play: (track) => {
+        return {
+            type: PLAY,
+            track: track
+        };
+    }
+};
+
+const defaultState = {
+    currentTrack: null
+};
+
+const reducer = (state = defaultState, action) => {
+    switch (action.type) {
+        case PLAY:
+            return { ...state, currentTrack: action.track };
+        default:
+            return state;
+    }
+};
+
+const store = createStore(reducer);
+
 ReactDOM.render(
-    <App />,
+    <Provider store={store}>
+        <App />
+    </Provider>,
     document.getElementById("container")
 );
