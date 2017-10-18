@@ -103,6 +103,21 @@ a {
   }
 }
 
+#description {
+  p {
+    margin-bottom: 4px;
+  }
+  .play-button {
+    border: none;
+    background-color: #fefefe;
+
+    &:after {
+      content: "▶";
+      margin-left: 8px;
+    }
+  }
+}
+
 #tracks {
   min-height: 640px;
   margin-top: 8px;

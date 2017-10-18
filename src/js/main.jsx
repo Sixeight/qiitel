@@ -195,7 +195,7 @@ const Footer = () => {
     </footer>;
 };
 
-class TracksPage extends React.PureComponent {
+class TracksPageComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -225,8 +225,11 @@ class TracksPage extends React.PureComponent {
         };
         this._albumExpand = () => changeExpanded(true);
         this._albumCollapse = () => changeExpanded(false);
-
         this._scrollToTop = () => window.scrollTo(0, 0);
+        this._playAll = () => {
+            this.props.playAll(this.state.tracks);
+            this.props.playNext();
+        };
     }
 
     componentDidMount() {
@@ -292,6 +295,7 @@ class TracksPage extends React.PureComponent {
         const components = [
             <div id="description" key="description">
                 <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+                <button className="play-button" onClick={this._playAll}>まとめて聴く</button>
             </div>,
             <nav id="menu" key="menu">
                 <ul>
@@ -333,6 +337,10 @@ class TracksPage extends React.PureComponent {
         return components;
     }
 }
+const TracksPage = connect(
+    undefined,
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(TracksPageComponent);
 
 class Genres extends React.PureComponent {
     constructor() {
