@@ -491,7 +491,7 @@ const defaultState = {
 const reducer = (state = defaultState, action) => {
     switch (action.type) {
         case PLAY: {
-            return { ...state, currentTrack: action.track };
+            return { ...state, currentTrack: action.track, playList: [] };
         }
         case PLAY_ALL: {
             return { ...state, playList: action.tracks };
