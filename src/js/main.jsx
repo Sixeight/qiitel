@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { createStore, bindActionCreators } from "redux";
+import { Provider, connect } from "react-redux";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -27,7 +29,7 @@ class Storage {
 }
 const safeStorage = new Storage();
 
-class Track extends React.PureComponent {
+class TrackComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -36,6 +38,7 @@ class Track extends React.PureComponent {
         };
 
         this._shown = this.shown.bind(this);
+        this._play = () => this.props.play(this.props.track);
     }
 
     shown() {
@@ -78,11 +81,18 @@ class Track extends React.PureComponent {
                             {track.user && <User user={track.user} />}
                         </div>
                     </div>
+                    <div className="preview">
+                        <button onClick={this._play}>プレビュー</button>
+                    </div>
                 </div>
             </div>
         </Waypoint>;
     }
 }
+const Track = connect(
+    undefined,
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(TrackComponent);
 
 const User = ({ user }) => {
     return <span className="profile">
@@ -96,12 +106,13 @@ const User = ({ user }) => {
     </span>;
 };
 
-class Album extends React.PureComponent {
+class AlbumComponent extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = { expanded: props.expanded };
         this._expand = () => this.setState({ expanded: true });
         this._collapse = () => this.setState({ expanded: false });
+        this._playAll = () => this.props.playAll(this.props.tracks);
     }
 
     componentWillReceiveProps(newProps) {
@@ -118,7 +129,10 @@ class Album extends React.PureComponent {
 
         return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
             <div className="album-meta">
-                <h2>「{first.collection_name}」</h2>
+                <h2>
+                    「{first.collection_name}」
+                    <button className="play-button" onClick={this._playAll}>▶</button>
+                </h2>
             </div>
             <div className="album-tracks" key="tracks">
                 <Track track={first} key={first.track_id} />
@@ -136,6 +150,10 @@ class Album extends React.PureComponent {
         </div>;
     }
 }
+const Album = connect(
+    undefined,
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(AlbumComponent);
 
 const GroupedTracks = ({ tracks, albumExpanded }) => {
     return tracks.reduce((albums, track) => {
@@ -184,7 +202,7 @@ const Footer = () => {
     </footer>;
 };
 
-class TracksPage extends React.PureComponent {
+class TracksPageComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -214,8 +232,9 @@ class TracksPage extends React.PureComponent {
         };
         this._albumExpand = () => changeExpanded(true);
         this._albumCollapse = () => changeExpanded(false);
-
         this._scrollToTop = () => window.scrollTo(0, 0);
+        this._playAll = () => this.props.playAll(this.state.tracks);
+        this._clear = () => this.props.clear();
     }
 
     componentDidMount() {
@@ -297,6 +316,14 @@ class TracksPage extends React.PureComponent {
             // ↑ 押下で.trackの表示切り替えが出来たらいいな 😕
             <nav id="menu" key="menu">
                 <ul id="menu-primary">
+                    <li className="minimum">
+                        <button className="play-button" onClick={this._playAll}>▶</button>
+                    </li>
+                    <li className="minimum">
+                        <button className="stop-button" disabled={!this.props.playing} onClick={this.props.playing ? this._clear : () => { }}>
+                            ■
+                        </button>
+                    </li>
                     <li>
                         <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
                             <i className="fa fa-headphones" aria-hidden="true"></i>
@@ -338,6 +365,10 @@ class TracksPage extends React.PureComponent {
         return components;
     }
 }
+const TracksPage = connect(
+    (state) => { return { playing: state.currentTrack || state.playList.length > 0 }; },
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(TracksPageComponent);
 
 class Genres extends React.PureComponent {
     constructor() {
@@ -367,6 +398,47 @@ class Genres extends React.PureComponent {
         </aside>;
     }
 }
+
+const Player = connect(
+    (state) => { return { track: state.currentTrack }; },
+    (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
+)(({ track, playNext }) => {
+    if (track) {
+        return <div id="player" className="track">
+            <div className="image" >
+                <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
+            </div >
+            <div className="meta">
+                <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{new Date(track.released_at * 1000).getFullYear()}</span><br />
+            </div>
+            <div className="banner">
+                <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                    {
+                        track.is_streamable ?
+                            <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
+                            <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
+                    }
+                </a>
+            </div>
+            <div className="clear"></div>
+            <div className="preview">
+                <audio
+                    src={track.preview_url}
+                    controls
+                    ref={(audio) => audio && audio.load()}
+                    onCanPlay={event => event.target.play()}
+                    onPause={() => playNext()}
+                ></audio>
+                <br />
+                <span>provided courtesy of iTunes</span>
+            </div>
+        </div >;
+    } else {
+        return <noscript />;
+    }
+});
 
 const RecentTracksPage = () => {
     return <div id="contents">
@@ -419,15 +491,90 @@ const UserTracksPage = ({ match }) => {
 
 const App = () => {
     return <Router>
-        <Switch>
-            <Route exact path="/" component={RecentTracksPage} />
-            <Route path="/genres/:genre" component={GenreTracksPage} />
-            <Route path="/users/:user" component={UserTracksPage} />
-        </Switch>
+        <div>
+            <Switch>
+                <Route exact path="/" component={RecentTracksPage} />
+                <Route path="/genres/:genre" component={GenreTracksPage} />
+                <Route path="/users/:user" component={UserTracksPage} />
+            </Switch>
+            <Player />
+        </div>
     </Router>;
 };
 
+const PLAY = "play";
+const PLAY_ALL = "play_all";
+const PLAY_NEXT = "play_next";
+const CLEAR = "clear";
+
+const actions = {
+    play: (track) => {
+        return {
+            type: PLAY,
+            track: track
+        };
+    },
+    playAll: (tracks) => {
+        return {
+            type: PLAY_ALL,
+            tracks: tracks
+        };
+    },
+    playNext: () => {
+        return {
+            type: PLAY_NEXT
+        };
+    },
+    clear: () => {
+        return {
+            type: CLEAR
+        };
+    }
+};
+
+const defaultState = {
+    currentTrack: null,
+    playList: []
+};
+
+const reducer = (state = { ...defaultState }, action) => {
+    switch (action.type) {
+        case PLAY: {
+            return { ...state, currentTrack: action.track, playList: [] };
+        }
+        case PLAY_ALL: {
+            return {
+                ...state,
+                currentTrack: action.tracks[0],
+                playList: action.tracks.slice(1, action.tracks.length)
+            };
+        }
+        case PLAY_NEXT: {
+            const nextTrack = state.playList[0];
+            if (nextTrack) {
+                return {
+                    ...state,
+                    currentTrack: nextTrack,
+                    playList: state.playList.slice(1, state.playList.length)
+                };
+            } else {
+                return state;
+            }
+        }
+        case CLEAR: {
+            return { ...defaultState };
+        }
+        default: {
+            return state;
+        }
+    }
+};
+
+const store = createStore(reducer);
+
 ReactDOM.render(
-    <App />,
+    <Provider store={store}>
+        <App />
+    </Provider>,
     document.getElementById("container")
 );
