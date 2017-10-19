@@ -178,9 +178,11 @@ const Tracks = ({ tracks }) => {
 };
 
 const Header = ({ genre, user }) => {
+    const title = `聴いてる${genre ? ` - ${genre}` : ""}${user ? ` - @${user}` : ""}`;
     return <header>
         <Helmet>
-            <title>{`聴いてる${genre ? ` - ${genre}` : ""}${user ? ` - @${user}` : ""}`}</title>
+            <title>{title}</title>
+            <meta property="og:title" content={title} />
         </Helmet>
         <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}{user && ` - @${user}`}</h1>
     </header>;
@@ -286,10 +288,14 @@ class TracksPageComponent extends React.PureComponent {
     render() {
         const who = this.props.user ? `@${this.props.user}` : "僕か僕の知り合い";
         const genre = this.props.genre || "";
+        const description = `${who}が最近聴いた${genre}${this.state.tracks.length}曲です。`;
 
         const components = [
             <div id="description" key="description">
-                <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+                <Helmet>
+                    <meta property="og:description" content={description} />
+                </Helmet>
+                <p>{description}</p>
             </div>,
             <nav id="menu" key="menu">
                 <ul>
