@@ -402,7 +402,10 @@ const Player = connect(
                     controls
                     ref={(audio) => audio && audio.load()}
                     onCanPlay={event => event.target.play()}
-                    onPause={() => playNext()}
+                    onPause={(event) => {
+                        const audio = event.target;
+                        if (audio.duration <= audio.currentTime) { playNext(); }
+                    }}
                 ></audio>
                 <br />
                 <span>provided courtesy of iTunes</span>
@@ -505,7 +508,7 @@ const defaultState = {
 };
 
 function pick(tracks) {
-    const copied = [ ...tracks ];
+    const copied = [...tracks];
     const [picked] = copied.splice(Math.floor(Math.random() * copied.length), 1);
     return [picked, copied];
 }
