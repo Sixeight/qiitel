@@ -49,19 +49,6 @@ a, button {
   * layout styling
   * ------------------------------------ */
 
-#container {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 8px;
-  position: relative;
-}
-
-#contents {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 120px;
-}
-
 header {
   h1 {
     margin: 0 auto;
@@ -111,8 +98,6 @@ article {
 #main {
   flex-grow: 1;
 }
-
-
 
 #side {
   flex-basis: 320px;
