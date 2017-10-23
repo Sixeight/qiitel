@@ -338,12 +338,12 @@ class TracksPageComponent extends React.PureComponent {
                     </li>
                 </ul>
                 {this.state.mode === "album" &&
-                <ul id="menu-secondary">
-                    <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
-                        <i className="fa fa-folder" aria-hidden="true"></i>
-                        {this.state.albumExpanded ? "OPEN" : "CLOSE"}
-                    </button>
-                </ul>
+                    <ul id="menu-secondary">
+                        <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
+                            <i className="fa fa-folder" aria-hidden="true"></i>
+                            {this.state.albumExpanded ? "OPEN" : "CLOSE"}
+                        </button>
+                    </ul>
                 }
             </nav>,
             <div id="tracks" key="tracks" >
