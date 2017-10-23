@@ -296,13 +296,23 @@ class TracksPageComponent extends React.PureComponent {
                 <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
                 <ul id="view">
                     <li>
-                        <button>
-                            <i className="fa fa-list-ul" aria-hidden="true"></i>
+                        <button className="play-button" onClick={this._playAll}>
+                            <i className="fa fa-play fa-fw" aria-hidden="true"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button className="stop-button" disabled={!this.props.playing} onClick={this.props.playing ? this._clear : () => { }}>
+                            <i className="fa fa-stop fa-fw" aria-hidden="true"></i>
                         </button>
                     </li>
                     <li>
                         <button>
-                            <i className="fa fa-th-large" aria-hidden="true"></i>
+                            <i className="fa fa-list-ul fa-fw" aria-hidden="true"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button>
+                            <i className="fa fa-th-large fa-fw" aria-hidden="true"></i>
                         </button>
                     </li>
                 </ul>
@@ -310,14 +320,6 @@ class TracksPageComponent extends React.PureComponent {
             // ↑ 押下で.trackの表示切り替えが出来たらいいな 😕
             <nav id="menu" key="menu">
                 <ul id="menu-primary">
-                    <li className="minimum">
-                        <button className="play-button" onClick={this._playAll}>▶</button>
-                    </li>
-                    <li className="minimum">
-                        <button className="stop-button" disabled={!this.props.playing} onClick={this.props.playing ? this._clear : () => { }}>
-                            ■
-                        </button>
-                    </li>
                     <li>
                         <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
                             <i className="fa fa-headphones" aria-hidden="true"></i>

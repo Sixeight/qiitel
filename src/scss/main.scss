@@ -193,7 +193,7 @@ article {
       margin-left: .5em;
       button {
         display: block;
-        padding: .5em .75em;
+        padding: .1em .25em;
         font-size: 2rem;
         color: #1F7AA5;
         border: solid 1px currentColor;
@@ -203,10 +203,10 @@ article {
           background-color: #1F7AA5;
         }
       }
-      &:first-child button { //activeな状態の例
-        color: #DB5D90;
-        pointer-events: none;
-      }
+      // &:first-child button { //activeな状態の例
+      //   color: #DB5D90;
+      //   pointer-events: none;
+      // }
     }
   }
 }
