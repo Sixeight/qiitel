@@ -429,7 +429,10 @@ const Player = connect(
                     controls
                     ref={(audio) => audio && audio.load()}
                     onCanPlay={event => event.target.play()}
-                    onPause={() => playNext()}
+                    onPause={(event) => {
+                        const audio = event.target;
+                        if (audio.duration <= audio.currentTime) { playNext(); }
+                    }}
                 ></audio>
                 <br />
                 <span>provided courtesy of iTunes</span>
@@ -537,25 +540,32 @@ const defaultState = {
     playList: []
 };
 
+function pick(tracks) {
+    const copied = [...tracks];
+    const [picked] = copied.splice(Math.floor(Math.random() * copied.length), 1);
+    return [picked, copied];
+}
+
 const reducer = (state = { ...defaultState }, action) => {
     switch (action.type) {
         case PLAY: {
             return { ...state, currentTrack: action.track, playList: [] };
         }
         case PLAY_ALL: {
+            const [nextTrack, rest] = pick(action.tracks);
             return {
                 ...state,
-                currentTrack: action.tracks[0],
-                playList: action.tracks.slice(1, action.tracks.length)
+                currentTrack: nextTrack,
+                playList: rest
             };
         }
         case PLAY_NEXT: {
-            const nextTrack = state.playList[0];
+            const [nextTrack, rest] = pick(state.playList);
             if (nextTrack) {
                 return {
                     ...state,
                     currentTrack: nextTrack,
-                    playList: state.playList.slice(1, state.playList.length)
+                    playList: rest
                 };
             } else {
                 return state;
