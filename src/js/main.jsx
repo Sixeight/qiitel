@@ -69,19 +69,13 @@ class TrackComponent extends React.PureComponent {
                         <div className="music">
                             <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
                             <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span>
-                            {this.state.shown &&
-                                <div className="preview">
-                                    <audio src={track.preview_url} preload="none" controls></audio><br />
-                                    <span>provided courtesy of iTunes</span>
-                                </div>
-                            }
                         </div>
                         <div className="listener">
                             <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
                             {track.user && <User user={track.user} />}
                         </div>
                     </div>
-                    <div className="preview">
+                    <div className="play-button">
                         <button onClick={this._play}>プレビュー</button>
                     </div>
                 </div>
