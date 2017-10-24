@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, bindActionCreators } from "redux";
+import { createStore, applyMiddleware, bindActionCreators } from "redux";
 import { Provider, connect } from "react-redux";
+import thunk from "redux-thunk";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -475,7 +476,10 @@ const App = () => {
     </Router>;
 };
 
-const store = createStore(reducer);
+const store = createStore(
+    reducer,
+    applyMiddleware(thunk)
+);
 
 ReactDOM.render(
     <Provider store={store}>
