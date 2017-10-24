@@ -14,6 +14,9 @@ import {
 } from "react-router-dom";
 import "../scss/main.scss";
 
+import * as actions from "./redux/actions";
+import reducer from "./redux/reducers";
+
 class Storage {
     set(key, item) {
         try {
@@ -340,7 +343,7 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    (state) => { return { playing: state.currentTrack || state.playList.length > 0 }; },
+    (state) => { return { playing: state.play.currentTrack || state.play.playList.length > 0 }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
@@ -373,7 +376,7 @@ class Genres extends React.PureComponent {
 }
 
 const Player = connect(
-    (state) => { return { track: state.currentTrack }; },
+    (state) => { return { track: state.play.currentTrack }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(({ track, playNext }) => {
     if (track) {
@@ -470,81 +473,6 @@ const App = () => {
             <Player />
         </div>
     </Router>;
-};
-
-const PLAY = "play";
-const PLAY_ALL = "play_all";
-const PLAY_NEXT = "play_next";
-const CLEAR = "clear";
-
-const actions = {
-    play: (track) => {
-        return {
-            type: PLAY,
-            track: track
-        };
-    },
-    playAll: (tracks) => {
-        return {
-            type: PLAY_ALL,
-            tracks: tracks
-        };
-    },
-    playNext: () => {
-        return {
-            type: PLAY_NEXT
-        };
-    },
-    clear: () => {
-        return {
-            type: CLEAR
-        };
-    }
-};
-
-const defaultState = {
-    currentTrack: null,
-    playList: []
-};
-
-function pick(tracks) {
-    const copied = [...tracks];
-    const [picked] = copied.splice(Math.floor(Math.random() * copied.length), 1);
-    return [picked, copied];
-}
-
-const reducer = (state = { ...defaultState }, action) => {
-    switch (action.type) {
-        case PLAY: {
-            return { ...state, currentTrack: action.track, playList: [] };
-        }
-        case PLAY_ALL: {
-            const [nextTrack, rest] = pick(action.tracks);
-            return {
-                ...state,
-                currentTrack: nextTrack,
-                playList: rest
-            };
-        }
-        case PLAY_NEXT: {
-            const [nextTrack, rest] = pick(state.playList);
-            if (nextTrack) {
-                return {
-                    ...state,
-                    currentTrack: nextTrack,
-                    playList: rest
-                };
-            } else {
-                return state;
-            }
-        }
-        case CLEAR: {
-            return { ...defaultState };
-        }
-        default: {
-            return state;
-        }
-    }
 };
 
 const store = createStore(reducer);
