@@ -135,6 +135,11 @@ a {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
   border-radius: 5px;
 
+  &.selected {
+    background-color: #f5f5f5;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px;
+  }
+
   .play-button {
     position: absolute;
     right: 16px;

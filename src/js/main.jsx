@@ -51,11 +51,12 @@ class TrackComponent extends React.PureComponent {
 
     render() {
         const track = this.props.track;
+        const selected = this.props.selected;
         const releasedAt = new Date(track.released_at * 1000);
         const updatedAt = new Date(track.updated_at * 1000);
 
         return <Waypoint onEnter={this._shown}>
-            <div className="track">
+            <div className={`track${selected ? " selected" : ""}`}>
                 <div className="image">
                     <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
                     </div>
@@ -83,7 +84,7 @@ class TrackComponent extends React.PureComponent {
     }
 }
 const Track = connect(
-    undefined,
+    (state, props) => { return { selected: props.track === state.pointer.tracks[state.pointer.index] }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TrackComponent);
 
@@ -277,6 +278,8 @@ class TracksPageComponent extends React.PureComponent {
             tracks: tracks,
             nextPage: nextPage
         });
+
+        this.props.setupList(tracks);
     }
 
     fetchMoreTracks() {
@@ -480,6 +483,8 @@ const store = createStore(
     reducer,
     applyMiddleware(thunk)
 );
+
+store.dispatch(actions.watchKeyboard());
 
 ReactDOM.render(
     <Provider store={store}>
