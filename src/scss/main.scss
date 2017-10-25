@@ -133,11 +133,11 @@ a {
   margin-bottom: 10px;
   overflow-x: hidden;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
-  border-radius: 5px;
+  border-radius: 6px;
+  box-sizing: border-box;
 
   &.selected {
-    background-color: #f5f5f5;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px;
+    border-color: #aaa;
   }
 
   .play-button {
