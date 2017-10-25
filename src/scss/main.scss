@@ -123,10 +123,11 @@ article {
     font-weight: 700;
     text-align: center;
     cursor: pointer;
-    .fa {
+    .fa, i[class^='qi-'] {
       display: block;
       margin-bottom: 0.2em;
       font-size: 3rem;
+      font-weight: bold;
     }
   }
 
@@ -219,10 +220,11 @@ article {
 .track {
   display: flex;
   flex-direction: row;
+  align-items: center;
   color: #555;
   border: 1px solid #ddd;
   background-color: #fefefe;
-  padding: 8px;
+  padding: 8px 8px 12px;
   min-height: 100px;
   margin-bottom: 10px;
   // overflow-x: hidden;
@@ -230,9 +232,6 @@ article {
   border-radius: 5px;
 
   .play-button {
-    position: absolute;
-    right: 16px;
-    bottom: 12px;
 
     button {
       border: none;
@@ -253,24 +252,6 @@ article {
     margin-top: -22px;
     position: relative;
   }
-
-  // h2 {
-  //   margin: 0;
-  //   margin-bottom: 5px;
-  //   font-size: large;
-  //   border-bottom: #eee 1px solid;
-  // }
-  // a {
-  //   text-decoration: none;
-  //   color: #333;
-  //   &:hover {
-  //     text-decoration: underline;
-  //     color: #aaa;
-  //   }
-  //   &:visited {
-  //     color: #888;
-  //   }
-  // }
 }
 
 .album {
@@ -325,7 +306,6 @@ article {
     width: 100px;
     height: 100px;
     background-size: cover;
-    margin-bottom: 10px
   }
 }
 
@@ -333,24 +313,34 @@ article {
   position: relative;
   flex-grow: 1;
   margin-left: 1em;
-  h2 {
-    margin-bottom: .25em;
-    padding-bottom: .25em;
-    font-size: 2rem;
-    border-bottom: solid 1px rgba(#000,.2);
-    a {
-      color: #202020;
-    }
-  }
-
-  .meta {
+  .title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    margin-bottom: .25em;
+    padding-bottom: .25em;
+    border-bottom: solid 1px rgba(#000,.2);
+    h2 {
+      display: inline-block;
+      font-size: 2rem;
+      a {
+        color: #202020;
+      }
+    }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    .meta {
+      list-style: none;
+    }
     time {
       display: inline-block;
-      margin-right: 1em;
+      margin-left: 1em;
       color: #aaa;
       font-size: small;
     }
@@ -366,7 +356,13 @@ article {
         letter-spacing: 0;
       }
     }
-    .release {}
+    .external {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: .25em;
+      text-align: right;
+    }
     .profile {
       a {
         position: relative;

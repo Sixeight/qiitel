@@ -55,28 +55,43 @@ class TrackComponent extends React.PureComponent {
                 <div className="image">
                     <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
                     </div>
-                    <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
-                        {
-                            track.is_streamable ?
-                                <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
-                                <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
-                        }
-                    </a>
                 </div>
                 <div className="data">
-                    <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-                    <div className="meta">
-                        <div className="music">
-                            <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-                            <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span>
-                        </div>
-                        <div className="listener">
-                            <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
-                            {track.user && <User user={track.user} />}
-                        </div>
+                    <div className="title">
+                        <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                        <span className="play-button">
+                            <button onClick={this._play}>プレビュー</button>
+                        </span>
                     </div>
-                    <div className="play-button">
-                        <button onClick={this._play}>プレビュー</button>
+                    <div className="info">
+                        <ul className="meta">
+                            <li>
+                                <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">
+                                    <i className="qi-artist" aria-hidden="true"></i> <i className="fa fa-angle-right" aria-hidden="true"></i> {track.artist_name}
+                                </a>
+                            </li>
+                            <li>
+                                <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">
+                                    <i className="qi-album" aria-hidden="true"></i> <i className="fa fa-angle-right" aria-hidden="true"></i> {track.collection_name} ({releasedAt.getFullYear()})
+                                </a>
+                            </li>
+                            <li className="genre">
+                                <Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link>
+                            </li>
+                        </ul>
+                        <div className="external">
+                            <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                                {
+                                    track.is_streamable ?
+                                        <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
+                                        <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
+                                }
+                            </a>
+                            <div className="listener">
+                                {track.user && <User user={track.user} />}
+                                <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -322,7 +337,7 @@ class TracksPageComponent extends React.PureComponent {
                 <ul id="menu-primary">
                     <li>
                         <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
-                            <i className="fa fa-headphones" aria-hidden="true"></i>
+                            <i className="qi-album" aria-hidden="true"></i>
                             {this.state.mode === "track" ? "アルバム表示 OFF" : "アルバム表示 ON"}
                         </button>
                     </li>
@@ -422,6 +437,7 @@ const Player = connect(
             <div className="preview">
                 <audio
                     src={track.preview_url}
+                    volume="0.1"
                     controls
                     ref={(audio) => audio && audio.load()}
                     onCanPlay={event => event.target.play()}
