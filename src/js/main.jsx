@@ -207,7 +207,7 @@ const Header = ({ genre, user }) => {
 
 const Footer = () => {
     return <footer>
-        &copy; 2016-2017 <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a>
+        &copy; 2017 <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a> / <a href="https://twitter.com/sailtask">@sailtask</a>
     </footer>;
 };
 
