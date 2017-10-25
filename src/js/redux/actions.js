@@ -5,6 +5,7 @@ export const PLAY_NEXT = "play_next";
 export const CLEAR = "clear";
 
 // Keyboard
+export const MOVE_RESET = "move_reset";
 export const MOVE_DOWN = "move_down";
 export const MOVE_UP = "move_up";
 export const SETUP_LIST = "setup_list";
@@ -35,6 +36,12 @@ export const clear = () => {
     };
 };
 
+export const moveReset = () => {
+    return {
+        type: MOVE_RESET
+    };
+};
+
 export const moveDown = () => {
     return {
         type: MOVE_DOWN
@@ -51,6 +58,13 @@ export const setupList = (tracks) => {
     return {
         type: SETUP_LIST,
         tracks: tracks
+    };
+};
+
+export const focus = (element) => {
+    return () => {
+        const top = element.offsetTop - (window.innerHeight / 2);
+        window.scrollTo(0, top);
     };
 };
 

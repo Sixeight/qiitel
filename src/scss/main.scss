@@ -137,7 +137,8 @@ a {
   box-sizing: border-box;
 
   &.selected {
-    border-color: #aaa;
+    border-color: #888;
+    transform: scale(1.02);
   }
 
   .play-button {

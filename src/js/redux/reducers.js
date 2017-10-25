@@ -47,8 +47,11 @@ const playReducer = (state = { ...defaultState }, action) => {
     }
 };
 
-const pointerReducer = (state = { index: 0, tracks: [] }, action) => {
+const pointerReducer = (state = { index: -1, tracks: [] }, action) => {
     switch (action.type) {
+        case actions.MOVE_RESET: {
+            return { ...state, index: -1 };
+        }
         case actions.MOVE_DOWN: {
             return { ...state, index: Math.min(state.index + 1, state.tracks.length - 1) };
         }
