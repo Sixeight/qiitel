@@ -7,6 +7,9 @@ $linkColor_hvr   : lighten($linkColor,10%);
 $activeColor     : #DB5D90;
 $activeColor_hvr : lighten($activeColor,10%);
 
+$playColor       : #FDAB3C;
+$playColor_hvr   : lighten($playColor,10%);
+
 /* ---------------------------------------
  * import setting
  * ------------------------------------ */
@@ -232,57 +235,76 @@ article {
   .play-button {
 
     button {
+      display: flex;
+      align-items: center;
+      background-color: transparent;
       border: none;
-      background: #fefefe;
+      color: $playColor;
       cursor: pointer;
-
-      &:after {
-        content: "▶";
-        margin-left: 4px;
+      .fa {
+        margin-left: .25em;
+        font-size: 2.8rem;
       }
     }
-  }
-
-  &.dummy {
-    min-height: 2px;
-    height: 2px;
-    border-top: 0px;
-    margin-top: -22px;
-    position: relative;
   }
 }
 
 .album {
-  margin: 40px 0;
+  margin: 2em 0;
+  padding: .5em;
+  border: solid 1px #999;
+  border-radius: 2px;
   a:hover {
     text-decoration: underline;
     cursor: pointer;
   }
   .album-meta {
-    font-size: small;
-    margin-bottom: 4px;
-    h2 {
-      margin: 0;
-      padding-bottom: 8px;
-      color: #555;
-      border-bottom: 1px solid #eee;
-
-      button {
-        border: none;
-        background-color: #fefefe;
-        cursor: pointer;
+    margin-bottom: 1em;
+    button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      background-color: $playColor;
+      h2 {
+        padding: .5em;
+        font-size: 2rem;
+        letter-spacing: .125em;
+        color: #fff;
+        i[class^='qi-'] {
+          font-size: 2rem;
+          font-weight: bold;
+          margin-right: .5em;
+          line-height: 1;
+        }
       }
     }
   }
   .album-tracks {
     padding: 8px;
+    .stacks {
+      .stack {
+        margin: 0 auto 2px;
+        padding: 0;
+        min-height: 4px;
+        background-color: #dedede;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        &:nth-child(1) { width: 98%; opacity:  1; margin-top: -6px;}
+        &:nth-child(2) { width: 97%; opacity: .8;}
+        &:nth-child(3) { width: 96%; opacity: .4;}
+        &:nth-child(n+4) {
+          visibility: hidden;
+          min-height: 0;
+        }
+      }
+    }
   }
   &.expanded .album-tracks {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
   }
   .rest {
-    font-size: small;
+    font-size: 1.1rem;
     margin-top: -5px;
     padding-left: 16px;
     a {
@@ -340,7 +362,7 @@ article {
       display: inline-block;
       margin-left: 1em;
       color: #aaa;
-      font-size: small;
+      font-size: 1.1rem;
     }
     .genre {
       display: inline-block;
@@ -434,6 +456,7 @@ article {
     .play-button {
       right: 8px;
       bottom: 4px;
+
     }
   }
 }
@@ -443,12 +466,12 @@ article {
 }
 
 .preview span {
-  font-size: small;
+  font-size: 1.1rem;
   margin-top: -5px;
 }
 
 .read-more {
-  font-size: small;
+  font-size: 1.1rem;
   text-align: center;
   cursor: pointer;
   &:hover {
@@ -512,7 +535,7 @@ article {
   background-color: rgba(255, 255, 255, 0.95);
 
   h2 {
-    font-size: small;
+    font-size: 1.1rem;
   }
 
   .artwork {

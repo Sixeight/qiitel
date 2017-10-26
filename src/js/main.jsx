@@ -60,7 +60,7 @@ class TrackComponent extends React.PureComponent {
                     <div className="title">
                         <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                         <span className="play-button">
-                            <button onClick={this._play}>プレビュー</button>
+                            <button onClick={this._play}>プレビュー<i class="fa fa-play-circle-o" aria-hidden="true"></i></button>
                         </span>
                     </div>
                     <div className="info">
@@ -138,18 +138,21 @@ class AlbumComponent extends React.PureComponent {
 
         return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
             <div className="album-meta">
-                <h2>
-                    「{first.collection_name}」
-                    <button className="play-button" onClick={this._playAll}>▶</button>
-                </h2>
+                <button className="play-button" onClick={this._playAll}>
+                    <h2>
+                        <i className="qi-album" aria-hidden="true"></i>{first.collection_name}
+                    </h2>
+                </button>
             </div>
             <div className="album-tracks" key="tracks">
                 <Track track={first} key={first.track_id} />
-                {rest.map((track, i) => {
-                    return this.state.expanded ?
-                        <Track track={track} key={track.track_id} /> :
-                        <div className="track dummy" style={{ zIndex: -(i + 1) }} key={track.track_id} />;
-                })}
+                <div className="stacks">
+                    {rest.map((track) => {
+                        return this.state.expanded ?
+                            <Track track={track} key={track.track_id} /> :
+                            <div className="stack" key={track.track_id} />;
+                    })}
+                </div>
             </div>
             {this.state.expanded ||
                 <div className="rest" key="rest">
