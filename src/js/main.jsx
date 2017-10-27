@@ -139,9 +139,8 @@ class AlbumComponent extends React.PureComponent {
         return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
             <div className="album-meta">
                 <button className="play-button" onClick={this._playAll}>
-                    <h2>
-                        <i className="qi-album" aria-hidden="true"></i>{first.collection_name}
-                    </h2>
+                    <h2><i className="qi-album" aria-hidden="true"></i>{first.collection_name}</h2>
+                    <span className="play-button">まとめてプレビュー<i class="fa fa-play-circle-o" aria-hidden="true"></i></span>
                 </button>
             </div>
             <div className="album-tracks" key="tracks">

@@ -2,8 +2,8 @@
  * variable setting
  * ------------------------------------ */
 
-$linkColor       : #1F7AA5;
-$linkColor_hvr   : lighten($linkColor,10%);
+$linkColor       : #2E8AF7; //#1F7AA5;
+$linkColor_hvr   : darken($linkColor,10%);
 $activeColor     : #DB5D90;
 $activeColor_hvr : lighten($activeColor,10%);
 
@@ -57,7 +57,9 @@ header {
     margin: 0 auto;
     padding: .25em 1.5%;
     width: 100%;
-    background-image: linear-gradient(to left, #96deda 0%, #50c9c3 100%);
+    // background-image: linear-gradient(to left, #96deda 0%, #50c9c3 100%);
+    // background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+    background-image: linear-gradient(120deg,  #f68084 0%, #ec77ab 50%, #7873f5 100%);
     border-top: dotted 1px #202020;
     font-size: 3.2rem;
     line-height: 1.6;
@@ -233,7 +235,6 @@ article {
   border-radius: 5px;
 
   .play-button {
-
     button {
       display: flex;
       align-items: center;
@@ -252,8 +253,9 @@ article {
 .album {
   margin: 2em 0;
   padding: .5em;
-  border: solid 1px #999;
-  border-radius: 2px;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-radius: 4px;
   a:hover {
     text-decoration: underline;
     cursor: pointer;
@@ -261,21 +263,39 @@ article {
   .album-meta {
     margin-bottom: 1em;
     button {
-      display: block;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: .5em 1em;
       width: 100%;
       text-align: left;
       cursor: pointer;
       background-color: $playColor;
+      &:hover {
+        background-color: $playColor_hvr;
+      }
       h2 {
-        padding: .5em;
         font-size: 2rem;
         letter-spacing: .125em;
         color: #fff;
         i[class^='qi-'] {
-          font-size: 2rem;
+          font-size: 2.4rem;
           font-weight: bold;
-          margin-right: .5em;
+          margin-right: .25em;
           line-height: 1;
+        }
+      }
+      .play-button {
+        display: flex;
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        .fa {
+          margin-left: .25em;
+          font-size: 2.8rem;
         }
       }
     }
@@ -340,12 +360,21 @@ article {
     align-items: center;
     margin-bottom: .25em;
     padding-bottom: .25em;
+    width: 100%;
     border-bottom: solid 1px rgba(#000,.2);
     h2 {
       display: inline-block;
+      width: 75%;
       font-size: 2rem;
       a {
         color: #202020;
+      }
+    }
+    .play-button {
+      display: block;
+      width: 25%;
+      button {
+        float: right;
       }
     }
   }
@@ -456,7 +485,6 @@ article {
     .play-button {
       right: 8px;
       bottom: 4px;
-
     }
   }
 }
