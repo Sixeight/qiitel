@@ -115,9 +115,6 @@ a {
   }
 }
 
-#description {
-}
-
 #tracks {
   min-height: 640px;
   margin-top: 8px;
@@ -148,7 +145,7 @@ a {
 
     button {
       border: none;
-      background: #fefefe;
+      background-color: transparent;
       cursor: pointer;
 
       &:after {
