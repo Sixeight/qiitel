@@ -201,16 +201,15 @@ export const watchKeyboard = () => {
                 }
                 case "Enter":
                 case "KeyP": {
-                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
-                    if (selectedTrack) {
-                        event.preventDefault();
-                        dispatch(play(selectedTrack));
-                        dispatch(switchPointer(false));
+                    if (event.shiftKey) {
+                        dispatch(playAll(getState().app.pointer.tracks));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            event.preventDefault();
+                            dispatch(play(selectedTrack));
+                        }
                     }
-                    break;
-                }
-                case "KeyA": {
-                    dispatch(playAll(getState().app.pointer.tracks));
                     dispatch(switchPointer(false));
                     break;
                 }
@@ -222,6 +221,31 @@ export const watchKeyboard = () => {
                 }
                 case "Tab": {
                     dispatch(switchPointer(false));
+                    break;
+                }
+                case "KeyL": {
+                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                    if (selectedTrack) {
+                        const selectedCollectionId = selectedTrack.collection_id;
+                        const albumExpanded = app.list.albumExpandMap[selectedCollectionId] || false;
+                        dispatch(changeAlbumExpandedSingle(selectedCollectionId, !albumExpanded));
+                    }
+                    break;
+                }
+                case "KeyA": {
+                    if (event.shiftKey) {
+                        const nextMode = app.list.albumMode === albumMode.expanded ? albumMode.collapsed : albumMode.expanded;
+                        dispatch(changeAlbumMode(nextMode));
+                    } else {
+                        const nextMode = app.list.mode === listMode.album ? listMode.track : listMode.album;
+                        dispatch(changeListMode(nextMode));
+                    }
+                    dispatch(switchPointer(false));
+                    break;
+                }
+                case "KeyT": {
+                    window.scrollTo(0, 0);
+                    dispatch(moveReset());
                     break;
                 }
                 default:
