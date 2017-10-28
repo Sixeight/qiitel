@@ -185,7 +185,7 @@ export const watchKeyboard = () => {
         return previousIndex;
     };
 
-    const findAlbumTrack = (state) => {
+    const findAlbumTrackIndex = (state) => {
         const pointer = state.app.pointer;
         const selectedTrack = pointer.tracks[pointer.index];
         if (!selectedTrack) {
@@ -231,7 +231,15 @@ export const watchKeyboard = () => {
                         const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             event.preventDefault();
-                            dispatch(play(selectedTrack));
+                            const albumExpanded = list.albumExpandMap[selectedTrack.collection_id] || false;
+                            if (list.mode === listMode.album && list.albumMode === albumMode.collapsed && !albumExpanded) {
+                                const albumTrackIndex = findAlbumTrackIndex(getState());
+                                const tracks = pointer.tracks.slice(albumTrackIndex);
+                                const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
+                                dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
+                            } else {
+                                dispatch(play(selectedTrack));
+                            }
                             dispatch(switchPointer(false));
                         }
                     }
@@ -253,7 +261,7 @@ export const watchKeyboard = () => {
                         const selectedCollectionId = selectedTrack.collection_id;
                         const albumExpanded = list.albumExpandMap[selectedCollectionId] || false;
                         dispatch(changeAlbumExpandedSingle(selectedCollectionId, !albumExpanded));
-                        dispatch(moveTo(findAlbumTrack(getState())));
+                        dispatch(moveTo(findAlbumTrackIndex(getState())));
                     }
                     break;
                 }
