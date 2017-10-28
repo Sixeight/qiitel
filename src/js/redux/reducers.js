@@ -1,6 +1,28 @@
 import { combineReducers } from "redux";
 
 import * as actions from "./actions";
+import safeStorage from "../storage";
+
+// リスト操作
+
+const lastMode = safeStorage.get("lastMode", "track");
+const lastAlbumMode = safeStorage.get("lastAlbumMode", "collapsed");
+const defaultListState = { mode: lastMode, albumMode: lastAlbumMode };
+
+const listReducer = (state = defaultListState, action) => {
+    switch (action.type) {
+        case actions.CHANGE_LIST_MODE: {
+            safeStorage.set("lastMode", action.mode);
+            return { ...state, mode: action.mode };
+        }
+        case actions.CHANGE_ALBUM_MODE: {
+            safeStorage.set("lastAlbumMode", action.mode);
+            return { ...state, albumMode: action.mode };
+        }
+        default:
+            return state;
+    }
+};
 
 // 再生関連
 
@@ -87,6 +109,7 @@ const genresReducer = (state = { names: [] }, action) => {
 };
 
 export default combineReducers({
+    list: listReducer,
     play: playReducer,
     pointer: pointerReducer,
     genre: genresReducer

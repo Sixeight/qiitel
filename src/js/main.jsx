@@ -20,21 +20,6 @@ import "../scss/main.scss";
 import * as actions from "./redux/actions";
 import appReducer from "./redux/reducers";
 
-class Storage {
-    set(key, item) {
-        try {
-            localStorage.setItem(key, item);
-        } catch (e) {
-            // Not supported
-        }
-    }
-
-    get(key, defaultValue = null) {
-        return localStorage.getItem(key) || defaultValue;
-    }
-}
-const safeStorage = new Storage();
-
 class TrackComponent extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -208,32 +193,19 @@ class TracksPageComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const lastMode = safeStorage.get("lastMode", "track");
-        const lastAlbumExpanded = safeStorage.get("lastAlbumExpanded", "false");
-
         this.state = {
             tracks: [],
-            nextPage: null,
-            mode: lastMode,
-            albumExpanded: (lastAlbumExpanded === "true")
+            nextPage: null
         };
 
         this.timer = null;
         this._fetchMoreTracks = this.fetchMoreTracks.bind(this);
 
-        const changeMode = (mode) => {
-            this.setState({ mode: mode });
-            safeStorage.set("lastMode", mode);
-        };
-        this._trackMode = () => changeMode("track");
-        this._albumMode = () => changeMode("album");
+        this._changeModeToTrack = () => this.props.changeListModeToTrack();
+        this._changeModeToAlbum = () => this.props.changeListModeToAlbum();
 
-        const changeExpanded = (expanded) => {
-            this.setState({ albumExpanded: expanded });
-            safeStorage.set("lastAlbumExpanded", expanded);
-        };
-        this._albumExpand = () => changeExpanded(true);
-        this._albumCollapse = () => changeExpanded(false);
+        this._expandAlbum = () => this.props.expandAlbum();
+        this._collapseAlbum = () => this.props.collapseAlbum();
         this._scrollToTop = () => {
             window.scrollTo(0, 0);
             this.props.moveReset();
@@ -320,14 +292,14 @@ class TracksPageComponent extends React.PureComponent {
                         </button>
                     </li>
                     <li>
-                        <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
-                            {this.state.mode === "track" ? "アルバムごとにまとめる" : "曲をならべる"}
+                        <button onClick={this.props.isAlbumMode ? this._changeModeToTrack : this._changeModeToAlbum}>
+                            {this.props.isAlbumMode ? "曲をならべる" : "アルバムごとにまとめる"}
                         </button>
                     </li>
-                    {this.state.mode === "album" &&
+                    {this.props.isAlbumMode &&
                         <li>
-                            <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
-                                {this.state.albumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
+                            <button onClick={this.props.isAlbumExpanded ? this._collapseAlbum : this._expandAlbum}>
+                                {this.props.isAlbumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
                             </button>
                         </li>
                     }
@@ -339,8 +311,8 @@ class TracksPageComponent extends React.PureComponent {
                 </ul>
             </nav>,
             <div id="tracks" key="tracks" >
-                {this.state.mode === "album" ?
-                    <GroupedTracks tracks={this.state.tracks} albumExpanded={this.state.albumExpanded} /> :
+                {this.props.isAlbumMode ?
+                    <GroupedTracks tracks={this.state.tracks} albumExpanded={this.props.isAlbumExpanded} /> :
                     <Tracks tracks={this.state.tracks} />
                 }
             </div>
@@ -358,7 +330,13 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    (state) => { return { playing: state.app.play.currentTrack || state.app.play.playList.length > 0 }; },
+    (state) => {
+        return {
+            playing: state.app.play.currentTrack || state.app.play.playList.length > 0,
+            isAlbumMode: state.app.list.mode === "album",
+            isAlbumExpanded: state.app.list.albumMode === "expanded"
+        };
+    },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 

@@ -1,5 +1,9 @@
 import "whatwg-fetch";
 
+// List
+export const CHANGE_LIST_MODE = "change_list_mode";
+export const CHANGE_ALBUM_MODE = "change_album_mode";
+
 // Play
 export const PLAY = "play";
 export const PLAY_ALL = "play_all";
@@ -15,6 +19,34 @@ export const SETUP_LIST = "setup_list";
 
 // Genre
 export const UPDATE_GENRES = "fetch_genres";
+
+// Action creators
+
+export const changeListModeToTrack = () => {
+    return changeListMode("track");
+};
+export const changeListModeToAlbum = () => {
+    return changeListMode("album");
+};
+const changeListMode = (mode) => {
+    return {
+        type: CHANGE_LIST_MODE,
+        mode: mode
+    };
+};
+
+export const collapseAlbum = () => {
+    return changeAlbumMode("collapsed");
+};
+export const expandAlbum = () => {
+    return changeAlbumMode("expanded");
+};
+const changeAlbumMode = (mode) => {
+    return {
+        type: CHANGE_ALBUM_MODE,
+        mode: mode
+    };
+};
 
 export const play = (track) => {
     return {
