@@ -89,11 +89,21 @@ export const watchKeyboard = () => {
                 }
                 case "KeyP": {
                     event.preventDefault();
-                    const pointer = getState().pointer;
+                    const pointer = getState().app.pointer;
                     const selectedTrack = pointer.tracks[pointer.index];
                     if (selectedTrack) {
                         dispatch(play(selectedTrack));
                     }
+                    break;
+                }
+                case "KeyA": {
+                    event.preventDefault();
+                    dispatch(playAll(getState().app.pointer.tracks));
+                    break;
+                }
+                case "KeyS": {
+                    event.preventDefault();
+                    dispatch(clear());
                     break;
                 }
                 case "Escape": {
