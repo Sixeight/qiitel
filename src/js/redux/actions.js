@@ -194,9 +194,10 @@ export const watchKeyboard = () => {
 
         const secondTracks = tracks.slice(foundIndex + 1);
         const secondFoundIndex = secondTracks.findIndex(track => track.collection_id !== selectingAlbumTracks.collection_id);
-        if (secondFoundIndex === -1) {
+        const skippable = foundIndex === 0 || !list.albumExpandMap[selectedTrack.collection_id];
+        if (secondFoundIndex === -1 && skippable) {
             return 0;
-        } else if (foundIndex === 0 || !list.albumExpandMap[selectedTrack.collection_id]) {
+        } else if (skippable) {
             return previousIndex - (foundIndex + secondFoundIndex);
         }
         return previousIndex;
