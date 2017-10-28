@@ -185,6 +185,22 @@ export const watchKeyboard = () => {
         return previousIndex;
     };
 
+    const findAlbumTrack = (state) => {
+        const pointer = state.app.pointer;
+        const selectedTrack = pointer.tracks[pointer.index];
+        if (!selectedTrack) {
+            return -1;
+        }
+
+        const tracks = pointer.tracks.slice(0, pointer.index).reverse();
+        const foundIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
+        if (foundIndex === -1) {
+            return 0;
+        }
+
+        return pointer.index - foundIndex;
+    };
+
     return (dispatch, getState) => {
         window.addEventListener("click", () => {
             const pointer = getState().app.pointer;
@@ -235,6 +251,7 @@ export const watchKeyboard = () => {
                         const selectedCollectionId = selectedTrack.collection_id;
                         const albumExpanded = app.list.albumExpandMap[selectedCollectionId] || false;
                         dispatch(changeAlbumExpandedSingle(selectedCollectionId, !albumExpanded));
+                        dispatch(moveTo(findAlbumTrack(getState())));
                     }
                     break;
                 }
