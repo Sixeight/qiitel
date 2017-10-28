@@ -52,7 +52,9 @@ class Track < ActiveRecord::Base
     hash = {
       track_id:            self.track_id,
       track_name:          self.track_name,
+      artist_id:           self.artist_id,
       artist_name:         self.artist_name,
+      collection_id:       self.collection_id,
       collection_name:     self.collection_name,
       genre_name:          self.genre_name,
       released_at:         self.released_at.to_i,
