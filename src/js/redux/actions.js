@@ -24,9 +24,7 @@ export const CLEAR = "clear";
 // Keyboard
 export const SWITCH_POINTER = "switch_pointer";
 export const MOVE_RESET = "move_reset";
-export const MOVE_DOWN = "move_down";
 export const MOVE_TO = "move_to";
-export const MOVE_UP = "move_up";
 export const SETUP_LIST = "setup_list";
 
 // Genre
@@ -111,18 +109,6 @@ export const switchPointer = (active) => {
 export const moveReset = () => {
     return {
         type: MOVE_RESET
-    };
-};
-
-export const moveDown = () => {
-    return {
-        type: MOVE_DOWN
-    };
-};
-
-export const moveUp = () => {
-    return {
-        type: MOVE_UP
     };
 };
 

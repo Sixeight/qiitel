@@ -95,18 +95,6 @@ const pointerReducer = (state = { index: 0, tracks: [], active: false }, action)
         case actions.MOVE_RESET: {
             return { ...state, active: false, index: 0 };
         }
-        case actions.MOVE_DOWN: {
-            if (state.active) {
-                return { ...state, index: Math.min(state.index + 1, state.tracks.length - 1) };
-            }
-            return { ...state, active: true };
-        }
-        case actions.MOVE_UP: {
-            if (state.active) {
-                return { ...state, index: Math.max(state.index - 1, 0) };
-            }
-            return { ...state, active: true };
-        }
         case actions.MOVE_TO: {
             if (state.active) {
                 return { ...state, index: Math.min(Math.max(action.index, 0), state.tracks.length - 1) };
