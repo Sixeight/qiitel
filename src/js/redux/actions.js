@@ -222,25 +222,30 @@ export const watchKeyboard = () => {
                     dispatch(moveTo(findPreviousIndex(getState())));
                     break;
                 }
-                case "Enter":
                 case "KeyP": {
                     const selectedTrack = pointer.active && pointer.tracks[pointer.index];
-                    if (event.shiftKey) {
-                        if (selectedTrack) {
-                            const albumTrackIndex = findAlbumTrackIndex(getState());
-                            const tracks = pointer.tracks.slice(albumTrackIndex);
-                            const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
-                            dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
-                        } else {
-                            dispatch(playAll(pointer.tracks));
-                        }
-                        dispatch(switchPointer(false));
+                    if (selectedTrack) {
+                        const artistTracks = pointer.tracks.filter(track => track.artist_id === selectedTrack.artist_id);
+                        dispatch(playAll(artistTracks));
                     } else {
-                        if (selectedTrack) {
-                            dispatch(play(selectedTrack));
-                            dispatch(switchPointer(false));
-                        }
+                        dispatch(playAll(pointer.tracks));
                     }
+                    break;
+                }
+                case "Enter": {
+                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                    if (!selectedTrack) {
+                        break;
+                    }
+                    if (event.shiftKey) {
+                        const albumTrackIndex = findAlbumTrackIndex(getState());
+                        const tracks = pointer.tracks.slice(albumTrackIndex);
+                        const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
+                        dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
+                    } else {
+                        dispatch(play(selectedTrack));
+                    }
+                    dispatch(switchPointer(false));
                     break;
                 }
                 case "Escape":
