@@ -5,6 +5,7 @@ import { Provider, connect } from "react-redux";
 import { ConnectedRouter, routerReducer, routerMiddleware } from "react-router-redux";
 import thunk from "redux-thunk";
 import createHistory from "history/createBrowserHistory";
+import { composeWithDevTools } from "redux-devtools-extension";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -467,7 +468,9 @@ const store = createStore(
         app: appReducer,
         router: routerReducer
     }),
-    applyMiddleware(thunk, routerMiddleware(history))
+    composeWithDevTools(
+        applyMiddleware(thunk, routerMiddleware(history))
+    )
 );
 
 store.dispatch(actions.fetchGenres());
