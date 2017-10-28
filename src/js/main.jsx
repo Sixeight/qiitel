@@ -371,7 +371,7 @@ const Player = connect(
         return <div id="player" className="track">
             <div className="image" >
                 <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
-            </div >
+            </div>
             <div className="meta">
                 <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                 <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
