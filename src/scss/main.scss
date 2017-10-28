@@ -232,7 +232,13 @@ article {
   margin-bottom: 10px;
   // overflow-x: hidden;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px;
-  border-radius: 5px;
+  border-radius: 6px;
+  box-sizing: border-box;
+
+  &.selected {
+    border-color: #999;
+    background-color: #f8f8f8;
+  }
 
   .play-button {
     button {
@@ -320,8 +326,6 @@ article {
         }
       }
     }
-  }
-  &.expanded .album-tracks {
   }
   .rest {
     font-size: 1.1rem;

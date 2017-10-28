@@ -5,6 +5,7 @@ import { Provider, connect } from "react-redux";
 import { ConnectedRouter, routerReducer, routerMiddleware } from "react-router-redux";
 import thunk from "redux-thunk";
 import createHistory from "history/createBrowserHistory";
+import { composeWithDevTools } from "redux-devtools-extension";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -20,21 +21,6 @@ import "../scss/main.scss";
 import * as actions from "./redux/actions";
 import appReducer from "./redux/reducers";
 
-class Storage {
-    set(key, item) {
-        try {
-            localStorage.setItem(key, item);
-        } catch (e) {
-            // Not supported
-        }
-    }
-
-    get(key, defaultValue = null) {
-        return localStorage.getItem(key) || defaultValue;
-    }
-}
-const safeStorage = new Storage();
-
 class TrackComponent extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -45,6 +31,8 @@ class TrackComponent extends React.PureComponent {
 
         this._shown = this.shown.bind(this);
         this._play = () => this.props.play(this.props.track);
+        this._focus = (element) => this.props.focus(element);
+        this._select = () => this.props.selectTrack(this.props.track);
     }
 
     shown() {
@@ -53,11 +41,16 @@ class TrackComponent extends React.PureComponent {
 
     render() {
         const track = this.props.track;
+        const selected = this.props.selected;
         const releasedAt = new Date(track.released_at * 1000);
         const updatedAt = new Date(track.updated_at * 1000);
 
         return <Waypoint onEnter={this._shown}>
-            <div className="track">
+            <div
+                className={`track${selected ? " selected" : ""}`}
+                onClick={this._select}
+                ref={(div) => div && selected && this._focus(div)}
+            >
                 <div className="image">
                     <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
                     </div>
@@ -105,7 +98,11 @@ class TrackComponent extends React.PureComponent {
     }
 }
 const Track = connect(
-    undefined,
+    (state, props) => {
+        return {
+            selected: state.app.pointer.active && props.track === state.app.pointer.tracks[state.app.pointer.index]
+        };
+    },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TrackComponent);
 
@@ -124,25 +121,14 @@ const User = ({ user }) => {
 class AlbumComponent extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.state = { expanded: props.expanded };
-        this._expand = () => this.setState({ expanded: true });
-        this._collapse = () => this.setState({ expanded: false });
+        this._expand = () => this.props.expandAlbumSingle(this.props.tracks[0].collection_id);
         this._playAll = () => this.props.playAll(this.props.tracks);
-    }
-
-    componentWillReceiveProps(newProps) {
-        if (this.props.expanded === newProps.expanded) {
-            return;
-        }
-        if (newProps.expanded !== this.state.expanded) {
-            this.setState({ expanded: newProps.expanded });
-        }
     }
 
     render() {
         const [first, ...rest] = this.props.tracks;
 
-        return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
+        return <div className={`album${this.props.isAlbumExpanded ? " expanded" : ""}`}>
             <div className="album-meta">
                 <button className="play-button" onClick={this._playAll}>
                     <h2><i className="qi-album" aria-hidden="true"></i>{first.collection_name}</h2>
@@ -153,22 +139,28 @@ class AlbumComponent extends React.PureComponent {
                 <Track track={first} key={first.track_id} />
                 <div className="stacks">
                     {rest.map((track) => {
-                        return this.state.expanded ?
+                        return this.props.isAlbumExpanded ?
                             <Track track={track} key={track.track_id} /> :
                             <div className="stack" key={track.track_id} />;
                     })}
                 </div>
             </div>
-            {this.state.expanded ||
+            {this.props.isAlbumExpanded ||
                 <div className="rest" key="rest">
-                    <a onClick={this.state.expanded ? this._collapse : this._expand}>他{rest.length}曲をみる</a>
+                    <a onClick={this.props.isAlbumExpanded ? this._collapse : this._expand}>他{rest.length}曲をみる</a>
                 </div>
             }
         </div>;
     }
 }
 const Album = connect(
-    undefined,
+    (state, props) => {
+        const collectionId = props.tracks[0].collection_id;
+        const albumExpandMap = state.app.list.albumExpandMap;
+        return {
+            isAlbumExpanded: props.expanded || albumExpandMap[collectionId] || false
+        };
+    },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(AlbumComponent);
 
@@ -179,7 +171,7 @@ const GroupedTracks = ({ tracks, albumExpanded }) => {
         }
         const tracks = albums[albums.length - 1];
         const first = tracks[tracks.length - 1];
-        if (first === undefined || track.collection_name === first.collection_name) {
+        if (first === undefined || track.collection_id === first.collection_id) {
             tracks.push(track);
         } else {
             albums.push([track]);
@@ -223,33 +215,23 @@ class TracksPageComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const lastMode = safeStorage.get("lastMode", "track");
-        const lastAlbumExpanded = safeStorage.get("lastAlbumExpanded", "false");
-
         this.state = {
             tracks: [],
-            nextPage: null,
-            mode: lastMode,
-            albumExpanded: (lastAlbumExpanded === "true")
+            nextPage: null
         };
 
         this.timer = null;
         this._fetchMoreTracks = this.fetchMoreTracks.bind(this);
 
-        const changeMode = (mode) => {
-            this.setState({ mode: mode });
-            safeStorage.set("lastMode", mode);
-        };
-        this._trackMode = () => changeMode("track");
-        this._albumMode = () => changeMode("album");
+        this._changeModeToTrack = () => this.props.changeListModeToTrack();
+        this._changeModeToAlbum = () => this.props.changeListModeToAlbum();
 
-        const changeExpanded = (expanded) => {
-            this.setState({ albumExpanded: expanded });
-            safeStorage.set("lastAlbumExpanded", expanded);
+        this._expandAlbum = () => this.props.expandAlbum();
+        this._collapseAlbum = () => this.props.collapseAlbum();
+        this._scrollToTop = () => {
+            window.scrollTo(0, 0);
+            this.props.moveReset();
         };
-        this._albumExpand = () => changeExpanded(true);
-        this._albumCollapse = () => changeExpanded(false);
-        this._scrollToTop = () => window.scrollTo(0, 0);
         this._playAll = () => this.props.playAll(this.state.tracks);
         this._clear = () => this.props.clear();
     }
@@ -260,6 +242,7 @@ class TracksPageComponent extends React.PureComponent {
             () => this.fetchTracks(),
             10000,
         );
+        this.props.moveReset();
     }
 
     componentWillUnmount() {
@@ -300,6 +283,8 @@ class TracksPageComponent extends React.PureComponent {
             tracks: tracks,
             nextPage: nextPage
         });
+
+        this.props.setupList(tracks);
     }
 
     fetchMoreTracks() {
@@ -344,9 +329,9 @@ class TracksPageComponent extends React.PureComponent {
             <nav id="menu" key="menu">
                 <ul id="menu-primary">
                     <li>
-                        <button onClick={this.state.mode === "track" ? this._albumMode : this._trackMode}>
+                        <button onClick={this.props.isAlbumMode ? this._changeModeToTrack : this._changeModeToAlbum}>
                             <i className="qi-album" aria-hidden="true"></i>
-                            {this.state.mode === "track" ? "アルバム表示 OFF" : "アルバム表示 ON"}
+                            {this.props.isAlbumMode ? "アルバム表示 ON" : "アルバム表示 OFF"}
                         </button>
                     </li>
                     <li>
@@ -356,18 +341,18 @@ class TracksPageComponent extends React.PureComponent {
                         </button>
                     </li>
                 </ul>
-                {this.state.mode === "album" &&
+                {this.props.isAlbumMode &&
                     <ul id="menu-secondary">
-                        <button onClick={this.state.albumExpanded ? this._albumCollapse : this._albumExpand}>
+                        <button onClick={this.props.isAlbumExpanded ? this._collapseAlbum : this._expandAlbum}>
                             <i className="fa fa-folder" aria-hidden="true"></i>
-                            {this.state.albumExpanded ? "OPEN" : "CLOSE"}
+                            {this.props.isAlbumExpanded ? "OPEN" : "CLOSE"}
                         </button>
                     </ul>
                 }
             </nav>,
             <div id="tracks" key="tracks" >
-                {this.state.mode === "album" ?
-                    <GroupedTracks tracks={this.state.tracks} albumExpanded={this.state.albumExpanded} /> :
+                {this.props.isAlbumMode ?
+                    <GroupedTracks tracks={this.state.tracks} albumExpanded={this.props.isAlbumExpanded} /> :
                     <Tracks tracks={this.state.tracks} />
                 }
             </div>
@@ -385,7 +370,13 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    (state) => { return { playing: state.app.play.currentTrack || state.app.play.playList.length > 0 }; },
+    (state) => {
+        return {
+            playing: state.app.play.currentTrack || state.app.play.playList.length > 0,
+            isAlbumMode: state.app.list.mode === actions.listMode.album,
+            isAlbumExpanded: state.app.list.albumMode === actions.albumMode.expanded
+        };
+    },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
@@ -524,10 +515,13 @@ const store = createStore(
         app: appReducer,
         router: routerReducer
     }),
-    applyMiddleware(thunk, routerMiddleware(history))
+    composeWithDevTools(
+        applyMiddleware(thunk, routerMiddleware(history))
+    )
 );
 
 store.dispatch(actions.fetchGenres());
+store.dispatch(actions.watchKeyboard());
 
 ReactDOM.render(
     <Provider store={store}>
