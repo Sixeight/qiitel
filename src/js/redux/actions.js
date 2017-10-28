@@ -223,13 +223,15 @@ export const watchKeyboard = () => {
                     break;
                 }
                 case "KeyP": {
-                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
-                    if (selectedTrack) {
-                        const artistTracks = pointer.tracks.filter(track => track.artist_id === selectedTrack.artist_id);
-                        dispatch(playAll(artistTracks));
-                    } else {
-                        dispatch(playAll(pointer.tracks));
+                    if (event.shiftKey) {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            const artistTracks = pointer.tracks.filter(track => track.artist_id === selectedTrack.artist_id);
+                            dispatch(playAll(artistTracks));
+                            break;
+                        }
                     }
+                    dispatch(playAll(pointer.tracks));
                     break;
                 }
                 case "Enter": {
@@ -237,6 +239,7 @@ export const watchKeyboard = () => {
                     if (!selectedTrack) {
                         break;
                     }
+                    event.preventDefault();
                     if (event.shiftKey) {
                         const albumTrackIndex = findAlbumTrackIndex(getState());
                         const tracks = pointer.tracks.slice(albumTrackIndex);
@@ -245,7 +248,6 @@ export const watchKeyboard = () => {
                     } else {
                         dispatch(play(selectedTrack));
                     }
-                    dispatch(switchPointer(false));
                     break;
                 }
                 case "Escape":
