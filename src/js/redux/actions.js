@@ -133,6 +133,9 @@ export const focus = (element) => {
 
 export const watchKeyboard = () => {
     return (dispatch, getState) => {
+        window.addEventListener("click", () => {
+            dispatch(switchPointer(false));
+        });
         window.addEventListener("keydown", event => {
             const app = getState().app;
             const pointer = app.pointer;
