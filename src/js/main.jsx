@@ -1,8 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, applyMiddleware, bindActionCreators } from "redux";
+import { createStore, combineReducers, applyMiddleware, bindActionCreators } from "redux";
 import { Provider, connect } from "react-redux";
+import { ConnectedRouter, routerReducer, routerMiddleware } from "react-router-redux";
 import thunk from "redux-thunk";
+import createHistory from "history/createBrowserHistory";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -16,7 +18,7 @@ import {
 import "../scss/main.scss";
 
 import * as actions from "./redux/actions";
-import reducer from "./redux/reducers";
+import appReducer from "./redux/reducers";
 
 class Storage {
     set(key, item) {
@@ -344,12 +346,12 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    (state) => { return { playing: state.play.currentTrack || state.play.playList.length > 0 }; },
+    (state) => { return { playing: state.app.play.currentTrack || state.app.play.playList.length > 0 }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
 const Genres = connect(
-    (state) => { return { genreNames: state.genre.names }; }
+    (state) => { return { genreNames: state.app.genre.names }; }
 )(({ genreNames }) => {
     return <aside id="genres">
         <ul>
@@ -362,7 +364,7 @@ const Genres = connect(
 });
 
 const Player = connect(
-    (state) => { return { track: state.play.currentTrack }; },
+    (state) => { return { track: state.app.play.currentTrack }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(({ track, playNext }) => {
     if (track) {
@@ -461,16 +463,23 @@ const App = () => {
     </Router>;
 };
 
+const history = createHistory();
+
 const store = createStore(
-    reducer,
-    applyMiddleware(thunk)
+    combineReducers({
+        app: appReducer,
+        router: routerReducer
+    }),
+    applyMiddleware(thunk, routerMiddleware(history))
 );
 
 store.dispatch(actions.fetchGenres());
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <ConnectedRouter history={history}>
+            <App />
+        </ConnectedRouter>
     </Provider>,
     document.getElementById("container")
 );
