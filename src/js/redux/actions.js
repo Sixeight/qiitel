@@ -139,7 +139,7 @@ export const watchKeyboard = () => {
 
             switch (event.code) {
                 case "KeyJ": {
-                    if (app.list.mode === listMode.album) {
+                    if (app.list.mode === listMode.album && app.list.albumMode === albumMode.collapsed) {
                         const selectedTrack = pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const tracks = pointer.tracks.slice(pointer.index + 1);
@@ -152,7 +152,7 @@ export const watchKeyboard = () => {
                     break;
                 }
                 case "KeyK": {
-                    if (app.list.mode === listMode.album) {
+                    if (app.list.mode === listMode.album && app.list.albumMode === albumMode.collapsed) {
                         const selectedTrack = pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const tracks = pointer.tracks.slice(0, pointer.index).reverse();
