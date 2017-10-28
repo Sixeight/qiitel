@@ -224,22 +224,20 @@ export const watchKeyboard = () => {
                 }
                 case "Enter":
                 case "KeyP": {
+                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                     if (event.shiftKey) {
-                        dispatch(playAll(pointer.tracks));
+                        if (selectedTrack) {
+                            const albumTrackIndex = findAlbumTrackIndex(getState());
+                            const tracks = pointer.tracks.slice(albumTrackIndex);
+                            const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
+                            dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
+                        } else {
+                            dispatch(playAll(pointer.tracks));
+                        }
                         dispatch(switchPointer(false));
                     } else {
-                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
-                            event.preventDefault();
-                            const albumExpanded = list.albumExpandMap[selectedTrack.collection_id] || false;
-                            if (list.mode === listMode.album && list.albumMode === albumMode.collapsed && !albumExpanded) {
-                                const albumTrackIndex = findAlbumTrackIndex(getState());
-                                const tracks = pointer.tracks.slice(albumTrackIndex);
-                                const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
-                                dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
-                            } else {
-                                dispatch(play(selectedTrack));
-                            }
+                            dispatch(play(selectedTrack));
                             dispatch(switchPointer(false));
                         }
                     }
