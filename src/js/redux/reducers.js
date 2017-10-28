@@ -7,7 +7,11 @@ import safeStorage from "../storage";
 
 const lastMode = safeStorage.get("lastMode", actions.listMode.track);
 const lastAlbumMode = safeStorage.get("lastAlbumMode", actions.albumMode.collapsed);
-const defaultListState = { mode: lastMode, albumMode: lastAlbumMode };
+const defaultListState = {
+    mode: lastMode,
+    albumMode: lastAlbumMode,
+    albumExpandMap: {}
+};
 
 const listReducer = (state = defaultListState, action) => {
     switch (action.type) {
@@ -17,7 +21,17 @@ const listReducer = (state = defaultListState, action) => {
         }
         case actions.CHANGE_ALBUM_MODE: {
             safeStorage.set("lastAlbumMode", action.mode);
-            return { ...state, albumMode: action.mode };
+            return { ...state, albumMode: action.mode, albumExpandMap: {} };
+        }
+        case actions.CHANGE_ALBUM_EXPANDED_SINGLE: {
+            const albumExpandMap = state.albumExpandMap;
+            return {
+                ...state,
+                albumExpandMap: {
+                    ...albumExpandMap,
+                    [action.collection_id]: action.expanded
+                }
+            };
         }
         default:
             return state;

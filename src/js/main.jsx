@@ -97,25 +97,14 @@ const User = ({ user }) => {
 class AlbumComponent extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.state = { expanded: props.expanded };
-        this._expand = () => this.setState({ expanded: true });
-        this._collapse = () => this.setState({ expanded: false });
+        this._expand = () => this.props.expandAlbumSingle(this.props.tracks[0].collection_id);
         this._playAll = () => this.props.playAll(this.props.tracks);
-    }
-
-    componentWillReceiveProps(newProps) {
-        if (this.props.expanded === newProps.expanded) {
-            return;
-        }
-        if (newProps.expanded !== this.state.expanded) {
-            this.setState({ expanded: newProps.expanded });
-        }
     }
 
     render() {
         const [first, ...rest] = this.props.tracks;
 
-        return <div className={`album${this.state.expanded ? " expanded" : ""}`}>
+        return <div className={`album${this.props.isAlbumExpanded ? " expanded" : ""}`}>
             <div className="album-meta">
                 <h2>
                     「{first.collection_name}」
@@ -125,21 +114,27 @@ class AlbumComponent extends React.PureComponent {
             <div className="album-tracks" key="tracks">
                 <Track track={first} key={first.track_id} />
                 {rest.map((track, i) => {
-                    return this.state.expanded ?
+                    return this.props.isAlbumExpanded ?
                         <Track track={track} key={track.track_id} /> :
                         <div className="track dummy" style={{ zIndex: -(i + 1) }} key={track.track_id} />;
                 })}
             </div>
-            {this.state.expanded ||
+            {this.props.isAlbumExpanded ||
                 <div className="rest" key="rest">
-                    <a onClick={this.state.expanded ? this._collapse : this._expand}>他{rest.length}曲をみる</a>
+                    <a onClick={this.props.isAlbumExpanded ? this._collapse : this._expand}>他{rest.length}曲をみる</a>
                 </div>
             }
         </div>;
     }
 }
 const Album = connect(
-    undefined,
+    (state, props) => {
+        const collectionId = props.tracks[0].collection_id;
+        const albumExpandMap = state.app.list.albumExpandMap;
+        return {
+            isAlbumExpanded: props.expanded || albumExpandMap[collectionId] || false
+        };
+    },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(AlbumComponent);
 

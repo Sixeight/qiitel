@@ -3,6 +3,7 @@ import "whatwg-fetch";
 // List
 export const CHANGE_LIST_MODE = "change_list_mode";
 export const CHANGE_ALBUM_MODE = "change_album_mode";
+export const CHANGE_ALBUM_EXPANDED_SINGLE = "change_album_expanded_single";
 
 export const listMode = {
     track: "track",
@@ -58,6 +59,21 @@ const changeAlbumMode = (mode) => {
         mode: mode
     };
 };
+
+export const expandAlbumSingle = (collectionId) => {
+    return changeAlbumExpandedSingle(collectionId, true);
+};
+export const collapseAlbumSingle = (collectionId) => {
+    return changeAlbumExpandedSingle(collectionId, false);
+};
+const changeAlbumExpandedSingle = (collectionId, expanded) => {
+    return {
+        type: CHANGE_ALBUM_EXPANDED_SINGLE,
+        collection_id: collectionId,
+        expanded: expanded
+    };
+};
+
 
 export const play = (track) => {
     return {
@@ -134,7 +150,10 @@ export const focus = (element) => {
 export const watchKeyboard = () => {
     return (dispatch, getState) => {
         window.addEventListener("click", () => {
-            dispatch(switchPointer(false));
+            const pointer = getState().app.pointer;
+            if (pointer.active) {
+                dispatch(switchPointer(false));
+            }
         });
         window.addEventListener("keydown", event => {
             const app = getState().app;
