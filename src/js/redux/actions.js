@@ -145,6 +145,7 @@ export const selectTrack = (track) => {
     return (dispatch, getState) => {
         const pointer = getState().app.pointer;
         const foundIndex = pointer.tracks.indexOf(track);
+        dispatch(switchPointer(false));
         dispatch(updateIndex(foundIndex));
     };
 };
