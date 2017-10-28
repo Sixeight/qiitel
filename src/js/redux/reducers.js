@@ -51,16 +51,19 @@ const playReducer = (state = { ...defaultPlayState }, action) => {
 
 // カーソル移動
 
-const pointerReducer = (state = { index: -1, tracks: [] }, action) => {
+const pointerReducer = (state = { index: -1, tracks: [], active: false }, action) => {
     switch (action.type) {
+        case actions.SWITCH_POINTER: {
+            return { ...state, active: action.active };
+        }
         case actions.MOVE_RESET: {
-            return { ...state, index: -1 };
+            return { ...state, active: false, index: -1 };
         }
         case actions.MOVE_DOWN: {
-            return { ...state, index: Math.min(state.index + 1, state.tracks.length - 1) };
+            return { ...state, active: true, index: Math.min(state.index + 1, state.tracks.length - 1) };
         }
         case actions.MOVE_UP: {
-            return { ...state, index: Math.max(state.index - 1, 0) };
+            return { ...state, active: true, index: Math.max(state.index - 1, 0) };
         }
         case actions.SETUP_LIST: {
             return { ...state, tracks: action.tracks };

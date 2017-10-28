@@ -7,6 +7,7 @@ export const PLAY_NEXT = "play_next";
 export const CLEAR = "clear";
 
 // Keyboard
+export const SWITCH_POINTER = "switch_pointer";
 export const MOVE_RESET = "move_reset";
 export const MOVE_DOWN = "move_down";
 export const MOVE_UP = "move_up";
@@ -38,6 +39,13 @@ export const playNext = () => {
 export const clear = () => {
     return {
         type: CLEAR
+    };
+};
+
+export const switchPointer = (active) => {
+    return {
+        type: SWITCH_POINTER,
+        active: active
     };
 };
 
@@ -78,36 +86,37 @@ export const watchKeyboard = () => {
         window.addEventListener("keydown", event => {
             switch (event.code) {
                 case "KeyJ": {
-                    event.preventDefault();
                     dispatch(moveDown());
                     break;
                 }
                 case "KeyK": {
-                    event.preventDefault();
                     dispatch(moveUp());
                     break;
                 }
+                case "Enter":
                 case "KeyP": {
-                    event.preventDefault();
                     const pointer = getState().app.pointer;
-                    const selectedTrack = pointer.tracks[pointer.index];
+                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                     if (selectedTrack) {
+                        event.preventDefault();
                         dispatch(play(selectedTrack));
+                        dispatch(switchPointer(false));
                     }
                     break;
                 }
                 case "KeyA": {
-                    event.preventDefault();
                     dispatch(playAll(getState().app.pointer.tracks));
+                    dispatch(switchPointer(false));
                     break;
                 }
+                case "Escape":
                 case "KeyS": {
-                    event.preventDefault();
                     dispatch(clear());
+                    dispatch(switchPointer(false));
                     break;
                 }
-                case "Escape": {
-                    dispatch(clear());
+                case "Tab": {
+                    dispatch(switchPointer(false));
                     break;
                 }
                 default:

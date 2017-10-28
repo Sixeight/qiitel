@@ -87,7 +87,11 @@ class TrackComponent extends React.PureComponent {
     }
 }
 const Track = connect(
-    (state, props) => { return { selected: props.track === state.app.pointer.tracks[state.app.pointer.index] }; },
+    (state, props) => {
+        return {
+            selected: state.app.pointer.active && props.track === state.app.pointer.tracks[state.app.pointer.index]
+        };
+    },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TrackComponent);
 
@@ -230,7 +234,10 @@ class TracksPageComponent extends React.PureComponent {
         };
         this._albumExpand = () => changeExpanded(true);
         this._albumCollapse = () => changeExpanded(false);
-        this._scrollToTop = () => window.scrollTo(0, 0);
+        this._scrollToTop = () => {
+            window.scrollTo(0, 0);
+            this.props.moveReset();
+        };
         this._playAll = () => this.props.playAll(this.state.tracks);
         this._clear = () => this.props.clear();
     }
