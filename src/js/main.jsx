@@ -455,7 +455,7 @@ const App = () => {
         <div>
             <Switch>
                 <Route exact path="/" component={RecentTracksPage} />
-                <Route path="/genres/:genre" component={GenreTracksPage} />
+                <Route path="/genres/:genre+" component={GenreTracksPage} />
                 <Route path="/users/:user" component={UserTracksPage} />
             </Switch>
             <Player />
