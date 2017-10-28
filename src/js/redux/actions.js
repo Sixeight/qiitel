@@ -161,9 +161,10 @@ export const watchKeyboard = () => {
 
             switch (event.code) {
                 case "KeyJ": {
-                    if (app.list.mode === listMode.album && app.list.albumMode === albumMode.collapsed) {
+                    const list = app.list;
+                    if (list.mode === listMode.album && list.albumMode === albumMode.collapsed) {
                         const selectedTrack = pointer.tracks[pointer.index];
-                        if (selectedTrack) {
+                        if (selectedTrack && !list.albumExpandMap[selectedTrack.collection_id]) {
                             const tracks = pointer.tracks.slice(pointer.index + 1);
                             const foundIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
                             dispatch(moveTo(pointer.index + 1 + foundIndex));
@@ -174,22 +175,24 @@ export const watchKeyboard = () => {
                     break;
                 }
                 case "KeyK": {
-                    if (app.list.mode === listMode.album && app.list.albumMode === albumMode.collapsed) {
+                    const list = app.list;
+                    if (list.mode === listMode.album && list.albumMode === albumMode.collapsed) {
                         const selectedTrack = pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const tracks = pointer.tracks.slice(0, pointer.index).reverse();
                             const foundIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
 
                             const selectingAlbumTracks = tracks[foundIndex];
-                            if (selectingAlbumTracks) {
+                            if (selectingAlbumTracks && !list.albumExpandMap[selectingAlbumTracks.collection_id]) {
                                 const secondTracks = tracks.slice(foundIndex + 1);
                                 const secondFoundIndex = secondTracks.findIndex(track => track.collection_id !== selectingAlbumTracks.collection_id);
                                 if (secondFoundIndex === -1) {
                                     dispatch(moveTo(0));
-                                } else {
+                                    break;
+                                } else if (foundIndex === 0 || !list.albumExpandMap[selectedTrack.collection_id]) {
                                     dispatch(moveTo(pointer.index - 1 - (foundIndex + secondFoundIndex)));
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }
