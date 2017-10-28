@@ -422,11 +422,12 @@ const RecentTracksPage = () => {
 
 const GenreTracksPage = ({ match }) => {
     const genre = match.params.genre;
+    const decodedGenre = decodeURIComponent(genre);
 
     return <div id="contents">
         <div id="main">
-            <Header genre={genre} />
-            <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
+            <Header genre={decodedGenre} />
+            <TracksPage key={genre} genre={decodedGenre} api={`/api/genres/${genre}`} />
             <Footer />
         </div>
         <div id="side">
