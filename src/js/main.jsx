@@ -348,33 +348,18 @@ const TracksPage = connect(
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
-class Genres extends React.PureComponent {
-    constructor() {
-        super();
-        this.state = {
-            genreNames: []
-        };
-    }
-
-    componentDidMount() {
-        fetch("/api/genres")
-            .then(res => res.json())
-            .then(json => this.setState({
-                genreNames: json.genre_names
-            }));
-    }
-
-    render() {
-        return <aside id="genres">
-            <ul>
-                <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
-                {this.state.genreNames.map(genreName => {
-                    return <li key={genreName}><NavLink to={`/genres/${encodeURIComponent(genreName)}`} activeClassName="current">{genreName}</NavLink></li>;
-                })}
-            </ul>
-        </aside>;
-    }
-}
+const Genres = connect(
+    (state) => { return { genreNames: state.genre.names }; }
+)(({ genreNames }) => {
+    return <aside id="genres">
+        <ul>
+            <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
+            {genreNames.map(genreName => {
+                return <li key={genreName}><NavLink to={`/genres/${encodeURIComponent(genreName)}`} activeClassName="current">{genreName}</NavLink></li>;
+            })}
+        </ul>
+    </aside>;
+});
 
 const Player = connect(
     (state) => { return { track: state.play.currentTrack }; },
@@ -480,6 +465,8 @@ const store = createStore(
     reducer,
     applyMiddleware(thunk)
 );
+
+store.dispatch(actions.fetchGenres());
 
 ReactDOM.render(
     <Provider store={store}>
