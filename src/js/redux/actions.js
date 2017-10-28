@@ -211,6 +211,7 @@ export const watchKeyboard = () => {
         window.addEventListener("keydown", event => {
             const app = getState().app;
             const pointer = app.pointer;
+            const list = app.list;
 
             switch (event.code) {
                 case "KeyJ": {
@@ -224,15 +225,16 @@ export const watchKeyboard = () => {
                 case "Enter":
                 case "KeyP": {
                     if (event.shiftKey) {
-                        dispatch(playAll(getState().app.pointer.tracks));
+                        dispatch(playAll(pointer.tracks));
+                        dispatch(switchPointer(false));
                     } else {
                         const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             event.preventDefault();
                             dispatch(play(selectedTrack));
+                            dispatch(switchPointer(false));
                         }
                     }
-                    dispatch(switchPointer(false));
                     break;
                 }
                 case "Escape":
@@ -249,7 +251,7 @@ export const watchKeyboard = () => {
                     const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                     if (selectedTrack) {
                         const selectedCollectionId = selectedTrack.collection_id;
-                        const albumExpanded = app.list.albumExpandMap[selectedCollectionId] || false;
+                        const albumExpanded = list.albumExpandMap[selectedCollectionId] || false;
                         dispatch(changeAlbumExpandedSingle(selectedCollectionId, !albumExpanded));
                         dispatch(moveTo(findAlbumTrack(getState())));
                     }
@@ -257,10 +259,10 @@ export const watchKeyboard = () => {
                 }
                 case "KeyA": {
                     if (event.shiftKey) {
-                        const nextMode = app.list.albumMode === albumMode.expanded ? albumMode.collapsed : albumMode.expanded;
+                        const nextMode = list.albumMode === albumMode.expanded ? albumMode.collapsed : albumMode.expanded;
                         dispatch(changeAlbumMode(nextMode));
                     } else {
-                        const nextMode = app.list.mode === listMode.album ? listMode.track : listMode.album;
+                        const nextMode = list.mode === listMode.album ? listMode.track : listMode.album;
                         dispatch(changeListMode(nextMode));
                     }
                     dispatch(switchPointer(false));
