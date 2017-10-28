@@ -60,7 +60,7 @@ class TrackComponent extends React.PureComponent {
                     <div className="title">
                         <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                         <span className="play-button">
-                            <button onClick={this._play}>プレビュー<i class="fa fa-play-circle-o" aria-hidden="true"></i></button>
+                            <button onClick={this._play}>プレビュー<i className="fa fa-play-circle-o" aria-hidden="true"></i></button>
                         </span>
                     </div>
                     <div className="info">
@@ -140,7 +140,7 @@ class AlbumComponent extends React.PureComponent {
             <div className="album-meta">
                 <button className="play-button" onClick={this._playAll}>
                     <h2><i className="qi-album" aria-hidden="true"></i>{first.collection_name}</h2>
-                    <span className="play-button">まとめてプレビュー<i class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+                    <span className="play-button">まとめてプレビュー<i className="fa fa-play-circle-o" aria-hidden="true"></i></span>
                 </button>
             </div>
             <div className="album-tracks" key="tracks">
