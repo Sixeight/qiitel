@@ -4,6 +4,16 @@ import "whatwg-fetch";
 export const CHANGE_LIST_MODE = "change_list_mode";
 export const CHANGE_ALBUM_MODE = "change_album_mode";
 
+export const ListMode = {
+    track: "track",
+    album: "album"
+};
+
+export const AlbumMode = {
+    collapsed: "collapsed",
+    expanded: "expnded"
+};
+
 // Play
 export const PLAY = "play";
 export const PLAY_ALL = "play_all";
@@ -23,10 +33,10 @@ export const UPDATE_GENRES = "fetch_genres";
 // Action creators
 
 export const changeListModeToTrack = () => {
-    return changeListMode("track");
+    return changeListMode(ListMode.track);
 };
 export const changeListModeToAlbum = () => {
-    return changeListMode("album");
+    return changeListMode(AlbumMode.album);
 };
 const changeListMode = (mode) => {
     return {
@@ -36,10 +46,10 @@ const changeListMode = (mode) => {
 };
 
 export const collapseAlbum = () => {
-    return changeAlbumMode("collapsed");
+    return changeAlbumMode(AlbumMode.collapsed);
 };
 export const expandAlbum = () => {
-    return changeAlbumMode("expanded");
+    return changeAlbumMode(AlbumMode.expanded);
 };
 const changeAlbumMode = (mode) => {
     return {

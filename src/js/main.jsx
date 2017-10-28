@@ -334,8 +334,8 @@ const TracksPage = connect(
     (state) => {
         return {
             playing: state.app.play.currentTrack || state.app.play.playList.length > 0,
-            isAlbumMode: state.app.list.mode === "album",
-            isAlbumExpanded: state.app.list.albumMode === "expanded"
+            isAlbumMode: state.app.list.mode === actions.ListMode.album,
+            isAlbumExpanded: state.app.list.albumMode === actions.AlbumMode.expanded
         };
     },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
