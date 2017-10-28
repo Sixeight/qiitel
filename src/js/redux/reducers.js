@@ -5,8 +5,8 @@ import safeStorage from "../storage";
 
 // リスト操作
 
-const lastMode = safeStorage.get("lastMode", "track");
-const lastAlbumMode = safeStorage.get("lastAlbumMode", "collapsed");
+const lastMode = safeStorage.get("lastMode", actions.listMode.track);
+const lastAlbumMode = safeStorage.get("lastAlbumMode", actions.albumMode.collapsed);
 const defaultListState = { mode: lastMode, albumMode: lastAlbumMode };
 
 const listReducer = (state = defaultListState, action) => {
@@ -86,6 +86,13 @@ const pointerReducer = (state = { index: -1, tracks: [], active: false }, action
         }
         case actions.MOVE_UP: {
             return { ...state, active: true, index: Math.max(state.index - 1, 0) };
+        }
+        case actions.MOVE_TO: {
+            return {
+                ...state,
+                active: true,
+                index: Math.min(Math.max(action.index, 0), state.tracks.length - 1)
+            };
         }
         case actions.SETUP_LIST: {
             return { ...state, tracks: action.tracks };

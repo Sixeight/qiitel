@@ -4,12 +4,12 @@ import "whatwg-fetch";
 export const CHANGE_LIST_MODE = "change_list_mode";
 export const CHANGE_ALBUM_MODE = "change_album_mode";
 
-export const ListMode = {
+export const listMode = {
     track: "track",
     album: "album"
 };
 
-export const AlbumMode = {
+export const albumMode = {
     collapsed: "collapsed",
     expanded: "expnded"
 };
@@ -24,6 +24,7 @@ export const CLEAR = "clear";
 export const SWITCH_POINTER = "switch_pointer";
 export const MOVE_RESET = "move_reset";
 export const MOVE_DOWN = "move_down";
+export const MOVE_TO = "move_to";
 export const MOVE_UP = "move_up";
 export const SETUP_LIST = "setup_list";
 
@@ -33,10 +34,10 @@ export const UPDATE_GENRES = "fetch_genres";
 // Action creators
 
 export const changeListModeToTrack = () => {
-    return changeListMode(ListMode.track);
+    return changeListMode(listMode.track);
 };
 export const changeListModeToAlbum = () => {
-    return changeListMode(AlbumMode.album);
+    return changeListMode(listMode.album);
 };
 const changeListMode = (mode) => {
     return {
@@ -46,10 +47,10 @@ const changeListMode = (mode) => {
 };
 
 export const collapseAlbum = () => {
-    return changeAlbumMode(AlbumMode.collapsed);
+    return changeAlbumMode(albumMode.collapsed);
 };
 export const expandAlbum = () => {
-    return changeAlbumMode(AlbumMode.expanded);
+    return changeAlbumMode(albumMode.expanded);
 };
 const changeAlbumMode = (mode) => {
     return {
@@ -109,6 +110,13 @@ export const moveUp = () => {
     };
 };
 
+export const moveTo = (index) => {
+    return {
+        type: MOVE_TO,
+        index: index
+    };
+};
+
 export const setupList = (tracks) => {
     return {
         type: SETUP_LIST,
@@ -126,18 +134,48 @@ export const focus = (element) => {
 export const watchKeyboard = () => {
     return (dispatch, getState) => {
         window.addEventListener("keydown", event => {
+            const app = getState().app;
+            const pointer = app.pointer;
+
             switch (event.code) {
                 case "KeyJ": {
+                    if (app.list.mode === listMode.album) {
+                        const selectedTrack = pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            const tracks = pointer.tracks.slice(pointer.index + 1);
+                            const foundIndex = tracks.findIndex(track => track.collection_name !== selectedTrack.collection_name);
+                            dispatch(moveTo(pointer.index + 1 + foundIndex));
+                            break;
+                        }
+                    }
                     dispatch(moveDown());
                     break;
                 }
                 case "KeyK": {
+                    if (app.list.mode === listMode.album) {
+                        const selectedTrack = pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            const tracks = pointer.tracks.slice(0, pointer.index).reverse();
+                            const foundIndex = tracks.findIndex(track => track.collection_name !== selectedTrack.collection_name);
+
+                            const selectingAlbumTracks = tracks[foundIndex];
+                            if (selectingAlbumTracks) {
+                                const secondTracks = tracks.slice(foundIndex + 1);
+                                const secondFoundIndex = secondTracks.findIndex(track => track.collection_name !== selectingAlbumTracks.collection_name);
+                                if (secondFoundIndex === -1) {
+                                    dispatch(moveTo(0));
+                                } else {
+                                    dispatch(moveTo(pointer.index - 1 - (foundIndex + secondFoundIndex)));
+                                }
+                                break;
+                            }
+                        }
+                    }
                     dispatch(moveUp());
                     break;
                 }
                 case "Enter":
                 case "KeyP": {
-                    const pointer = getState().app.pointer;
                     const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                     if (selectedTrack) {
                         event.preventDefault();
