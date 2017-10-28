@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, bindActionCreators } from "redux";
+import { createStore, combineReducers, applyMiddleware, bindActionCreators } from "redux";
 import { Provider, connect } from "react-redux";
+import { ConnectedRouter, routerReducer, routerMiddleware } from "react-router-redux";
+import thunk from "redux-thunk";
+import createHistory from "history/createBrowserHistory";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -13,6 +16,9 @@ import {
     NavLink
 } from "react-router-dom";
 import "../scss/main.scss";
+
+import * as actions from "./redux/actions";
+import appReducer from "./redux/reducers";
 
 class Storage {
     set(key, item) {
@@ -379,48 +385,39 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    (state) => { return { playing: state.currentTrack || state.playList.length > 0 }; },
+    (state) => { return { playing: state.app.play.currentTrack || state.app.play.playList.length > 0 }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
-class Genres extends React.PureComponent {
-    constructor() {
-        super();
-        this.state = {
-            genreNames: []
-        };
-    }
-
-    componentDidMount() {
-        fetch("/api/genres")
-            .then(res => res.json())
-            .then(json => this.setState({
-                genreNames: json.genre_names
-            }));
-    }
-
-    render() {
-        return <aside id="genres">
-            <h2>ジャンル一覧</h2>
-            <ul>
-                <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
-                {this.state.genreNames.map(genreName => {
-                    return <li key={genreName}><NavLink to={`/genres/${encodeURIComponent(genreName)}`} activeClassName="current">{genreName}</NavLink></li>;
-                })}
-            </ul>
-        </aside>;
-    }
-}
+const Genres = connect(
+    (state) => { return { genreNames: state.app.genre.names }; }
+)(({ genreNames }) => {
+    return <aside id="genres">
+        <h2>ジャンル一覧</h2>
+        <ul>
+            <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
+            {genreNames.map(genreName => {
+                return <li key={genreName}>
+                    <NavLink
+                        to={`/genres/${encodeURIComponent(genreName)}`}
+                        activeClassName="current"
+                        isActive={(match, location) => { return decodeURIComponent(location.pathname) === `/genres/${genreName}`; }}
+                    >{genreName}</NavLink>
+                </li>;
+            })}
+        </ul>
+    </aside>;
+});
 
 const Player = connect(
-    (state) => { return { track: state.currentTrack }; },
+    (state) => { return { track: state.app.play.currentTrack }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(({ track, playNext }) => {
     if (track) {
         return <div id="player" className="track">
             <div className="image" >
                 <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
-            </div >
+            </div>
             <div className="meta">
                 <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                 <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
@@ -474,12 +471,13 @@ const RecentTracksPage = () => {
 
 const GenreTracksPage = ({ match }) => {
     const genre = match.params.genre;
+    const decodedGenre = decodeURIComponent(genre);
 
     return <div id="contents">
-        <Header genre={genre} />
+        <Header genre={decodedGenre} />
         <article>
             <div id="main">
-                <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
+                <TracksPage key={genre} genre={decodedGenre} api={`/api/genres/${genre}`} />
             </div>
             <div id="side">
                 <Genres key={genre} />
@@ -511,7 +509,7 @@ const App = () => {
         <div>
             <Switch>
                 <Route exact path="/" component={RecentTracksPage} />
-                <Route path="/genres/:genre" component={GenreTracksPage} />
+                <Route path="/genres/:genre+" component={GenreTracksPage} />
                 <Route path="/users/:user" component={UserTracksPage} />
             </Switch>
             <Player />
@@ -519,86 +517,23 @@ const App = () => {
     </Router>;
 };
 
-const PLAY = "play";
-const PLAY_ALL = "play_all";
-const PLAY_NEXT = "play_next";
-const CLEAR = "clear";
+const history = createHistory();
 
-const actions = {
-    play: (track) => {
-        return {
-            type: PLAY,
-            track: track
-        };
-    },
-    playAll: (tracks) => {
-        return {
-            type: PLAY_ALL,
-            tracks: tracks
-        };
-    },
-    playNext: () => {
-        return {
-            type: PLAY_NEXT
-        };
-    },
-    clear: () => {
-        return {
-            type: CLEAR
-        };
-    }
-};
+const store = createStore(
+    combineReducers({
+        app: appReducer,
+        router: routerReducer
+    }),
+    applyMiddleware(thunk, routerMiddleware(history))
+);
 
-const defaultState = {
-    currentTrack: null,
-    playList: []
-};
-
-function pick(tracks) {
-    const copied = [...tracks];
-    const [picked] = copied.splice(Math.floor(Math.random() * copied.length), 1);
-    return [picked, copied];
-}
-
-const reducer = (state = { ...defaultState }, action) => {
-    switch (action.type) {
-        case PLAY: {
-            return { ...state, currentTrack: action.track, playList: [] };
-        }
-        case PLAY_ALL: {
-            const [nextTrack, rest] = pick(action.tracks);
-            return {
-                ...state,
-                currentTrack: nextTrack,
-                playList: rest
-            };
-        }
-        case PLAY_NEXT: {
-            const [nextTrack, rest] = pick(state.playList);
-            if (nextTrack) {
-                return {
-                    ...state,
-                    currentTrack: nextTrack,
-                    playList: rest
-                };
-            } else {
-                return state;
-            }
-        }
-        case CLEAR: {
-            return { ...defaultState };
-        }
-        default: {
-            return state;
-        }
-    }
-};
-
-const store = createStore(reducer);
+store.dispatch(actions.fetchGenres());
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <ConnectedRouter history={history}>
+            <App />
+        </ConnectedRouter>
     </Provider>,
     document.getElementById("container")
 );

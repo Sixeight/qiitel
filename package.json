@@ -9,13 +9,16 @@
     },
     "dependencies": {
         "babel-eslint": "^8.0.1",
+        "history": "^4.7.2",
         "react": "^16.0.0",
         "react-dom": "^16.0.0",
         "react-helmet": "^5.2.0",
         "react-redux": "^5.0.6",
         "react-router-dom": "^4.2.2",
+        "react-router-redux": "^5.0.0-alpha.8",
         "react-waypoint": "^7.3.1",
         "redux": "^3.7.2",
+        "redux-thunk": "^2.2.0",
         "sass-loader": "^6.0.6",
         "whatwg-fetch": "^2.0.3"
     },
