@@ -25,6 +25,7 @@ export const CLEAR = "clear";
 export const SWITCH_POINTER = "switch_pointer";
 export const MOVE_RESET = "move_reset";
 export const MOVE_TO = "move_to";
+export const UPDATE_INDEX = "update_index";
 export const SETUP_LIST = "setup_list";
 
 // Genre
@@ -119,6 +120,13 @@ export const moveTo = (index) => {
     };
 };
 
+export const updateIndex = (index) => {
+    return {
+        type: UPDATE_INDEX,
+        index: index
+    };
+};
+
 export const setupList = (tracks) => {
     return {
         type: SETUP_LIST,
@@ -130,6 +138,14 @@ export const focus = (element) => {
     return () => {
         const top = element.offsetTop - (window.innerHeight / 2);
         window.scrollTo(0, top);
+    };
+};
+
+export const selectTrack = (track) => {
+    return (dispatch, getState) => {
+        const pointer = getState().app.pointer;
+        const foundIndex = pointer.tracks.indexOf(track);
+        dispatch(updateIndex(foundIndex));
     };
 };
 

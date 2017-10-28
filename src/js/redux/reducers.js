@@ -101,6 +101,9 @@ const pointerReducer = (state = { index: 0, tracks: [], active: false }, action)
             }
             return { ...state, active: true };
         }
+        case actions.UPDATE_INDEX: {
+            return { ...state, index: Math.min(Math.max(action.index, 0), state.tracks.length - 1) };
+        }
         case actions.SETUP_LIST: {
             return { ...state, tracks: action.tracks };
         }

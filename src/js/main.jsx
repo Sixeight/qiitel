@@ -32,6 +32,7 @@ class TrackComponent extends React.PureComponent {
         this._shown = this.shown.bind(this);
         this._play = () => this.props.play(this.props.track);
         this._focus = (element) => this.props.focus(element);
+        this._select = () => this.props.selectTrack(this.props.track);
     }
 
     shown() {
@@ -45,7 +46,11 @@ class TrackComponent extends React.PureComponent {
         const updatedAt = new Date(track.updated_at * 1000);
 
         return <Waypoint onEnter={this._shown}>
-            <div className={`track${selected ? " selected" : ""}`} ref={(div) => div && selected && this._focus(div)}>
+            <div
+                className={`track${selected ? " selected" : ""}`}
+                onClick={this._select}
+                ref={(div) => div && selected && this._focus(div)}
+            >
                 <div className="image">
                     <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
                     </div>
