@@ -150,7 +150,7 @@ const GroupedTracks = ({ tracks, albumExpanded }) => {
         }
         const tracks = albums[albums.length - 1];
         const first = tracks[tracks.length - 1];
-        if (first === undefined || track.collection_name === first.collection_name) {
+        if (first === undefined || track.collection_id === first.collection_id) {
             tracks.push(track);
         } else {
             albums.push([track]);

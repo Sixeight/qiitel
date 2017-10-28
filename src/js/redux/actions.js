@@ -143,7 +143,7 @@ export const watchKeyboard = () => {
                         const selectedTrack = pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const tracks = pointer.tracks.slice(pointer.index + 1);
-                            const foundIndex = tracks.findIndex(track => track.collection_name !== selectedTrack.collection_name);
+                            const foundIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
                             dispatch(moveTo(pointer.index + 1 + foundIndex));
                             break;
                         }
@@ -156,12 +156,12 @@ export const watchKeyboard = () => {
                         const selectedTrack = pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const tracks = pointer.tracks.slice(0, pointer.index).reverse();
-                            const foundIndex = tracks.findIndex(track => track.collection_name !== selectedTrack.collection_name);
+                            const foundIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
 
                             const selectingAlbumTracks = tracks[foundIndex];
                             if (selectingAlbumTracks) {
                                 const secondTracks = tracks.slice(foundIndex + 1);
-                                const secondFoundIndex = secondTracks.findIndex(track => track.collection_name !== selectingAlbumTracks.collection_name);
+                                const secondFoundIndex = secondTracks.findIndex(track => track.collection_id !== selectingAlbumTracks.collection_id);
                                 if (secondFoundIndex === -1) {
                                     dispatch(moveTo(0));
                                 } else {
