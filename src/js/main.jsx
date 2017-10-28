@@ -1,8 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, applyMiddleware, bindActionCreators } from "redux";
+import { createStore, combineReducers, applyMiddleware, bindActionCreators } from "redux";
 import { Provider, connect } from "react-redux";
+import { ConnectedRouter, routerReducer, routerMiddleware } from "react-router-redux";
 import thunk from "redux-thunk";
+import createHistory from "history/createBrowserHistory";
 import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
@@ -16,7 +18,7 @@ import {
 import "../scss/main.scss";
 
 import * as actions from "./redux/actions";
-import reducer from "./redux/reducers";
+import appReducer from "./redux/reducers";
 
 class Storage {
     set(key, item) {
@@ -85,7 +87,7 @@ class TrackComponent extends React.PureComponent {
     }
 }
 const Track = connect(
-    (state, props) => { return { selected: props.track === state.pointer.tracks[state.pointer.index] }; },
+    (state, props) => { return { selected: props.track === state.app.pointer.tracks[state.app.pointer.index] }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TrackComponent);
 
@@ -349,47 +351,38 @@ class TracksPageComponent extends React.PureComponent {
     }
 }
 const TracksPage = connect(
-    (state) => { return { playing: state.play.currentTrack || state.play.playList.length > 0 }; },
+    (state) => { return { playing: state.app.play.currentTrack || state.app.play.playList.length > 0 }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(TracksPageComponent);
 
-class Genres extends React.PureComponent {
-    constructor() {
-        super();
-        this.state = {
-            genreNames: []
-        };
-    }
-
-    componentDidMount() {
-        fetch("/api/genres")
-            .then(res => res.json())
-            .then(json => this.setState({
-                genreNames: json.genre_names
-            }));
-    }
-
-    render() {
-        return <aside id="genres">
-            <ul>
-                <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
-                {this.state.genreNames.map(genreName => {
-                    return <li key={genreName}><NavLink to={`/genres/${encodeURIComponent(genreName)}`} activeClassName="current">{genreName}</NavLink></li>;
-                })}
-            </ul>
-        </aside>;
-    }
-}
+const Genres = connect(
+    (state) => { return { genreNames: state.app.genre.names }; }
+)(({ genreNames }) => {
+    return <aside id="genres">
+        <ul>
+            <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
+            {genreNames.map(genreName => {
+                return <li key={genreName}>
+                    <NavLink
+                        to={`/genres/${encodeURIComponent(genreName)}`}
+                        activeClassName="current"
+                        isActive={(match, location) => { return decodeURIComponent(location.pathname) === `/genres/${genreName}`; }}
+                    >{genreName}</NavLink>
+                </li>;
+            })}
+        </ul>
+    </aside>;
+});
 
 const Player = connect(
-    (state) => { return { track: state.play.currentTrack }; },
+    (state) => { return { track: state.app.play.currentTrack }; },
     (dispatch) => { return { ...bindActionCreators(actions, dispatch) }; }
 )(({ track, playNext }) => {
     if (track) {
         return <div id="player" className="track">
             <div className="image" >
                 <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
-            </div >
+            </div>
             <div className="meta">
                 <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                 <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
@@ -440,11 +433,12 @@ const RecentTracksPage = () => {
 
 const GenreTracksPage = ({ match }) => {
     const genre = match.params.genre;
+    const decodedGenre = decodeURIComponent(genre);
 
     return <div id="contents">
         <div id="main">
-            <Header genre={genre} />
-            <TracksPage key={genre} genre={genre} api={`/api/genres/${genre}`} />
+            <Header genre={decodedGenre} />
+            <TracksPage key={genre} genre={decodedGenre} api={`/api/genres/${genre}`} />
             <Footer />
         </div>
         <div id="side">
@@ -473,7 +467,7 @@ const App = () => {
         <div>
             <Switch>
                 <Route exact path="/" component={RecentTracksPage} />
-                <Route path="/genres/:genre" component={GenreTracksPage} />
+                <Route path="/genres/:genre+" component={GenreTracksPage} />
                 <Route path="/users/:user" component={UserTracksPage} />
             </Switch>
             <Player />
@@ -481,16 +475,24 @@ const App = () => {
     </Router>;
 };
 
+const history = createHistory();
+
 const store = createStore(
-    reducer,
-    applyMiddleware(thunk)
+    combineReducers({
+        app: appReducer,
+        router: routerReducer
+    }),
+    applyMiddleware(thunk, routerMiddleware(history))
 );
 
+store.dispatch(actions.fetchGenres());
 store.dispatch(actions.watchKeyboard());
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <ConnectedRouter history={history}>
+            <App />
+        </ConnectedRouter>
     </Provider>,
     document.getElementById("container")
 );

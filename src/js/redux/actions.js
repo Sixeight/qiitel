@@ -1,3 +1,5 @@
+import "whatwg-fetch";
+
 // Play
 export const PLAY = "play";
 export const PLAY_ALL = "play_all";
@@ -9,6 +11,9 @@ export const MOVE_RESET = "move_reset";
 export const MOVE_DOWN = "move_down";
 export const MOVE_UP = "move_up";
 export const SETUP_LIST = "setup_list";
+
+// Genre
+export const UPDATE_GENRES = "fetch_genres";
 
 export const play = (track) => {
     return {
@@ -102,3 +107,19 @@ export const watchKeyboard = () => {
     };
 };
 
+export const fetchGenres = () => {
+    return (dispatch) => {
+        fetch("/api/genres")
+            .then(res => res.json())
+            .then(json =>
+                dispatch(updateGenres(json.genre_names))
+            ).catch((e) => { console.log(e); });
+    };
+};
+
+export const updateGenres = (genreNames) => {
+    return {
+        type: UPDATE_GENRES,
+        genreNames: genreNames
+    };
+};

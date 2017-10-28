@@ -2,7 +2,9 @@ import { combineReducers } from "redux";
 
 import * as actions from "./actions";
 
-const defaultState = {
+// 再生関連
+
+const defaultPlayState = {
     currentTrack: null,
     playList: []
 };
@@ -13,7 +15,7 @@ function pick(tracks) {
     return [picked, copied];
 }
 
-const playReducer = (state = { ...defaultState }, action) => {
+const playReducer = (state = { ...defaultPlayState }, action) => {
     switch (action.type) {
         case actions.PLAY: {
             return { ...state, currentTrack: action.track, playList: [] };
@@ -39,13 +41,15 @@ const playReducer = (state = { ...defaultState }, action) => {
             }
         }
         case actions.CLEAR: {
-            return { ...defaultState };
+            return { ...defaultPlayState };
         }
         default: {
             return state;
         }
     }
 };
+
+// カーソル移動
 
 const pointerReducer = (state = { index: -1, tracks: [] }, action) => {
     switch (action.type) {
@@ -66,8 +70,22 @@ const pointerReducer = (state = { index: -1, tracks: [] }, action) => {
     }
 };
 
+// ジャンル一覧
+
+const genresReducer = (state = { names: [] }, action) => {
+    switch (action.type) {
+        case actions.UPDATE_GENRES: {
+            return { ...state, names: action.genreNames };
+        }
+        default: {
+            return state;
+        }
+    }
+};
+
 export default combineReducers({
     play: playReducer,
-    pointer: pointerReducer
+    pointer: pointerReducer,
+    genre: genresReducer
 });
 
