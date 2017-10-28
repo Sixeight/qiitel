@@ -357,7 +357,13 @@ const Genres = connect(
         <ul>
             <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
             {genreNames.map(genreName => {
-                return <li key={genreName}><NavLink to={`/genres/${encodeURIComponent(genreName)}`} activeClassName="current">{genreName}</NavLink></li>;
+                return <li key={genreName}>
+                    <NavLink
+                        to={`/genres/${encodeURIComponent(genreName)}`}
+                        activeClassName="current"
+                        isActive={(match, location) => { return decodeURIComponent(location.pathname) === `/genres/${genreName}`; }}
+                    >{genreName}</NavLink>
+                </li>;
             })}
         </ul>
     </aside>;
