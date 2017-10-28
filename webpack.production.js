@@ -16,9 +16,16 @@ module.exports = merge(common, {
         vendor: [
             "react",
             "react-dom",
+            "react-router-dom",
             "react-waypoint",
             "react-helmet",
-            "whatwg-fetch"
+            "whatwg-fetch",
+            "redux",
+            "react-redux",
+            "react-router-redux",
+            "redux-thunk",
+            "history/createBrowserHistory",
+            "redux-devtools-extension"
         ]
     },
     output: {
