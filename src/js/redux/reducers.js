@@ -73,26 +73,31 @@ const playReducer = (state = { ...defaultPlayState }, action) => {
 
 // カーソル移動
 
-const pointerReducer = (state = { index: -1, tracks: [], active: false }, action) => {
+const pointerReducer = (state = { index: 0, tracks: [], active: false }, action) => {
     switch (action.type) {
         case actions.SWITCH_POINTER: {
             return { ...state, active: action.active };
         }
         case actions.MOVE_RESET: {
-            return { ...state, active: false, index: -1 };
+            return { ...state, active: false, index: 0 };
         }
         case actions.MOVE_DOWN: {
-            return { ...state, active: true, index: Math.min(state.index + 1, state.tracks.length - 1) };
+            if (state.active) {
+                return { ...state, index: Math.min(state.index + 1, state.tracks.length - 1) };
+            }
+            return { ...state, active: true };
         }
         case actions.MOVE_UP: {
-            return { ...state, active: true, index: Math.max(state.index - 1, 0) };
+            if (state.active) {
+                return { ...state, index: Math.max(state.index - 1, 0) };
+            }
+            return { ...state, active: true };
         }
         case actions.MOVE_TO: {
-            return {
-                ...state,
-                active: true,
-                index: Math.min(Math.max(action.index, 0), state.tracks.length - 1)
-            };
+            if (state.active) {
+                return { ...state, index: Math.min(Math.max(action.index, 0), state.tracks.length - 1) };
+            }
+            return { ...state, active: true };
         }
         case actions.SETUP_LIST: {
             return { ...state, tracks: action.tracks };
