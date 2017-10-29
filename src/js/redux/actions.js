@@ -331,6 +331,17 @@ export const watchKeyboard = () => {
                     }
                     break;
                 }
+                case "KeyM": {
+                    if (event.shiftKey) {
+                        dispatch(push("/"));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            dispatch(push(`/artists/${encodeURIComponent(selectedTrack.artist_name)}/${selectedTrack.artist_id}`));
+                        }
+                    }
+                    break;
+                }
                 default:
                 // Nothing to do
             }
