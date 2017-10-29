@@ -307,9 +307,16 @@ export const watchKeyboard = () => {
                     break;
                 }
                 case "KeyO": {
-                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
-                    if (selectedTrack) {
-                        window.open(selectedTrack.track_view_url, "_blank");
+                    if (event.shiftKey) {
+                        const currentTrack = app.play.currentTrack;
+                        if (currentTrack) {
+                            window.open(currentTrack.track_view_url, "_blank");
+                        }
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            window.open(selectedTrack.track_view_url, "_blank");
+                        }
                     }
                     break;
                 }
