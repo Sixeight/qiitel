@@ -1,4 +1,5 @@
 import "whatwg-fetch";
+import { push } from "react-router-redux";
 
 // List
 export const CHANGE_LIST_MODE = "change_list_mode";
@@ -312,8 +313,19 @@ export const watchKeyboard = () => {
                     }
                     break;
                 }
+                case "KeyG": {
+                    if (event.shiftKey) {
+                        dispatch(push("/"));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            dispatch(push(`/genres/${encodeURIComponent(selectedTrack.genre_name)}`));
+                        }
+                    }
+                    break;
+                }
                 default:
-                    // Nothing to do
+                // Nothing to do
             }
         });
     };
