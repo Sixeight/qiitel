@@ -54,7 +54,7 @@ class TrackComponent extends React.PureComponent {
                 <div className="image">
                     <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
                     </div>
-                    <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                    <a href={track.track_view_url} rel="nofollow" target="_blank">
                         {
                             track.is_streamable ?
                                 <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
@@ -63,8 +63,8 @@ class TrackComponent extends React.PureComponent {
                     </a>
                 </div>
                 <div className="meta">
-                    <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-                    <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                    <h2><a href={track.track_view_url} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                    <a href={track.artist_view_url} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={track.collection_view_url} rel="nofollow" target="_blank">{track.collection_name}</a><br />
                     <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
                     <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
                     {track.user && <User user={track.user} />}
@@ -370,12 +370,12 @@ const Player = connect(
                 <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
             </div>
             <div className="meta">
-                <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-                <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                <h2><a href={track.track_view_url} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                <a href={track.artist_view_url} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={track.collection_view_url} rel="nofollow" target="_blank">{track.collection_name}</a><br />
                 <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{new Date(track.released_at * 1000).getFullYear()}</span><br />
             </div>
             <div className="banner">
-                <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                <a href={track.track_view_url} rel="nofollow" target="_blank">
                     {
                         track.is_streamable ?
                             <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
