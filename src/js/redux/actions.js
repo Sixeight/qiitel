@@ -269,6 +269,7 @@ export const watchKeyboard = () => {
                     break;
                 }
                 case "Escape":
+                case "Period":
                 case "KeyS": {
                     dispatch(clear());
                     dispatch(switchPointer(false));
@@ -312,7 +313,7 @@ export const watchKeyboard = () => {
                     break;
                 }
                 default:
-                // Nothing to do
+                    // Nothing to do
             }
         });
     };
