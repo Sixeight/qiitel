@@ -175,12 +175,13 @@ const Tracks = ({ tracks }) => {
     });
 };
 
-const Header = ({ genre, user }) => {
+const Header = ({ genre, user, artist }) => {
+    const genre_or_artist = genre || artist;
     return <header>
         <Helmet>
-            <title>{`聴いてる${genre ? ` - ${genre}` : ""}${user ? ` - @${user}` : ""}`}</title>
+            <title>{`聴いてる${genre_or_artist ? ` - ${genre_or_artist}` : ""}${user ? ` - @${user}` : ""}`}</title>
         </Helmet>
-        <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}{user && ` - @${user}`}</h1>
+        <h1><Link to="/">聴いてる</Link>{genre_or_artist && ` - ${genre_or_artist}`}{user && ` - @${user}`}</h1>
     </header>;
 };
 
@@ -274,13 +275,24 @@ class TracksPageComponent extends React.PureComponent {
         }
     }
 
+    artistLink() {
+        const firstTrack = this.state.tracks[0];
+        if (firstTrack) {
+            return <a href={firstTrack.artist_view_url} target="_blank" rel="nofollow">
+                {firstTrack.artist_name}
+            </a>;
+        }
+        return "";
+    }
+
     render() {
         const who = this.props.user ? `@${this.props.user}` : "僕か僕の知り合い";
         const genre = this.props.genre || "";
+        const artist = this.props.artist;
 
         const components = [
             <div id="description" key="description">
-                <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+                <p>{who}が最近聴いた{genre}{artist && <span> {this.artistLink()} の</span>}{this.state.tracks.length}曲です。</p>
             </div>,
             <nav id="menu" key="menu">
                 <ul>
@@ -448,12 +460,29 @@ const UserTracksPage = ({ match }) => {
     </div>;
 };
 
+const ArtistTracksPage = ({ match }) => {
+    const artist = match.params.artist;
+    const artist_id = match.params.artist_id;
+
+    return <div id="contents">
+        <div id="main">
+            <Header artist={artist} />
+            <TracksPage key={artist_id} artist={artist} api={`/api/artists/${artist_id}`} />
+            <Footer />
+        </div>
+        <div id="side">
+            <Genres />
+        </div>
+    </div>;
+};
+
 const App = () => {
     return <div>
         <Switch>
             <Route exact path="/" component={RecentTracksPage} />
             <Route path="/genres/:genre+" component={GenreTracksPage} />
             <Route path="/users/:user" component={UserTracksPage} />
+            <Route path="/artists/:artist+/:artist_id" component={ArtistTracksPage} />
         </Switch>
         <Player />
     </div>;
