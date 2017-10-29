@@ -304,6 +304,13 @@ export const watchKeyboard = () => {
                     dispatch(moveReset());
                     break;
                 }
+                case "KeyO": {
+                    const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                    if (selectedTrack) {
+                        window.open(selectedTrack.track_view_url, "_blank");
+                    }
+                    break;
+                }
                 default:
                 // Nothing to do
             }
