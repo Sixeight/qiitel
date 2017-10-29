@@ -10,7 +10,7 @@ import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
 import {
-    BrowserRouter as Router,
+    Router,
     Route,
     Switch,
     Link,
@@ -449,16 +449,14 @@ const UserTracksPage = ({ match }) => {
 };
 
 const App = () => {
-    return <Router>
-        <div>
-            <Switch>
-                <Route exact path="/" component={RecentTracksPage} />
-                <Route path="/genres/:genre+" component={GenreTracksPage} />
-                <Route path="/users/:user" component={UserTracksPage} />
-            </Switch>
-            <Player />
-        </div>
-    </Router>;
+    return <div>
+        <Switch>
+            <Route exact path="/" component={RecentTracksPage} />
+            <Route path="/genres/:genre+" component={GenreTracksPage} />
+            <Route path="/users/:user" component={UserTracksPage} />
+        </Switch>
+        <Player />
+    </div>;
 };
 
 const history = createHistory();
@@ -479,7 +477,9 @@ store.dispatch(actions.watchKeyboard());
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
-            <App />
+            <Router history={history}>
+                <App />
+            </Router>
         </ConnectedRouter>
     </Provider>,
     document.getElementById("container")
