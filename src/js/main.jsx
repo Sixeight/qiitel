@@ -10,7 +10,7 @@ import Waypoint from "react-waypoint";
 import { Helmet } from "react-helmet";
 import "whatwg-fetch";
 import {
-    BrowserRouter as Router,
+    Router,
     Route,
     Switch,
     Link,
@@ -57,7 +57,7 @@ class TrackComponent extends React.PureComponent {
                 </div>
                 <div className="data">
                     <div className="title">
-                        <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                        <h2><a href={track.track_view_ur} rel="nofollow" target="_blank">{track.track_name}</a></h2>
                         <span className="play-button">
                             <button onClick={this._play}>プレビュー<i className="fa fa-play-circle-o" aria-hidden="true"></i></button>
                         </span>
@@ -65,12 +65,12 @@ class TrackComponent extends React.PureComponent {
                     <div className="info">
                         <ul className="meta">
                             <li>
-                                <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">
+                                <a href={track.artist_view_url} rel="nofollow" target="_blank">
                                     <i className="qi-artist" aria-hidden="true"></i> <i className="fa fa-angle-right" aria-hidden="true"></i> {track.artist_name}
                                 </a>
                             </li>
                             <li>
-                                <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">
+                                <a href={track.collection_view_url} rel="nofollow" target="_blank">
                                     <i className="qi-album" aria-hidden="true"></i> <i className="fa fa-angle-right" aria-hidden="true"></i> {track.collection_name} ({releasedAt.getFullYear()})
                                 </a>
                             </li>
@@ -79,7 +79,7 @@ class TrackComponent extends React.PureComponent {
                             </li>
                         </ul>
                         <div className="external">
-                            <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                            <a href={track.track_view_url} rel="nofollow" target="_blank">
                                 {
                                     track.is_streamable ?
                                         <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
@@ -196,12 +196,13 @@ const Tracks = ({ tracks }) => {
     });
 };
 
-const Header = ({ genre, user }) => {
+const Header = ({ genre, user, artist }) => {
+    const genre_or_artist = genre || artist;
     return <header>
         <Helmet>
-            <title>{`聴いてる${genre ? ` - ${genre}` : ""}${user ? ` - @${user}` : ""}`}</title>
+            <title>{`聴いてる${genre_or_artist ? ` - ${genre_or_artist}` : ""}${user ? ` - @${user}` : ""}`}</title>
         </Helmet>
-        <h1><Link to="/">聴いてる</Link>{genre && ` - ${genre}`}{user && ` - @${user}`}</h1>
+        <h1><Link to="/">聴いてる</Link>{genre_or_artist && ` - ${genre_or_artist}`}{user && ` - @${user}`}</h1>
     </header>;
 };
 
@@ -295,13 +296,24 @@ class TracksPageComponent extends React.PureComponent {
         }
     }
 
+    artistLink() {
+        const firstTrack = this.state.tracks[0];
+        if (firstTrack) {
+            return <a href={firstTrack.artist_view_url} target="_blank" rel="nofollow">
+                {firstTrack.artist_name}
+            </a>;
+        }
+        return "";
+    }
+
     render() {
         const who = this.props.user ? `@${this.props.user}` : "僕か僕の知り合い";
         const genre = this.props.genre || "";
+        const artist = this.props.artist;
 
         const components = [
             <div id="description" key="description">
-                <p>{who}が最近聴いた{genre}{this.state.tracks.length}曲です。</p>
+                <p>{who}が最近聴いた{genre}{artist && <span> {this.artistLink()} の</span>}{this.state.tracks.length}曲です。</p>
                 <ul id="view">
                     <li>
                         <button className="play-button" onClick={this._playAll}>
@@ -410,12 +422,12 @@ const Player = connect(
                 <div className="artwork" style={{ backgroundImage: `url(${track.thumbnail_url})` }} />
             </div>
             <div className="meta">
-                <h2><a href={`${track.track_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-                <a href={`${track.artist_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={`${track.collection_view_url}&app=itunes`} rel="nofollow" target="_blank">{track.collection_name}</a><br />
+                <h2><a href={track.track_view_url} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                <a href={track.artist_view_url} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={track.collection_view_url} rel="nofollow" target="_blank">{track.collection_name}</a><br />
                 <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{new Date(track.released_at * 1000).getFullYear()}</span><br />
             </div>
             <div className="banner">
-                <a href={`${track.track_view_url}&app=${track.app_type}`} rel="nofollow" target="_blank">
+                <a href={track.track_view_url} rel="nofollow" target="_blank">
                     {
                         track.is_streamable ?
                             <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
@@ -495,17 +507,32 @@ const UserTracksPage = ({ match }) => {
     </div>;
 };
 
-const App = () => {
-    return <Router>
-        <div>
-            <Switch>
-                <Route exact path="/" component={RecentTracksPage} />
-                <Route path="/genres/:genre+" component={GenreTracksPage} />
-                <Route path="/users/:user" component={UserTracksPage} />
-            </Switch>
-            <Player />
+const ArtistTracksPage = ({ match }) => {
+    const artist = match.params.artist;
+    const artist_id = match.params.artist_id;
+
+    return <div id="contents">
+        <div id="main">
+            <Header artist={artist} />
+            <TracksPage key={artist_id} artist={artist} api={`/api/artists/${artist_id}`} />
+            <Footer />
         </div>
-    </Router>;
+        <div id="side">
+            <Genres />
+        </div>
+    </div>;
+};
+
+const App = () => {
+    return <div>
+        <Switch>
+            <Route exact path="/" component={RecentTracksPage} />
+            <Route path="/genres/:genre+" component={GenreTracksPage} />
+            <Route path="/users/:user" component={UserTracksPage} />
+            <Route path="/artists/:artist+/:artist_id" component={ArtistTracksPage} />
+        </Switch>
+        <Player />
+    </div>;
 };
 
 const history = createHistory();
@@ -526,7 +553,9 @@ store.dispatch(actions.watchKeyboard());
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
-            <App />
+            <Router history={history}>
+                <App />
+            </Router>
         </ConnectedRouter>
     </Provider>,
     document.getElementById("container")

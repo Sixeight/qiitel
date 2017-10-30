@@ -122,6 +122,10 @@ class Playlist < Sinatra::Base
     erb :index, layout: nil
   end
 
+  get '/artists/*' do
+    erb :index, layout: nil
+  end
+
   get '/api/tracks' do
     @tracks = Track.eager_load(:user).page(params[:page]).per(settings.limit)
     json({ tracks: @tracks.map(&:to_hash), next_page: @tracks.next_page })
@@ -151,6 +155,18 @@ class Playlist < Sinatra::Base
     next_page = activities.next_page
     activities = activities.uniq {|a| a.track_id }
     json({ tracks: activities.map(&:to_hash), next_page: next_page })
+  end
+
+  get '/api/artists/:artist_id' do
+    artist_id = params[:artist_id]
+    tracks = Track.
+      eager_load(:user).
+      where(artist_id: artist_id).
+      page(params[:page]).
+      per(settings.limit)
+    next_page = tracks.next_page
+    tracks = tracks.uniq {|a| a.track_id }
+    json({ tracks: tracks.map(&:to_hash), next_page: next_page })
   end
 
   get '/api/genres' do

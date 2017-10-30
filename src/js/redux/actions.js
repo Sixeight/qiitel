@@ -1,4 +1,5 @@
 import "whatwg-fetch";
+import { push } from "react-router-redux";
 
 // List
 export const CHANGE_LIST_MODE = "change_list_mode";
@@ -269,6 +270,7 @@ export const watchKeyboard = () => {
                     break;
                 }
                 case "Escape":
+                case "Period":
                 case "KeyS": {
                     dispatch(clear());
                     dispatch(switchPointer(false));
@@ -302,6 +304,42 @@ export const watchKeyboard = () => {
                 case "KeyT": {
                     window.scrollTo(0, 0);
                     dispatch(moveReset());
+                    break;
+                }
+                case "KeyO": {
+                    if (event.shiftKey) {
+                        const currentTrack = app.play.currentTrack;
+                        if (currentTrack) {
+                            window.open(currentTrack.track_view_url + "&at=1010ldrf", "_blank");
+                        }
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            window.open(selectedTrack.track_view_url + "&at=1010ldrf", "_blank");
+                        }
+                    }
+                    break;
+                }
+                case "KeyG": {
+                    if (event.shiftKey) {
+                        dispatch(push("/"));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            dispatch(push(`/genres/${encodeURIComponent(selectedTrack.genre_name)}`));
+                        }
+                    }
+                    break;
+                }
+                case "KeyM": {
+                    if (event.shiftKey) {
+                        dispatch(push("/"));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack) {
+                            dispatch(push(`/artists/${encodeURIComponent(selectedTrack.artist_name)}/${selectedTrack.artist_id}`));
+                        }
+                    }
                     break;
                 }
                 default:
