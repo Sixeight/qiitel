@@ -30,7 +30,7 @@
             Hatena.Star.EntryLoader.loadEntries = function(root) {
                 var c = Hatena.Star.EntryLoader;
                 var entries = [];
-                var tracks = root.querySelectorAll('.track:not([data-star-loaded]):not(.dummy)');
+                var tracks = root.querySelectorAll('.track:not([data-star-loaded]):not(.dummy):not(#player)');
                 for (var i = 0; i < tracks.length; i++) {
                     var node = tracks[i];
                     var container = node.querySelector('h2');
