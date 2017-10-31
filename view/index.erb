@@ -22,6 +22,33 @@
     <div id="container">
     </div>
     <script key="script" type='text/javascript'>var _merchantSettings=_merchantSettings || [];_merchantSettings.push(['AT', '1010ldrf']);(function(){var autolink=document.createElement('script');autolink.type='text/javascript';autolink.async=true; autolink.src= ('https:' == document.location.protocol) ? 'https://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js' : 'http://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(autolink, s);})();</script>
+    <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+    <script type="text/javascript">
+        Hatena.Star.Token = '120ef1372e9f87fb61ac87785a4ae58b6f01292f';
+        Hatena.Star.EntryLoader.loadEntries = function() { return []; };
+        document.addEventListener('DOMContentLoaded', function() {
+            Hatena.Star.EntryLoader.loadEntries = function(root) {
+                var c = Hatena.Star.EntryLoader;
+                var entries = [];
+                var tracks = root.querySelectorAll('.track:not([data-star-loaded]):not(.dummy)');
+                for (var i = 0; i < tracks.length; i++) {
+                    var node = tracks[i];
+                    var container = node.querySelector('h2');
+                    var anchor = container.querySelector('a');
+                    var entry = { entryNode: node };
+                    entry.title = anchor.textContent;
+                    entry.uri = "http://music.hacobun.co/?url=" + encodeURIComponent(anchor.href);
+                    entry.comment_container = c.createCommentContainer();
+                    entry.star_container = c.createStarContainer();
+                    container.appendChild(entry.comment_container);
+                    container.appendChild(entry.star_container);
+                    entries.push(entry);
+                    node.dataset.starLoaded = 1;
+                }
+                return entries;
+            };
+        });
+    </script>
     <%- if production? %>
     <script src="<%= static_file("runtime.js") %>"></script>
     <script src="<%= static_file("vendor.js") %>"></script>

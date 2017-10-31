@@ -104,12 +104,16 @@ class AlbumComponent extends React.PureComponent {
         super(props);
         this._expand = () => this.props.expandAlbumSingle(this.props.tracks[0].collection_id);
         this._playAll = () => this.props.playAll(this.props.tracks);
+        this._loadStarEntries = (ref) => window.Hatena.Star.EntryLoader.loadNewEntries(ref);
     }
 
     render() {
         const [first, ...rest] = this.props.tracks;
 
-        return <div className={`album${this.props.isAlbumExpanded ? " expanded" : ""}`}>
+        return <div
+            className={`album${this.props.isAlbumExpanded ? " expanded" : ""}`}
+            ref={(ref) => ref && this._loadStarEntries(ref)}>
+
             <div className="album-meta">
                 <h2>
                     「{first.collection_name}」
@@ -191,7 +195,7 @@ const Footer = () => {
     </footer>;
 };
 
-class TracksPageComponent extends React.PureComponent {
+class TracksPageComponent extends React.Component {
     constructor(props) {
         super(props);
 
@@ -214,6 +218,7 @@ class TracksPageComponent extends React.PureComponent {
         };
         this._playAll = () => this.props.playAll(this.state.tracks);
         this._clear = () => this.props.clear();
+        this._loadStarEntries = (ref) => window.Hatena.Star.EntryLoader.loadNewEntries(ref);
     }
 
     componentDidMount() {
@@ -229,6 +234,16 @@ class TracksPageComponent extends React.PureComponent {
         if (this.timer) {
             clearInterval(this.timer);
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props !== nextProps) {
+            return true;
+        }
+        if (this.state.tracks.length !== nextState.tracks.length) {
+            return true;
+        }
+        return false;
     }
 
     get hasNext() {
@@ -323,7 +338,7 @@ class TracksPageComponent extends React.PureComponent {
                     </li>
                 </ul>
             </nav>,
-            <div id="tracks" key="tracks" >
+            <div id="tracks" key="tracks" ref={ref => this._loadStarEntries(ref)}>
                 {this.props.isAlbumMode ?
                     <GroupedTracks tracks={this.state.tracks} albumExpanded={this.props.isAlbumExpanded} /> :
                     <Tracks tracks={this.state.tracks} />
