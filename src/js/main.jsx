@@ -195,7 +195,7 @@ const Footer = () => {
     </footer>;
 };
 
-class TracksPageComponent extends React.Component {
+class TracksPageComponent extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -234,16 +234,6 @@ class TracksPageComponent extends React.Component {
         if (this.timer) {
             clearInterval(this.timer);
         }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.props !== nextProps) {
-            return true;
-        }
-        if (this.state.tracks.length !== nextState.tracks.length) {
-            return true;
-        }
-        return false;
     }
 
     get hasNext() {
