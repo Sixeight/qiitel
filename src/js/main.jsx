@@ -104,7 +104,13 @@ class AlbumComponent extends React.PureComponent {
     constructor(props) {
         super(props);
         this._expand = () => this.props.expandAlbumSingle(this.props.tracks[0].collection_id);
-        this._playAll = () => this.props.playAll(this.props.tracks);
+        this._playAll = () => {
+            this.props.playAll(this.props.tracks);
+            this.props.gaEvent("Play Album All", {
+                event_category: "Player",
+                event_label: this.props.tracks[0].collection_name
+            });
+        };
         this._loadStarEntries = (ref) => window.Hatena.Star.EntryLoader.loadNewEntries(ref);
     }
 

@@ -46,9 +46,15 @@ export const changeListModeToAlbum = () => {
     return changeListMode(listMode.album);
 };
 const changeListMode = (mode) => {
-    return {
-        type: CHANGE_LIST_MODE,
-        mode: mode
+    return (dispatch) => {
+        dispatch({
+            type: CHANGE_LIST_MODE,
+            mode: mode
+        });
+        dispatch(gaEvent("Change List Mode", {
+            event_category: "List",
+            event_label: mode
+        }));
     };
 };
 
@@ -59,9 +65,15 @@ export const expandAlbum = () => {
     return changeAlbumMode(albumMode.expanded);
 };
 const changeAlbumMode = (mode) => {
-    return {
-        type: CHANGE_ALBUM_MODE,
-        mode: mode
+    return (dispatch) => {
+        dispatch({
+            type: CHANGE_ALBUM_MODE,
+            mode: mode
+        });
+        dispatch(gaEvent("Change Album Mode", {
+            event_category: "List",
+            event_label: mode
+        }));
     };
 };
 
@@ -72,24 +84,43 @@ export const collapseAlbumSingle = (collectionId) => {
     return changeAlbumExpandedSingle(collectionId, false);
 };
 const changeAlbumExpandedSingle = (collectionId, expanded) => {
-    return {
-        type: CHANGE_ALBUM_EXPANDED_SINGLE,
-        collection_id: collectionId,
-        expanded: expanded
+    return (dispatch) => {
+        dispatch({
+            type: CHANGE_ALBUM_EXPANDED_SINGLE,
+            collection_id: collectionId,
+            expanded: expanded
+        });
+        dispatch(gaEvent("Album Expand Single", {
+            event_category: "List",
+            event_label: collectionId,
+            value: expanded ? 1 : 0
+        }));
     };
 };
 
 export const play = (track) => {
-    return {
-        type: PLAY,
-        track: track
+    return (dispatch) => {
+        dispatch({
+            type: PLAY,
+            track: track
+        });
+        dispatch(gaEvent("Play", {
+            event_category: "Player",
+            event_label: track.track_view_url
+        }));
     };
 };
 
 export const playAll = (tracks) => {
-    return {
-        type: PLAY_ALL,
-        tracks: tracks
+    return (dispatch) => {
+        dispatch({
+            type: PLAY_ALL,
+            tracks: tracks
+        });
+        dispatch(gaEvent("Play All", {
+            event_category: "Player",
+            value: tracks.length
+        }));
     };
 };
 
@@ -256,7 +287,13 @@ export const watchKeyboard = () => {
                         const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const artistTracks = pointer.tracks.filter(track => track.artist_id === selectedTrack.artist_id);
-                            dispatch(playAll(artistTracks));
+                            if (artistTracks.length > 0) {
+                                dispatch(playAll(artistTracks));
+                                dispatch(gaEvent("Play Atrist All", {
+                                    event_category: "Player",
+                                    event_label: artistTracks[0].artist_name
+                                }));
+                            }
                             break;
                         }
                     }
@@ -274,6 +311,10 @@ export const watchKeyboard = () => {
                         const tracks = pointer.tracks.slice(albumTrackIndex);
                         const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
                         dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
+                        dispatch(gaEvent("Play Album All", {
+                            event_category: "Player",
+                            event_label: tracks[0].collection_name
+                        }));
                     } else {
                         dispatch(play(selectedTrack));
                     }
