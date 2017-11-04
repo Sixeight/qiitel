@@ -446,7 +446,7 @@ a {
 
 .popup-transition-enter.popup-transition-enter-active {
   opacity: 1;
-  transition: opacity 100ms ease-in;
+  transition: opacity 50ms ease-in;
 }
 
 .popup-transition-exit {
@@ -455,7 +455,7 @@ a {
 
 .popup-transition-exit.popup-transition-exit-active {
   opacity: 0.01;
-  transition: opacity 100ms ease-in;
+  transition: opacity 50ms ease-in;
 }
 
 .popup-dim {

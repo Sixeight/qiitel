@@ -486,7 +486,7 @@ const KeyboardShortcutHelp = connect(
     state => { return { shown: state.app.help.shown }; },
     dispatch => { return { ...bindActionCreators(actions, dispatch) }; }
 )(({ shown, toggleHelp }) => {
-    return <CSSTransition classNames="popup-transition" timeout={100} in={shown} mountOnEnter={true} unmountOnExit={true}>
+    return <CSSTransition classNames="popup-transition" timeout={50} in={shown} mountOnEnter={true} unmountOnExit={true}>
         <div id="keyboard-shortcut-help" className="popup-dim" onClick={() => toggleHelp()}>
             <div className="popup-content" onClick={(event) => event.stopPropagation()}>
                 <article className="help">
