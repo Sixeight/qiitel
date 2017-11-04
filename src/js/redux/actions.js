@@ -316,12 +316,12 @@ export const watchKeyboard = () => {
                     if (event.shiftKey) {
                         const currentTrack = app.play.currentTrack;
                         if (currentTrack) {
-                            window.open(currentTrack.track_view_url + "&at=1010ldrf", "_blank");
+                            window.open(currentTrack.track_view_url + `&at=1010ldrf&app=${currentTrack.app_type}`, "_blank");
                         }
                     } else {
                         const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
-                            window.open(selectedTrack.track_view_url + "&at=1010ldrf", "_blank");
+                            window.open(selectedTrack.track_view_url + `&at=1010ldrf&app=${selectedTrack.app_type}`, "_blank");
                         }
                     }
                     break;
