@@ -564,6 +564,12 @@ const store = createStore(
 store.dispatch(actions.fetchGenres());
 store.dispatch(actions.watchKeyboard());
 
+history.listen((location) => {
+    store.dispatch(actions.gaEvent("page_view", {
+        page_path: location.pathname + location.search
+    }));
+});
+
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>

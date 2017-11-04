@@ -33,6 +33,10 @@ export const TOGGLE_HELP = "toggle_help";
 // Genre
 export const UPDATE_GENRES = "fetch_genres";
 
+// Google Analytics
+
+export const GA_EVENT = "ga_event";
+
 // Action creators
 
 export const changeListModeToTrack = () => {
@@ -386,5 +390,13 @@ export const updateGenres = (genreNames) => {
     return {
         type: UPDATE_GENRES,
         genreNames: genreNames
+    };
+};
+
+export const gaEvent = (name, params) => {
+    return () => {
+        setTimeout(() => {
+            window.gtag("event", name, params);
+        }, 0);
     };
 };
