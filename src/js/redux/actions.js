@@ -342,6 +342,17 @@ export const watchKeyboard = () => {
                     }
                     break;
                 }
+                case "KeyU": {
+                    if (event.shiftKey) {
+                        dispatch(push("/"));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack && selectedTrack.user) {
+                            dispatch(push(`/users/${encodeURIComponent(selectedTrack.user.name)}`));
+                        }
+                    }
+                    break;
+                }
                 default:
                 // Nothing to do
             }
