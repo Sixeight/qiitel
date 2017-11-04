@@ -125,10 +125,24 @@ const genresReducer = (state = { names: [] }, action) => {
     }
 };
 
+// ヘルプ
+
+const helpReducer = (state = { shown: false }, action) => {
+    switch (action.type) {
+        case actions.TOGGLE_HELP: {
+            return { shown: !state.shown };
+        }
+        default: {
+            return state;
+        }
+    }
+};
+
 export default combineReducers({
     list: listReducer,
     play: playReducer,
     pointer: pointerReducer,
-    genre: genresReducer
+    genre: genresReducer,
+    help: helpReducer
 });
 

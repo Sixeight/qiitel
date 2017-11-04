@@ -28,6 +28,7 @@ export const MOVE_RESET = "move_reset";
 export const MOVE_TO = "move_to";
 export const UPDATE_INDEX = "update_index";
 export const SETUP_LIST = "setup_list";
+export const TOGGLE_HELP = "toggle_help";
 
 // Genre
 export const UPDATE_GENRES = "fetch_genres";
@@ -73,7 +74,6 @@ const changeAlbumExpandedSingle = (collectionId, expanded) => {
         expanded: expanded
     };
 };
-
 
 export const play = (track) => {
     return {
@@ -132,6 +132,12 @@ export const setupList = (tracks) => {
     return {
         type: SETUP_LIST,
         tracks: tracks
+    };
+};
+
+export const toggleHelp = () => {
+    return {
+        type: TOGGLE_HELP
     };
 };
 
@@ -350,6 +356,12 @@ export const watchKeyboard = () => {
                         if (selectedTrack && selectedTrack.user) {
                             dispatch(push(`/users/${encodeURIComponent(selectedTrack.user.name)}`));
                         }
+                    }
+                    break;
+                }
+                case "Slash": {
+                    if (event.shiftKey) {
+                        dispatch(toggleHelp());
                     }
                     break;
                 }
