@@ -9,6 +9,7 @@
     <%- if production? %>
     <link href="<%= static_file("main.css") %>" rel="stylesheet" />
     <%- end %>
+    <%- if production? %>
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-2936060-3"></script>
     <script>
@@ -17,6 +18,7 @@
       gtag('js', new Date());
       gtag('config', 'UA-2936060-3');
     </script>
+    <%- end %>
   </head>
   <body>
     <div id="container">
