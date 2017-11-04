@@ -440,6 +440,24 @@ a {
   }
 }
 
+.popup-transition-enter {
+  opacity: 0.01;
+}
+
+.popup-transition-enter.popup-transition-enter-active {
+  opacity: 1;
+  transition: opacity 100ms ease-in;
+}
+
+.popup-transition-exit {
+  opacity: 1;
+}
+
+.popup-transition-exit.popup-transition-exit-active {
+  opacity: 0.01;
+  transition: opacity 100ms ease-in;
+}
+
 .popup-dim {
   position: fixed;
   top: 0;
@@ -454,7 +472,7 @@ a {
   width: 680px;
   margin: auto;
   margin-top: 72px;
-  border-radius: 5px;
+  border-radius: 6px;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 

@@ -4,6 +4,7 @@ import { createStore, combineReducers, applyMiddleware, bindActionCreators } fro
 import { Provider, connect } from "react-redux";
 import { ConnectedRouter, routerReducer, routerMiddleware } from "react-router-redux";
 import thunk from "redux-thunk";
+import { CSSTransition } from "react-transition-group";
 import createHistory from "history/createBrowserHistory";
 import { composeWithDevTools } from "redux-devtools-extension";
 import Waypoint from "react-waypoint";
@@ -485,55 +486,54 @@ const KeyboardShortcutHelp = connect(
     state => { return { shown: state.app.help.shown }; },
     dispatch => { return { ...bindActionCreators(actions, dispatch) }; }
 )(({ shown, toggleHelp }) => {
-    if (!shown) {
-        return <noscript />;
-    }
-    return <div id="keyboard-shortcut-help" className="popup-dim" onClick={() => toggleHelp()}>
-        <div className="popup-content" onClick={(event) => event.stopPropagation()}>
-            <article className="help">
-                <header>
-                    <h1>キーボードショートカット</h1>
-                    <button onClick={() => toggleHelp()}>&times;</button>
-                </header>
-                <div className="help-contents">
-                    <section className="move">
-                        <h2>移動</h2>
-                        <dl>
-                            <dt><kbd>J</kbd></dt><dd>次の曲へ</dd>
-                            <dt><kbd>K</kbd></dt><dd>前の曲へ</dd>
-                            <dt><kbd>G</kbd></dt><dd>選択している曲のジャンルページへ移動</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>G</kbd></dt><dd>すべての曲へ移動</dd>
-                            <dt><kbd>M</kbd></dt><dd>選択している曲のアーティストページへ移動</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>M</kbd></dt><dd>すべての曲へ移動</dd>
-                            <dt><kbd>U</kbd></dt><dd>選択している曲を最後に聴いたユーザーのページへ移動</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>U</kbd></dt><dd>すべての曲へ移動</dd>
-                            <dt><kbd>T</kbd></dt><dd>先頭に移動</dd>
-                            <dt><kbd>O</kbd></dt><dd>開く</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>O</kbd></dt><dd>再生中の曲を開く</dd>
-                        </dl>
-                    </section>
-                    <section className="play">
-                        <h2>再生</h2>
-                        <dl>
-                            <dt><kbd>P</kbd></dt><dd>シャッフル再生</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>P</kbd></dt><dd>選択しているアーティストをシャッフル再生</dd>
-                            <dt><kbd>Enter</kbd></dt><dd>選択している曲を再生</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>Enter</kbd></dt><dd>選択しているアルバムをシャッフル再生</dd>
-                            <dt><kbd>.</kbd> / <kbd>S</kbd> / <kbd>Escape</kbd></dt><dd>停止</dd>
-                        </dl>
-                    </section>
-                    <section className="list">
-                        <h2>リスト操作</h2>
-                        <dl>
-                            <dt><kbd>A</kbd></dt><dd>アルバム表示トグル</dd>
-                            <dt><kbd>Shift</kbd> + <kbd>A</kbd></dt><dd>全アルバムの曲展開をトグル</dd>
-                            <dt><kbd>L</kbd></dt><dd>アルバムの曲展開をトグル</dd>
-                        </dl>
-                    </section>
-                </div>
-            </article>
+    return <CSSTransition classNames="popup-transition" timeout={100} in={shown} mountOnEnter={true} unmountOnExit={true}>
+        <div id="keyboard-shortcut-help" className="popup-dim" onClick={() => toggleHelp()}>
+            <div className="popup-content" onClick={(event) => event.stopPropagation()}>
+                <article className="help">
+                    <header>
+                        <h1>キーボードショートカット</h1>
+                        <button onClick={() => toggleHelp()}>&times;</button>
+                    </header>
+                    <div className="help-contents">
+                        <section className="move">
+                            <h2>移動</h2>
+                            <dl>
+                                <dt><kbd>J</kbd></dt><dd>次の曲へ</dd>
+                                <dt><kbd>K</kbd></dt><dd>前の曲へ</dd>
+                                <dt><kbd>G</kbd></dt><dd>選択している曲のジャンルページへ移動</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>G</kbd></dt><dd>すべての曲へ移動</dd>
+                                <dt><kbd>M</kbd></dt><dd>選択している曲のアーティストページへ移動</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>M</kbd></dt><dd>すべての曲へ移動</dd>
+                                <dt><kbd>U</kbd></dt><dd>選択している曲を最後に聴いたユーザーのページへ移動</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>U</kbd></dt><dd>すべての曲へ移動</dd>
+                                <dt><kbd>T</kbd></dt><dd>先頭に移動</dd>
+                                <dt><kbd>O</kbd></dt><dd>開く</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>O</kbd></dt><dd>再生中の曲を開く</dd>
+                            </dl>
+                        </section>
+                        <section className="play">
+                            <h2>再生</h2>
+                            <dl>
+                                <dt><kbd>P</kbd></dt><dd>シャッフル再生</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>P</kbd></dt><dd>選択しているアーティストをシャッフル再生</dd>
+                                <dt><kbd>Enter</kbd></dt><dd>選択している曲を再生</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>Enter</kbd></dt><dd>選択しているアルバムをシャッフル再生</dd>
+                                <dt><kbd>.</kbd> / <kbd>S</kbd> / <kbd>Escape</kbd></dt><dd>停止</dd>
+                            </dl>
+                        </section>
+                        <section className="list">
+                            <h2>リスト操作</h2>
+                            <dl>
+                                <dt><kbd>A</kbd></dt><dd>アルバム表示をトグル</dd>
+                                <dt><kbd>Shift</kbd> + <kbd>A</kbd></dt><dd>全アルバムの曲展開をトグル</dd>
+                                <dt><kbd>L</kbd></dt><dd>アルバムの曲展開をトグル</dd>
+                            </dl>
+                        </section>
+                    </div>
+                </article>
+            </div>
         </div>
-    </div>;
+    </CSSTransition>;
 });
 
 const App = () => {
