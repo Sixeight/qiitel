@@ -28,9 +28,14 @@ export const MOVE_RESET = "move_reset";
 export const MOVE_TO = "move_to";
 export const UPDATE_INDEX = "update_index";
 export const SETUP_LIST = "setup_list";
+export const TOGGLE_HELP = "toggle_help";
 
 // Genre
 export const UPDATE_GENRES = "fetch_genres";
+
+// Google Analytics
+
+export const GA_EVENT = "ga_event";
 
 // Action creators
 
@@ -41,9 +46,15 @@ export const changeListModeToAlbum = () => {
     return changeListMode(listMode.album);
 };
 const changeListMode = (mode) => {
-    return {
-        type: CHANGE_LIST_MODE,
-        mode: mode
+    return (dispatch) => {
+        dispatch({
+            type: CHANGE_LIST_MODE,
+            mode: mode
+        });
+        dispatch(gaEvent("Change List Mode", {
+            event_category: "List",
+            event_label: mode
+        }));
     };
 };
 
@@ -54,9 +65,15 @@ export const expandAlbum = () => {
     return changeAlbumMode(albumMode.expanded);
 };
 const changeAlbumMode = (mode) => {
-    return {
-        type: CHANGE_ALBUM_MODE,
-        mode: mode
+    return (dispatch) => {
+        dispatch({
+            type: CHANGE_ALBUM_MODE,
+            mode: mode
+        });
+        dispatch(gaEvent("Change Album Mode", {
+            event_category: "List",
+            event_label: mode
+        }));
     };
 };
 
@@ -67,25 +84,43 @@ export const collapseAlbumSingle = (collectionId) => {
     return changeAlbumExpandedSingle(collectionId, false);
 };
 const changeAlbumExpandedSingle = (collectionId, expanded) => {
-    return {
-        type: CHANGE_ALBUM_EXPANDED_SINGLE,
-        collection_id: collectionId,
-        expanded: expanded
+    return (dispatch) => {
+        dispatch({
+            type: CHANGE_ALBUM_EXPANDED_SINGLE,
+            collection_id: collectionId,
+            expanded: expanded
+        });
+        dispatch(gaEvent("Album Expand Single", {
+            event_category: "List",
+            event_label: collectionId,
+            value: expanded ? 1 : 0
+        }));
     };
 };
 
-
 export const play = (track) => {
-    return {
-        type: PLAY,
-        track: track
+    return (dispatch) => {
+        dispatch({
+            type: PLAY,
+            track: track
+        });
+        dispatch(gaEvent("Play", {
+            event_category: "Player",
+            event_label: track.track_view_url
+        }));
     };
 };
 
 export const playAll = (tracks) => {
-    return {
-        type: PLAY_ALL,
-        tracks: tracks
+    return (dispatch) => {
+        dispatch({
+            type: PLAY_ALL,
+            tracks: tracks
+        });
+        dispatch(gaEvent("Play All", {
+            event_category: "Player",
+            value: tracks.length
+        }));
     };
 };
 
@@ -132,6 +167,12 @@ export const setupList = (tracks) => {
     return {
         type: SETUP_LIST,
         tracks: tracks
+    };
+};
+
+export const toggleHelp = () => {
+    return {
+        type: TOGGLE_HELP
     };
 };
 
@@ -246,7 +287,13 @@ export const watchKeyboard = () => {
                         const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
                             const artistTracks = pointer.tracks.filter(track => track.artist_id === selectedTrack.artist_id);
-                            dispatch(playAll(artistTracks));
+                            if (artistTracks.length > 0) {
+                                dispatch(playAll(artistTracks));
+                                dispatch(gaEvent("Play Atrist All", {
+                                    event_category: "Player",
+                                    event_label: artistTracks[0].artist_name
+                                }));
+                            }
                             break;
                         }
                     }
@@ -264,6 +311,10 @@ export const watchKeyboard = () => {
                         const tracks = pointer.tracks.slice(albumTrackIndex);
                         const nextAlbumTrackIndex = tracks.findIndex(track => track.collection_id !== selectedTrack.collection_id);
                         dispatch(playAll(tracks.slice(0, nextAlbumTrackIndex)));
+                        dispatch(gaEvent("Play Album All", {
+                            event_category: "Player",
+                            event_label: tracks[0].collection_name
+                        }));
                     } else {
                         dispatch(play(selectedTrack));
                     }
@@ -310,12 +361,12 @@ export const watchKeyboard = () => {
                     if (event.shiftKey) {
                         const currentTrack = app.play.currentTrack;
                         if (currentTrack) {
-                            window.open(currentTrack.track_view_url + "&at=1010ldrf", "_blank");
+                            window.open(currentTrack.track_view_url + `&at=1010ldrf&app=${currentTrack.app_type}`, "_blank");
                         }
                     } else {
                         const selectedTrack = pointer.active && pointer.tracks[pointer.index];
                         if (selectedTrack) {
-                            window.open(selectedTrack.track_view_url + "&at=1010ldrf", "_blank");
+                            window.open(selectedTrack.track_view_url + `&at=1010ldrf&app=${selectedTrack.app_type}`, "_blank");
                         }
                     }
                     break;
@@ -342,6 +393,23 @@ export const watchKeyboard = () => {
                     }
                     break;
                 }
+                case "KeyU": {
+                    if (event.shiftKey) {
+                        dispatch(push("/"));
+                    } else {
+                        const selectedTrack = pointer.active && pointer.tracks[pointer.index];
+                        if (selectedTrack && selectedTrack.user) {
+                            dispatch(push(`/users/${encodeURIComponent(selectedTrack.user.name)}`));
+                        }
+                    }
+                    break;
+                }
+                case "Slash": {
+                    if (event.shiftKey) {
+                        dispatch(toggleHelp());
+                    }
+                    break;
+                }
                 default:
                 // Nothing to do
             }
@@ -363,5 +431,13 @@ export const updateGenres = (genreNames) => {
     return {
         type: UPDATE_GENRES,
         genreNames: genreNames
+    };
+};
+
+export const gaEvent = (name, params) => {
+    return () => {
+        setTimeout(() => {
+            window.gtag("event", name, params);
+        }, 0);
     };
 };
