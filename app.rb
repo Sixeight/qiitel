@@ -313,6 +313,7 @@ class Playlist < Sinatra::Base
     Net::HTTP.post_form(URI.parse(ENV['SLACK_WEBHOOK']), payload: JSON.dump(payload))
   end
 
+  # アカウント凍結された…
   def tweet(track)
     return unless settings.respond_to?(:twitter)
 
@@ -322,7 +323,7 @@ class Playlist < Sinatra::Base
 
     # base64_artwork = Base64.encode64(open(track.thumbnail_url).read)
     # settings.twitter.update_profile_image(base64_artwork)
-    settings.twitter.update("#{track.track_name} / #{track.artist_name} - #{track.collection_name} #AppleMusic #{track.track_view_url}&app=#{track.app_type}")
+    # settings.twitter.update("#{track.track_name} / #{track.artist_name} - #{track.collection_name} #AppleMusic #{track.track_view_url}&app=#{track.app_type}")
   end
 
   def update_profile(track)
