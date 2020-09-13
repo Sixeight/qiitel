@@ -1,0 +1,116 @@
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 100;
+  src: url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Thin.woff2') format('woff2'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Thin.woff') format('woff'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Thin.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Regular.woff2') format('woff2'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Regular.woff') format('woff'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 700;
+  src: url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Bold.woff2') format('woff2'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Bold.woff') format('woff'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 900;
+  src: url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Black.woff2') format('woff2'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Black.woff') format('woff'),
+       url('https://fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Black.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'YakuHanJP';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Regular.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Regular.eot');
+}
+
+@font-face {
+  font-family: 'YakuHanJP';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Bold.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Bold.eot');
+}
+
+@font-face {
+  font-family: 'YakuHanJP';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Black.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Black.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/npm/yakuhanjp@2.0.0/dist/fonts/YakuHanJP/YakuHanJP-Black.eot');
+}
+
+@font-face {
+  font-family: 'qiitelIcon';
+  font-weight: normal;
+  font-style: normal;
+  src:  url('/font/qiitelIcon.eot?ufuzp0');
+  src:  url('/font/qiitelIcon.eot?ufuzp0#iefix') format('embedded-opentype'),
+        url('/font/qiitelIcon.ttf?ufuzp0') format('truetype'),
+        url('/font/qiitelIcon.woff?ufuzp0') format('woff'),
+        url('/font/qiitelIcon.svg?ufuzp0#qiitelIcon') format('svg');
+}
+
+i[class^='qi-'] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'qiitelIcon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+}
+
+// usage ... <i className="qi-***" aria-hidden="true"></i>
+.qi-album:before  {content: '\e900';}
+.qi-artist:before {content: '\e901';}
+
+
+html {
+  font-size: 62.5%; // ≒ 10px
+  font-feature-settings: 'pkna' 1;
+  letter-spacing: .065em;
+  @include max-screen(767px) {
+    font-size: 56.25%; // ≒ 9px
+  }
+}
+
+body {
+  font-family: 'YakuHanJP', 'Noto Sans Japanese', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN','Yu Gothic', YuGothic, Verdana, Meiryo, sans-serif;
+  font-weight: 400;
+  -webkit-text-size-adjust: 100%;
+
+  * {
+    font-size: 1.6rem;
+  }
+}
+
+h1, h2, h3, h4, h5, h6, strong {
+  font-family: 'YakuHanJP', 'Noto Sans Japanese', sans-serif;
+  font-weight: 900;
+}

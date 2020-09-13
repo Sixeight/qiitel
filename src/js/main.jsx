@@ -55,25 +55,45 @@ class TrackComponent extends React.PureComponent {
                 <div className="image">
                     <div className="artwork" style={this.state.shown ? { backgroundImage: `url(${track.thumbnail_url})` } : {}}>
                     </div>
-                    <a href={track.track_view_url} rel="nofollow" target="_blank">
-                        {
-                            track.is_streamable ?
-                                <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
-                                <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
-                        }
-                    </a>
                 </div>
-                <div className="meta">
-                    <h2><a href={track.track_view_url} rel="nofollow" target="_blank">{track.track_name}</a></h2>
-                    <a href={track.artist_view_url} rel="nofollow" target="_blank">{track.artist_name}</a> - <a href={track.collection_view_url} rel="nofollow" target="_blank">{track.collection_name}</a><br />
-                    <span className="genre"><Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link></span>・<span className="release">{releasedAt.getFullYear()}</span><br />
-                    <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
-                    {track.user && <User user={track.user} />}
+                <div className="data">
+                    <div className="title">
+                        <h2><a href={track.track_view_ur} rel="nofollow" target="_blank">{track.track_name}</a></h2>
+                        <span className="play-button">
+                            <button onClick={this._play}>プレビュー<i className="fa fa-play-circle-o" aria-hidden="true"></i></button>
+                        </span>
+                    </div>
+                    <div className="info">
+                        <ul className="meta">
+                            <li>
+                                <a href={track.artist_view_url} rel="nofollow" target="_blank">
+                                    <i className="qi-artist" aria-hidden="true"></i> <i className="fa fa-angle-right" aria-hidden="true"></i> {track.artist_name}
+                                </a>
+                            </li>
+                            <li>
+                                <a href={track.collection_view_url} rel="nofollow" target="_blank">
+                                    <i className="qi-album" aria-hidden="true"></i> <i className="fa fa-angle-right" aria-hidden="true"></i> {track.collection_name} ({releasedAt.getFullYear()})
+                                </a>
+                            </li>
+                            <li className="genre">
+                                <Link to={`/genres/${encodeURIComponent(track.genre_name)}`}>{track.genre_name}</Link>
+                            </li>
+                        </ul>
+                        <div className="external">
+                            <a href={track.track_view_url} rel="nofollow" target="_blank">
+                                {
+                                    track.is_streamable ?
+                                        <img src="/image/JP_Listen_on_Apple_Music_Badge.svg" /> :
+                                        <img src="/image/Get_it_on_iTunes_Badge_JP_1214.svg" />
+                                }
+                            </a>
+                            <div className="listener">
+                                {track.user && <User user={track.user} />}
+                                <time dateTime={updatedAt.toISOString()} title={updatedAt.toISOString()}>{updatedAt.toLocaleString()}</time>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="play-button">
-                    <button onClick={this._play}>プレビュー</button>
-                </div>
-                <div className="clear"></div>
             </div>
         </Waypoint>;
     }
@@ -91,9 +111,8 @@ const User = ({ user }) => {
     return <span className="profile">
         {
             user.image_url ?
-                <Link to={`/users/${user.name}`}>
+                <Link to={`/users/${user.name}`} title={`@${user.name}`}>
                     <img src={`${user.image_url}`} alt={`@${user.name}`} />
-                    <span className="name">@{user.name}</span>
                 </Link> :
                 <span className="name">@{user.name}</span>
         }
@@ -122,18 +141,20 @@ class AlbumComponent extends React.PureComponent {
             ref={(ref) => ref && this._loadStarEntries(ref)}>
 
             <div className="album-meta">
-                <h2>
-                    「{first.collection_name}」
-                    <button className="play-button" onClick={this._playAll}>▶</button>
-                </h2>
+                <button className="play-button" onClick={this._playAll}>
+                    <h2><i className="qi-album" aria-hidden="true"></i>{first.collection_name}</h2>
+                    <span className="play-button">まとめてプレビュー<i className="fa fa-play-circle-o" aria-hidden="true"></i></span>
+                </button>
             </div>
             <div className="album-tracks" key="tracks">
                 <Track track={first} key={first.track_id} />
-                {rest.map((track, i) => {
-                    return this.props.isAlbumExpanded ?
-                        <Track track={track} key={track.track_id} /> :
-                        <div className="track dummy" style={{ zIndex: -(i + 1) }} key={track.track_id} />;
-                })}
+                <div className="stacks">
+                    {rest.map((track) => {
+                        return this.props.isAlbumExpanded ?
+                            <Track track={track} key={track.track_id} /> :
+                            <div className="stack" key={track.track_id} />;
+                    })}
+                </div>
             </div>
             {this.props.isAlbumExpanded ||
                 <div className="rest" key="rest">
@@ -198,7 +219,7 @@ const Header = ({ genre, user, artist }) => {
 
 const Footer = () => {
     return <footer>
-        &copy; 2016-2017 <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a>
+        &copy; 2017 <a href="https://twitter.com/tomohi_ro">@tomohi_ro</a> / <a href="https://twitter.com/sailtask">@sailtask</a>
     </footer>;
 };
 
@@ -305,35 +326,53 @@ class TracksPageComponent extends React.PureComponent {
         const components = [
             <div id="description" key="description">
                 <p>{who}が最近聴いた{genre}{artist && <span> {this.artistLink()} の</span>}{this.state.tracks.length}曲です。</p>
-            </div>,
-            <nav id="menu" key="menu">
-                <ul>
-                    <li className="minimum">
-                        <button className="play-button" onClick={this._playAll}>▶</button>
+                <ul id="view">
+                    <li>
+                        <button className="play-button" onClick={this._playAll}>
+                            <i className="fa fa-play fa-fw" aria-hidden="true"></i>
+                        </button>
                     </li>
-                    <li className="minimum">
+                    <li>
                         <button className="stop-button" disabled={!this.props.playing} onClick={this.props.playing ? this._clear : () => { }}>
-                            ■
+                            <i className="fa fa-stop fa-fw" aria-hidden="true"></i>
                         </button>
                     </li>
                     <li>
-                        <button onClick={this.props.isAlbumMode ? this._changeModeToTrack : this._changeModeToAlbum}>
-                            {this.props.isAlbumMode ? "曲をならべる" : "アルバムごとにまとめる"}
+                        <button>
+                            <i className="fa fa-list-ul fa-fw" aria-hidden="true"></i>
                         </button>
                     </li>
-                    {this.props.isAlbumMode &&
-                        <li>
-                            <button onClick={this.props.isAlbumExpanded ? this._collapseAlbum : this._expandAlbum}>
-                                {this.props.isAlbumExpanded ? "アルバムを閉じる" : "アルバムを開く"}
-                            </button>
-                        </li>
-                    }
                     <li>
-                        <button onClick={this._scrollToTop}>
-                            先頭にもどる
+                        <button>
+                            <i className="fa fa-th-large fa-fw" aria-hidden="true"></i>
                         </button>
                     </li>
                 </ul>
+            </div>,
+            // ↑ 押下で.trackの表示切り替えが出来たらいいな 😕
+            <nav id="menu" key="menu">
+                <ul id="menu-primary">
+                    <li>
+                        <button onClick={this.props.isAlbumMode ? this._changeModeToTrack : this._changeModeToAlbum}>
+                            <i className="qi-album" aria-hidden="true"></i>
+                            {this.props.isAlbumMode ? "アルバム表示 ON" : "アルバム表示 OFF"}
+                        </button>
+                    </li>
+                    <li>
+                        <button onClick={this._scrollToTop}>
+                            <i className="fa fa-chevron-up" aria-hidden="true"></i>
+                            TOP
+                        </button>
+                    </li>
+                </ul>
+                {this.props.isAlbumMode &&
+                    <ul id="menu-secondary">
+                        <button onClick={this.props.isAlbumExpanded ? this._collapseAlbum : this._expandAlbum}>
+                            <i className="fa fa-folder" aria-hidden="true"></i>
+                            {this.props.isAlbumExpanded ? "OPEN" : "CLOSE"}
+                        </button>
+                    </ul>
+                }
             </nav>,
             <div id="tracks" key="tracks" ref={ref => this._loadStarEntries(ref)}>
                 {this.props.isAlbumMode ?
@@ -369,6 +408,7 @@ const Genres = connect(
     (state) => { return { genreNames: state.app.genre.names }; }
 )(({ genreNames }) => {
     return <aside id="genres">
+        <h2>ジャンル一覧</h2>
         <ul>
             <li key="all"><NavLink exact to="/" activeClassName="current">すべて</NavLink></li>
             {genreNames.map(genreName => {
@@ -411,6 +451,7 @@ const Player = connect(
             <div className="preview">
                 <audio
                     src={track.preview_url}
+                    volume="0.1"
                     controls
                     ref={(audio) => audio && audio.load()}
                     onCanPlay={event => event.target.play()}
@@ -430,14 +471,16 @@ const Player = connect(
 
 const RecentTracksPage = () => {
     return <div id="contents">
-        <div id="main">
-            <Header />
-            <TracksPage api="/api/tracks" />
-            <Footer />
-        </div>
-        <div id="side">
-            <Genres />
-        </div>
+        <Header />
+        <article>
+            <div id="main">
+                <TracksPage api="/api/tracks" />
+            </div>
+            <div id="side">
+                <Genres />
+            </div>
+        </article>
+        <Footer />
     </div>;
 };
 
@@ -446,14 +489,16 @@ const GenreTracksPage = ({ match }) => {
     const decodedGenre = decodeURIComponent(genre);
 
     return <div id="contents">
-        <div id="main">
-            <Header genre={decodedGenre} />
-            <TracksPage key={genre} genre={decodedGenre} api={`/api/genres/${genre}`} />
-            <Footer />
-        </div>
-        <div id="side">
-            <Genres key={genre} />
-        </div>
+        <Header genre={decodedGenre} />
+        <article>
+            <div id="main">
+                <TracksPage key={genre} genre={decodedGenre} api={`/api/genres/${genre}`} />
+            </div>
+            <div id="side">
+                <Genres key={genre} />
+            </div>
+        </article>
+        <Footer />
     </div>;
 };
 
@@ -461,14 +506,16 @@ const UserTracksPage = ({ match }) => {
     const user = match.params.user;
 
     return <div id="contents">
-        <div id="main">
-            <Header user={user} />
-            <TracksPage key={user} user={user} api={`/api/users/${user}`} />
-            <Footer />
-        </div>
-        <div id="side">
-            <Genres />
-        </div>
+        <Header user={user} />
+        <article>
+            <div id="main">
+                <TracksPage key={user} user={user} api={`/api/users/${user}`} />
+            </div>
+            <div id="side">
+                <Genres />
+            </div>
+        </article>
+        <Footer />
     </div>;
 };
 

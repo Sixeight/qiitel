@@ -1,0 +1,13 @@
+@mixin max-screen($breakPoint: 767px) {
+  //usage ... @include max-screen(767px) {}
+  @media screen and (max-width: $breakPoint) {
+    @content;
+  }
+}
+
+%init {
+  //usage ... @extend %init;
+  margin: 0 auto;
+  max-width: 1400px;
+  width: 100%;
+}
